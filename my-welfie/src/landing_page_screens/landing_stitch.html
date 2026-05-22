@@ -1,0 +1,1512 @@
+<!-- My Wellfie Landing Page -->
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>My Wellfie - Smart Health Scans</title>
+    <!-- BEGIN: Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- END: Tailwind CSS CDN -->
+    <!-- BEGIN: Custom Fonts & Styles -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <style data-purpose="global-styles">
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+    </style>
+    <style data-purpose="specific-layouts">
+        .stepper-line {
+            position: absolute;
+            top: 24px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: #e2e8f0;
+            z-index: 0;
+        }
+
+        .stepper-dot {
+            z-index: 10;
+        }
+
+        .pricing-card-popular {
+            border: 2px solid #2dd4bf;
+            transform: scale(1.05);
+        }
+    </style>
+    <!-- END: Custom Fonts & Styles -->
+</head>
+
+<body class="bg-white text-slate-900">
+    <!-- BEGIN: Navbar -->
+    <nav class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-slate-100"
+        data-purpose="main-navigation">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center">
+                    <div
+                        class="w-10 h-10 bg-teal-500 rounded-full flex items-center justify-center text-white font-bold mr-2">
+                        W</div>
+                    <span class="text-xl font-bold text-teal-600">MyWellfie</span>
+                </div>
+                <!-- Navigation Links -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a class="flex items-center gap-1 text-sm font-medium text-slate-700 hover:text-teal-600" href="#">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                            <path
+                                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+                                stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+                        </svg>
+                        Home
+                    </a>
+                    <a class="flex items-center gap-1 text-sm font-medium text-slate-700 hover:text-teal-600" href="#">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                            <path
+                                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+                        </svg>
+                        Pricing
+                    </a>
+                    <a class="flex items-center gap-1 text-sm font-medium text-slate-700 hover:text-teal-600" href="#">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                            <path
+                                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                                stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+                        </svg>
+                        Health &amp; Wellness
+                    </a>
+                    <a class="flex items-center gap-1 text-sm font-medium text-slate-700 hover:text-teal-600" href="#">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                            <path
+                                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                                stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+                        </svg>
+                        Resources
+                    </a>
+                </div>
+                <!-- User Profile -->
+                <div class="flex items-center">
+                    <button class="flex items-center text-sm font-medium text-slate-700 hover:text-teal-600">
+                        <span
+                            class="w-8 h-8 rounded-full bg-teal-100 text-teal-700 flex items-center justify-center mr-2">A</span>
+                        Adith Suresh
+                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                            <path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                            </path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!-- END: Navbar -->
+    <!-- BEGIN: Hero Section -->
+    <header class="relative pt-20 pb-32 overflow-hidden bg-white" data-purpose="hero-section">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col items-center text-center">
+                <!-- Hero Image Mockup -->
+                <div class="relative w-full max-w-lg mb-12">
+                    <div class="relative z-10 rounded-2xl overflow-hidden shadow-2xl">
+                        <img alt="User scanning vitals" class="w-full h-auto object-cover"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDbswHQonE7aVg1EmoI-KWvX6ebXs-OyrohiRd25tYdz2HixdjOWf92gAKPysXMhOJAvYULJrU-IoZM4ofK9Gx_dl5wkAiAKhcsAC_iBRpjp2b2SXJ1iarVzBLNlxlCu8ZfYY3IW_8M76S7d1SFjvRO7bhOkvQg1R80XJ9shf9ajR6kn0qyP89kLfVZTBYX5H55SkqOrCRx6e9ZzYkR4FtgjMzWN8s-8wVmeK2zoXSc2JaGVmHuqdc5gLGzu1e1bwYYYpZTVgzoIhLA" />
+                    </div>
+                    <!-- Decorative element behind image -->
+                    <div
+                        class="absolute -top-10 -right-10 w-64 h-64 bg-teal-50 rounded-full mix-blend-multiply filter blur-3xl opacity-70">
+                    </div>
+                    <div
+                        class="absolute -bottom-10 -left-10 w-64 h-64 bg-blue-50 rounded-full mix-blend-multiply filter blur-3xl opacity-70">
+                    </div>
+                </div>
+                <!-- Hero Text -->
+                <h1 class="text-4xl md:text-6xl font-extrabold text-slate-900 tracking-tight mb-6">
+                    My Wellfie: Smart Health Scans
+                </h1>
+                <p class="max-w-2xl text-xl text-slate-500 mb-10 leading-relaxed">
+                    Wellfie monitors your vital signs using just your smartphone camera. No wearables, no hassle - just
+                    science-backed health tracking with My Wellfie.
+                </p>
+                <!-- CTA Buttons -->
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <button
+                        class="inline-flex items-center justify-center px-8 py-4 text-base font-semibold text-white bg-teal-500 rounded-lg hover:bg-teal-600 transition duration-200">
+                        Get Started <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                            <path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round"
+                                stroke-width="2"></path>
+                        </svg>
+                    </button>
+                    <button
+                        class="inline-flex items-center justify-center px-8 py-4 text-base font-semibold text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition duration-200 shadow-sm">
+                        Learn More
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- END: Hero Section -->
+    <!-- BEGIN: Features Section -->
+    <section class="py-24 bg-white" data-purpose="features-overview">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">My Wellfie: Your Health, Simplified</h2>
+                <a class="text-teal-600 font-medium hover:underline flex items-center justify-center" href="#">
+                    Learn More About Health Indicators <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor"
+                        viewbox="0 0 24 24">
+                        <path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+                    </svg>
+                </a>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Feature 1 -->
+                <div class="p-8 border border-slate-100 rounded-2xl hover:shadow-lg transition-shadow duration-300">
+                    <div class="w-12 h-12 bg-blue-50 text-blue-500 rounded-xl flex items-center justify-center mb-6">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                            <path
+                                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                                stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Heart Health</h3>
+                    <p class="text-slate-500">Monitor heart rate, HRV, and cardiovascular wellness</p>
+                </div>
+                <!-- Feature 2 -->
+                <div class="p-8 border border-slate-100 rounded-2xl hover:shadow-lg transition-shadow duration-300">
+                    <div class="w-12 h-12 bg-teal-50 text-teal-500 rounded-xl flex items-center justify-center mb-6">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                            <path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-linecap="round" stroke-linejoin="round"
+                                stroke-width="2"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Vital Signs</h3>
+                    <p class="text-slate-500">Track blood pressure, oxygen levels, and respiratory rate</p>
+                </div>
+                <!-- Feature 3 -->
+                <div class="p-8 border border-slate-100 rounded-2xl hover:shadow-lg transition-shadow duration-300">
+                    <div
+                        class="w-12 h-12 bg-indigo-50 text-indigo-500 rounded-xl flex items-center justify-center mb-6">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                            <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round"
+                                stroke-linejoin="round" stroke-width="2"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Stress &amp; Wellness</h3>
+                    <p class="text-slate-500">Measure stress levels and overall wellness score</p>
+                </div>
+                <!-- Feature 4 -->
+                <div class="p-8 border border-slate-100 rounded-2xl hover:shadow-lg transition-shadow duration-300">
+                    <div
+                        class="w-12 h-12 bg-orange-50 text-orange-500 rounded-xl flex items-center justify-center mb-6">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                            <path d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"
+                                stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Anytime, Anywhere</h3>
+                    <p class="text-slate-500">No wearables needed - just your smartphone camera</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- END: Features Section -->
+    <!-- BEGIN: How It Works Section -->
+    <section class="py-24 bg-slate-50" data-purpose="process-steps">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl md:text-4xl font-bold text-slate-900 text-center mb-20">How It Works</h2>
+            <div class="relative">
+                <!-- Connecting Line (Desktop Only) -->
+                <div class="hidden lg:block stepper-line"></div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+                    <!-- Step 1 -->
+                    <div class="flex flex-col items-center text-center">
+                        <div
+                            class="w-12 h-12 rounded-full bg-teal-500 text-white flex items-center justify-center font-bold text-lg stepper-dot mb-6 shadow-lg shadow-teal-200">
+                            1</div>
+                        <h3 class="text-xl font-bold text-slate-900 mb-2">Purchase a Scan Pack</h3>
+                        <p class="text-slate-500 mb-8 text-sm px-4">Choose the pack that fits your wellness journey</p>
+                        <div
+                            class="w-full max-w-[200px] border-4 border-slate-200 rounded-3xl overflow-hidden aspect-[9/16] bg-white">
+                            <img alt="Step 1 Mockup" class="w-full h-full object-cover"
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBMSfcEDKuJRoEP4BxoCZno9txCq6-zBjfE7y7HpSFsK5xWM1vYMTSGjCeL-jnNxlWUrH1nhF07K5E3ATLaB6BT7qsrsQgV_rScYD3uIQt_G7FqvQbESb8iladj9FOgN8LPsL3u0q9fRQMonYdL5uJq9PpzowhfsOg2PkFchWyGKiJJW7CYz_VH6ZHJn_HZX_FVmC02pju3eeWU8wCPtmXXfuuwOmVqyShJMB5VpYoKpvNbMBB0z5E-D3u8UtKC3WenWQoqhymcJ8jF" />
+                        </div>
+                    </div>
+                    <!-- Step 2 -->
+                    <div class="flex flex-col items-center text-center">
+                        <div
+                            class="w-12 h-12 rounded-full bg-teal-500 text-white flex items-center justify-center font-bold text-lg stepper-dot mb-6 shadow-lg shadow-teal-200">
+                            2</div>
+                        <h3 class="text-xl font-bold text-slate-900 mb-2">Position Your Face</h3>
+                        <p class="text-slate-500 mb-8 text-sm px-4">Use your phone camera in a well-lit environment</p>
+                        <div
+                            class="w-full max-w-[200px] border-4 border-slate-200 rounded-3xl overflow-hidden aspect-[9/16] bg-white">
+                            <img alt="Step 2 Mockup" class="w-full h-full object-cover"
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuC6jztqP9WaaNX-RDQjj_0nQj3-60dpaJBqDFvGB1U9gOOS8GyXU_CaAvDybe_0wj4ELaO3-osmEqq9Jf7MK4ILEPidElrvDmSshKq3Hr5OS4v8t2LTeTwcXiBmeldWKJEsx4XSsq_yhBEqDN2WKkDhJ7LK_I8nSvTctArAIYp1vwgi0WbzAYKnJ2PcOl4rVcCt_ZaOK55NIeVSwA6_xfZCM200mVcBhqaW3fQTiiCH3wuWSW_TP4leULnzLDs2iKFKGwNGCCJ6QrfV" />
+                        </div>
+                    </div>
+                    <!-- Step 3 -->
+                    <div class="flex flex-col items-center text-center">
+                        <div
+                            class="w-12 h-12 rounded-full bg-teal-500 text-white flex items-center justify-center font-bold text-lg stepper-dot mb-6 shadow-lg shadow-teal-200">
+                            3</div>
+                        <h3 class="text-xl font-bold text-slate-900 mb-2">AI Analyzes Your Vitals</h3>
+                        <p class="text-slate-500 mb-8 text-sm px-4">Our advanced PPG technology reads your biometrics
+                        </p>
+                        <div
+                            class="w-full max-w-[200px] border-4 border-slate-200 rounded-3xl overflow-hidden aspect-[9/16] bg-white">
+                            <img alt="Step 3 Mockup" class="w-full h-full object-cover"
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBYs8bCMImvsPqTe-lix6rNmi7tRyGs6YfN1sfG9-sEKBEGzl9ycRYoAq5is6FRvptav_eGj1QwwxAdW5wqY1AuC8G5W17s-FMXbpTp8jPzaOzZpTqaIa6UBILUvKYEQBZTn1IjPAwsppehuZljoQImxr8cGhY1AnmxK4h9cAIDnYswN3GglrIno58JRFYooYR0fSRfcpGf1wj8gZ7k-pbr9F1_dgAj9EAe-rAnZaztyBjuMOHsdnu85Tp9h0cojHfkBrukCcLPCIjZ" />
+                        </div>
+                    </div>
+                    <!-- Step 4 -->
+                    <div class="flex flex-col items-center text-center">
+                        <div
+                            class="w-12 h-12 rounded-full bg-teal-500 text-white flex items-center justify-center font-bold text-lg stepper-dot mb-6 shadow-lg shadow-teal-200">
+                            4</div>
+                        <h3 class="text-xl font-bold text-slate-900 mb-2">Get Your Results</h3>
+                        <p class="text-slate-500 mb-8 text-sm px-4">View detailed insights and track your health over
+                            time</p>
+                        <div
+                            class="w-full max-w-[200px] border-4 border-slate-200 rounded-3xl overflow-hidden aspect-[9/16] bg-white">
+                            <img alt="Step 4 Mockup" class="w-full h-full object-cover"
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuB4sKwZMzqeJ2_zRd394yjyQQ-4dY2VtXd-AvQmIv9RGIkBKlQ6AjmcJ9oTNr4ftRqd8F2wVAQSKidI6gXLAkrMiX9MFpE2YVId4AIbdWjGj2WWIxH7jq0WOepql-Ak7cU34S5Y3gWobJNnGk8t04S4TXKxRdwvCQtWdUUdeFWZJYnNVtljyAbK604BqkXS7Gt0CFN2kS0LfI8JGgHp_0K_uUuFO49Q_EF2GfXbg58N3ir4xsi6begjowq09rOnteVQD-F1ITx2EaRx" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- END: How It Works Section -->
+    <!-- BEGIN: Science Section -->
+    <section class="py-24 bg-white" data-purpose="science-explanation">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col items-center mb-16">
+                <div class="w-16 h-16 bg-teal-100 text-teal-600 rounded-2xl flex items-center justify-center mb-6">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                        <path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-linecap="round" stroke-linejoin="round"
+                            stroke-width="2"></path>
+                    </svg>
+                </div>
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">The Science: PPG Technology</h2>
+                <p class="text-slate-500 text-center">Powered by Photoplethysmography (PPG) - Medical-grade technology
+                    in your pocket</p>
+            </div>
+            <div class="bg-white border border-slate-100 shadow-xl rounded-3xl p-8 md:p-12">
+                <div class="space-y-12">
+                    <!-- Text Content -->
+                    <div>
+                        <h4 class="flex items-center text-xl font-bold text-slate-900 mb-4">
+                            <svg class="w-6 h-6 text-teal-500 mr-2" fill="none" stroke="currentColor"
+                                viewbox="0 0 24 24">
+                                <path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                    stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+                            </svg>
+                            What is PPG?
+                        </h4>
+                        <p class="text-slate-600 leading-relaxed">
+                            Photoplethysmography (PPG) is a clinically validated, non-invasive optical technique that
+                            detects blood volume changes in the microvascular bed of tissue. When light from your
+                            smartphone camera illuminates your skin, it's partially absorbed by blood vessels. By
+                            analyzing these subtle changes in light absorption, our AI can extract vital health metrics.
+                        </p>
+                    </div>
+                    <div>
+                        <h4 class="flex items-center text-xl font-bold text-slate-900 mb-4">
+                            <svg class="w-6 h-6 text-teal-500 mr-2" fill="none" stroke="currentColor"
+                                viewbox="0 0 24 24">
+                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round"
+                                    stroke-linejoin="round" stroke-width="2"></path>
+                            </svg>
+                            Clinically Validated
+                        </h4>
+                        <p class="text-slate-600 leading-relaxed">
+                            PPG technology has been used in medical devices for decades and is the same principle used
+                            in hospital pulse oximeters. My Wellfie leverages advanced computer vision and AI algorithms
+                            to deliver accurate health measurements from your smartphone - no additional hardware
+                            required. Wellfie makes professional health monitoring accessible to everyone.
+                        </p>
+                    </div>
+                    <!-- Stats Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-8 pt-8 border-t border-slate-100">
+                        <div class="text-center">
+                            <div class="text-4xl font-bold text-teal-500 mb-1">98%+</div>
+                            <div class="text-sm font-medium text-slate-400 uppercase tracking-wider">Accuracy Rate</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-4xl font-bold text-teal-500 mb-1">60 sec</div>
+                            <div class="text-sm font-medium text-slate-400 uppercase tracking-wider">Scan Duration</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-4xl font-bold text-teal-500 mb-1">10+</div>
+                            <div class="text-sm font-medium text-slate-400 uppercase tracking-wider">Health Metrics
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- END: Science Section -->
+    <!-- BEGIN: Pricing Section -->
+    <section class="py-24 bg-[#0f172a] text-white" data-purpose="pricing-plans">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Choose Your Wellness Plan</h2>
+                <p class="text-slate-400 mb-8">Flexible scan packs to fit your health monitoring needs</p>
+                <div class="inline-block px-4 py-2 bg-slate-800 rounded-lg text-sm mb-12">
+                    Looking for corporate wellness solutions? <a class="text-teal-400 font-bold ml-1" href="#">Contact
+                        Us</a>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-end">
+                <!-- Single Scan -->
+                <div class="bg-white rounded-2xl p-8 text-slate-900 shadow-xl">
+                    <h3 class="text-lg font-bold mb-4">Single Scan</h3>
+                    <div class="mb-6">
+                        <span class="text-4xl font-bold">S$5</span>
+                    </div>
+                    <ul class="space-y-4 mb-8 text-slate-500 text-sm">
+                        <li class="flex items-center">
+                            <svg class="w-4 h-4 text-teal-500 mr-2" fill="none" stroke="currentColor"
+                                viewbox="0 0 24 24">
+                                <path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="2"></path>
+                            </svg>
+                            1 Scan
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-4 h-4 text-teal-500 mr-2" fill="none" stroke="currentColor"
+                                viewbox="0 0 24 24">
+                                <path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="2"></path>
+                            </svg>
+                            S$5.00 per scan
+                        </li>
+                    </ul>
+                    <button
+                        class="w-full py-3 bg-slate-100 text-slate-700 font-bold rounded-lg hover:bg-slate-200 transition">Get
+                        Started</button>
+                </div>
+                <!-- Basic Pack (Popular) -->
+                <div class="bg-white rounded-2xl p-8 text-slate-900 shadow-2xl relative pricing-card-popular">
+                    <div
+                        class="absolute -top-4 left-1/2 -translate-x-1/2 bg-teal-500 text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full">
+                        Most Popular</div>
+                    <h3 class="text-lg font-bold mb-4 text-teal-600">Basic Pack</h3>
+                    <div class="mb-6">
+                        <span class="text-4xl font-bold">S$16</span>
+                    </div>
+                    <ul class="space-y-4 mb-8 text-slate-500 text-sm">
+                        <li class="flex items-center">
+                            <svg class="w-4 h-4 text-teal-500 mr-2" fill="none" stroke="currentColor"
+                                viewbox="0 0 24 24">
+                                <path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="2"></path>
+                            </svg>
+                            4 Scans
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-4 h-4 text-teal-500 mr-2" fill="none" stroke="currentColor"
+                                viewbox="0 0 24 24">
+                                <path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="2"></path>
+                            </svg>
+                            S$4.00 per scan
+                        </li>
+                    </ul>
+                    <button
+                        class="w-full py-3 bg-teal-500 text-white font-bold rounded-lg hover:bg-teal-600 transition">Get
+                        Started</button>
+                </div>
+                <!-- Standard Pack -->
+                <div class="bg-white rounded-2xl p-8 text-slate-900 shadow-xl">
+                    <h3 class="text-lg font-bold mb-4">Standard Pack</h3>
+                    <div class="mb-6">
+                        <span class="text-4xl font-bold">S$24</span>
+                    </div>
+                    <ul class="space-y-4 mb-8 text-slate-500 text-sm">
+                        <li class="flex items-center">
+                            <svg class="w-4 h-4 text-teal-500 mr-2" fill="none" stroke="currentColor"
+                                viewbox="0 0 24 24">
+                                <path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="2"></path>
+                            </svg>
+                            8 Scans
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-4 h-4 text-teal-500 mr-2" fill="none" stroke="currentColor"
+                                viewbox="0 0 24 24">
+                                <path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="2"></path>
+                            </svg>
+                            S$3.00 per scan
+                        </li>
+                    </ul>
+                    <button
+                        class="w-full py-3 bg-slate-100 text-slate-700 font-bold rounded-lg hover:bg-slate-200 transition">Get
+                        Started</button>
+                </div>
+                <!-- Premium Pack -->
+                <div class="bg-white rounded-2xl p-8 text-slate-900 shadow-xl">
+                    <h3 class="text-lg font-bold mb-4">Premium Pack</h3>
+                    <div class="mb-6">
+                        <span class="text-4xl font-bold">S$36</span>
+                    </div>
+                    <ul class="space-y-4 mb-8 text-slate-500 text-sm">
+                        <li class="flex items-center">
+                            <svg class="w-4 h-4 text-teal-500 mr-2" fill="none" stroke="currentColor"
+                                viewbox="0 0 24 24">
+                                <path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="2"></path>
+                            </svg>
+                            12 Scans
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-4 h-4 text-teal-500 mr-2" fill="none" stroke="currentColor"
+                                viewbox="0 0 24 24">
+                                <path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="2"></path>
+                            </svg>
+                            S$3.00 per scan
+                        </li>
+                    </ul>
+                    <button
+                        class="w-full py-3 bg-slate-100 text-slate-700 font-bold rounded-lg hover:bg-slate-200 transition">Get
+                        Started</button>
+                </div>
+            </div>
+            <div class="mt-16 text-center">
+                <a class="inline-flex items-center text-slate-400 hover:text-white transition" href="#">
+                    View All Plans <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                        <path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </section>
+    <!-- END: Pricing Section -->
+    <!-- BEGIN: Bottom CTA -->
+    <section class="py-24 bg-white" data-purpose="final-call-to-action">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-6">Ready to Take Control of Your Health?</h2>
+            <p class="text-slate-500 mb-10 text-lg">Join thousands of users monitoring their wellness with My Wellfie -
+                your personal health companion</p>
+            <button
+                class="inline-flex items-center justify-center px-10 py-5 text-lg font-bold text-white bg-teal-500 rounded-xl hover:bg-teal-600 transition shadow-lg shadow-teal-100">
+                Start Your Journey <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                    <path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                    </path>
+                </svg>
+            </button>
+        </div>
+    </section>
+    <!-- END: Bottom CTA -->
+    <!-- BEGIN: Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-16" data-purpose="main-footer">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+                <!-- Brand Info -->
+                <div class="col-span-1">
+                    <div class="flex items-center text-white mb-6">
+                        <div class="w-8 h-8 bg-teal-500 rounded-full flex items-center justify-center font-bold mr-2">W
+                        </div>
+                        <span class="text-xl font-bold">MyWellfie</span>
+                    </div>
+                    <p class="text-sm leading-relaxed">
+                        Smart health monitoring powered by advanced PPG technology.
+                    </p>
+                </div>
+                <!-- Links Group 1 -->
+                <div>
+                    <h4 class="text-white font-bold mb-6">Quick Links</h4>
+                    <ul class="space-y-4 text-sm">
+                        <li><a class="hover:text-teal-400 transition" href="#">Home</a></li>
+                        <li><a class="hover:text-teal-400 transition" href="#">Pricing</a></li>
+                        <li><a class="hover:text-teal-400 transition" href="#">Resources</a></li>
+                    </ul>
+                </div>
+                <!-- Links Group 2 -->
+                <div>
+                    <h4 class="text-white font-bold mb-6">Support</h4>
+                    <ul class="space-y-4 text-sm">
+                        <li><a class="hover:text-teal-400 transition" href="#">Help Center</a></li>
+                        <li><a class="hover:text-teal-400 transition" href="#">Contact Us</a></li>
+                        <li><a class="hover:text-teal-400 transition" href="#">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <!-- Links Group 3 -->
+                <div>
+                    <h4 class="text-white font-bold mb-6">Connect</h4>
+                    <p class="text-sm mb-4">Stay updated with health tips and news</p>
+                    <a class="text-sm text-teal-400 font-medium" href="mailto:info@mywellfie.com">info@mywellfie.com</a>
+                </div>
+            </div>
+            <div class="pt-8 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center text-xs">
+                <p>© 2024 MyWellfie. All rights reserved.</p>
+                <div class="flex items-center gap-2 mt-4 md:mt-0">
+                    <div class="bg-slate-800 px-2 py-1 rounded">Edit with <span class="text-orange-400 font-bold">Base
+                            44</span></div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- END: Footer -->
+</body>
+
+</html>
+
+<!-- My Wellfie Mobile Landing -->
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>My Wellfie - Smart Health Scans</title>
+    <!-- Tailwind CSS v3 with plugins -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Custom Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            primary: '#32D18D', // Green from "Get Started"
+                            secondary: '#111827', // Dark navy from footer/pricing
+                            accent: '#3B82F6', // Blue from icons
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style data-purpose="custom-typography">
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+    <style data-purpose="layout-adjustments">
+        /* Custom scroll behavior and minor tweaks for mobile feel */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        .pricing-card-shadow {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+
+<body class="bg-white text-gray-900 antialiased overflow-x-hidden">
+    <!-- BEGIN: Navigation -->
+    <nav class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100" data-purpose="main-nav">
+        <div class="px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <!-- Logo Placeholder -->
+                <div class="w-8 h-8 bg-brand-primary rounded-full flex items-center justify-center">
+                    <span class="text-white font-bold text-xs">W</span>
+                </div>
+                <span class="font-bold text-xl tracking-tight">My Wellfie</span>
+            </div>
+            <button aria-label="Menu" class="p-2 text-gray-600">
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 6h16M4 12h16m-7 6h7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                    </path>
+                </svg>
+            </button>
+        </div>
+    </nav>
+    <!-- END: Navigation -->
+    <main>
+        <!-- BEGIN: Hero Section -->
+        <section class="relative pt-10 pb-20 px-6 text-center overflow-hidden" data-purpose="hero-section">
+            <!-- Background Gradient Decor -->
+            <div class="absolute inset-0 -z-10 bg-gradient-to-b from-gray-50 to-white"></div>
+            <!-- Hero Image Area -->
+            <div class="relative mx-auto mb-10 w-full max-w-xs h-80 rounded-3xl overflow-hidden shadow-2xl">
+                <img alt="Man using smartphone for health scan" class="w-full h-full object-cover"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuBs1xtmFGPFb8M1OOXIz8GAQFrP1G6XK53T8Zf8x95VdDz0aovITi_Vh-gF1EkDiIFe9bn9y_MZ-x6McSkOEjDsBy0X48y69Gv1B9JCyjgCaQDHwxO-WRlJkluVGNGviRBbwAe6ZO02s6HMIrr3OwVTZEV2JEDwK05zG8nzBWgmrVBUWYc1_FUtigGrmTTcmWNH4oRkm78LVp4oAAGidZTEdBJFgnMhvJdoWihfG11QNQ5UCJwCR0wfcruFXXpT7jo_NkMIFRimYB2u" />
+            </div>
+            <h1 class="text-3xl font-extrabold text-brand-secondary mb-4 leading-tight">
+                My Wellfie: Smart Health Scans
+            </h1>
+            <p class="text-gray-600 text-lg mb-8 max-w-md mx-auto">
+                Wellfie monitors your vital signs using just your smartphone camera. No wearables, no hassle - just
+                science-backed health tracking.
+            </p>
+            <div class="flex flex-col gap-3 max-w-xs mx-auto">
+                <a class="bg-brand-primary text-white font-semibold py-4 px-8 rounded-xl shadow-lg shadow-green-200 active:scale-95 transition-transform"
+                    href="#">
+                    Get Started →
+                </a>
+                <a class="border border-gray-200 text-gray-700 font-semibold py-4 px-8 rounded-xl bg-white active:bg-gray-50"
+                    href="#">
+                    Learn More
+                </a>
+            </div>
+        </section>
+        <!-- END: Hero Section -->
+        <!-- BEGIN: Value Propositions -->
+        <section class="py-16 px-6 bg-white" data-purpose="features">
+            <div class="text-center mb-10">
+                <h2 class="text-2xl font-bold text-brand-secondary mb-2">My Wellfie: Your Health, Simplified</h2>
+                <a class="text-blue-600 font-medium text-sm" href="#">Learn More About Health Indicators →</a>
+            </div>
+            <div class="grid grid-cols-1 gap-4">
+                <!-- Feature 1 -->
+                <div
+                    class="p-6 border border-gray-100 rounded-2xl bg-white shadow-sm flex flex-col items-center text-center">
+                    <div class="w-12 h-12 bg-blue-50 text-blue-500 rounded-xl flex items-center justify-center mb-4">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                                stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+                        </svg>
+                    </div>
+                    <h3 class="font-bold text-brand-secondary mb-2">Heart Health</h3>
+                    <p class="text-gray-500 text-sm">Monitor heart rate, HRV, and cardiovascular wellness</p>
+                </div>
+                <!-- Feature 2 -->
+                <div
+                    class="p-6 border border-gray-100 rounded-2xl bg-white shadow-sm flex flex-col items-center text-center">
+                    <div class="w-12 h-12 bg-blue-50 text-blue-500 rounded-xl flex items-center justify-center mb-4">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-linecap="round" stroke-linejoin="round"
+                                stroke-width="2"></path>
+                        </svg>
+                    </div>
+                    <h3 class="font-bold text-brand-secondary mb-2">Vital Signs</h3>
+                    <p class="text-gray-500 text-sm">Track blood pressure, oxygen levels, and respiratory rate</p>
+                </div>
+                <!-- Feature 3 -->
+                <div
+                    class="p-6 border border-gray-100 rounded-2xl bg-white shadow-sm flex flex-col items-center text-center">
+                    <div class="w-12 h-12 bg-blue-50 text-blue-500 rounded-xl flex items-center justify-center mb-4">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                                stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+                        </svg>
+                    </div>
+                    <h3 class="font-bold text-brand-secondary mb-2">Stress &amp; Wellness</h3>
+                    <p class="text-gray-500 text-sm">Measure stress levels and overall wellness score</p>
+                </div>
+                <!-- Feature 4 -->
+                <div
+                    class="p-6 border border-gray-100 rounded-2xl bg-white shadow-sm flex flex-col items-center text-center">
+                    <div class="w-12 h-12 bg-blue-50 text-blue-500 rounded-xl flex items-center justify-center mb-4">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"
+                                stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+                        </svg>
+                    </div>
+                    <h3 class="font-bold text-brand-secondary mb-2">Anytime, Anywhere</h3>
+                    <p class="text-gray-500 text-sm">No wearables needed - just your smartphone camera</p>
+                </div>
+            </div>
+        </section>
+        <!-- END: Value Propositions -->
+        <!-- BEGIN: How It Works -->
+        <section class="py-16 px-6 bg-gray-50" data-purpose="how-it-works">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-brand-secondary mb-4">How It Works</h2>
+            </div>
+            <!-- Steps List -->
+            <div class="space-y-12">
+                <!-- Step 1 -->
+                <div class="flex flex-col items-center text-center">
+                    <div
+                        class="w-10 h-10 rounded-full bg-blue-500 text-white font-bold flex items-center justify-center mb-4 ring-4 ring-blue-100">
+                        1</div>
+                    <h3 class="font-bold text-lg text-brand-secondary">Purchase a Scan Pack</h3>
+                    <p class="text-gray-500 text-sm mb-6 px-4">Choose the pack that fits your wellness journey</p>
+                    <div
+                        class="w-56 h-96 bg-white rounded-3xl border-8 border-gray-900 shadow-xl overflow-hidden relative">
+                        <img alt="App interface choosing scan pack" class="w-full h-full object-cover"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCrHdRo0STk48QTBzBXiEojuZ1EfNx4pmAlO9p06v95UodTw2LN_TN_0uHP8yKoSbrNMZROIaOkMibBr0EptiSm0CZT5MQo4LfMYOuPGcMU20_a-3BoUQXgQ9i__DVgDCKgX6yuEjSczRhsdgbeWWUD7Uosn2i66Ev_NWFUHamhXxDdNyvan9AR8P7Rs6NzrgYjFjV7jexnEiP-6ubXUHRGJOZCxq22iHuQhI_voTo3xZPw5e0vDpFU9YALz9TQj_VgyuGIF5ZTdvC-" />
+                    </div>
+                </div>
+                <!-- Step 2 -->
+                <div class="flex flex-col items-center text-center">
+                    <div
+                        class="w-10 h-10 rounded-full bg-blue-500 text-white font-bold flex items-center justify-center mb-4 ring-4 ring-blue-100">
+                        2</div>
+                    <h3 class="font-bold text-lg text-brand-secondary">Position Your Face</h3>
+                    <p class="text-gray-500 text-sm mb-6 px-4">Use your phone camera in a well-lit environment</p>
+                    <div
+                        class="w-56 h-96 bg-white rounded-3xl border-8 border-gray-900 shadow-xl overflow-hidden relative">
+                        <img alt="App interface camera view" class="w-full h-full object-cover"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBWsgVvDauQGPBB99cAhX74nv7ez8UTwd0CMcaqIzr7ChPE67lj0Pt5BAFx7sqtuTS-4OVqmoaCf6GSP8hioZQ04UjH8Gt-gXa0aeSLvBC2Q5rd9u8q5e4NBuaqJ9KgCwJ6t3NhFI0FaK9LTSAeVssYBYjYmKrroE4AN66hSxDvk0i_C-HXj-snl19R4Tr_M9UupRQWd5CFza9CttvuU5iXxozxZXCdKb_uS7UvTIv3iQWhgcixRhrflGlTDgybxZ8Y2KGjTzzQKI3y" />
+                    </div>
+                </div>
+                <!-- Step 3 -->
+                <div class="flex flex-col items-center text-center">
+                    <div
+                        class="w-10 h-10 rounded-full bg-blue-500 text-white font-bold flex items-center justify-center mb-4 ring-4 ring-blue-100">
+                        3</div>
+                    <h3 class="font-bold text-lg text-brand-secondary">AI Analyzes Your Vitals</h3>
+                    <p class="text-gray-500 text-sm mb-6 px-4">Our advanced PPG technology reads your biometrics</p>
+                    <div
+                        class="w-56 h-96 bg-white rounded-3xl border-8 border-gray-900 shadow-xl overflow-hidden relative">
+                        <img alt="App interface AI analysis" class="w-full h-full object-cover"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAI6Io0t84uj4tIlNdBx0sWxM4hX-lMN3p4OVKz0oM8Je8ZoHO2aoSpYtP7mzKqyxh6TqR2gWH-8W9ikvhtUXg70B97z3ie2faVrzcvc8AZrNyWiQHFOZ3L7FsVTGQBYxvPM1_zcH_aG-u5Z_KlUIXKcZcxVS8-ySCloNy4Us8LtqUGdYXykhEn_IKG_sRCEfCpUcQzGaHFyJ__NQ4w41CKxhju7WzirmjRZaF5OizAcI-MW3BE_FmVnAwnqT1O9M_A8rstcDgS7YrD" />
+                    </div>
+                </div>
+                <!-- Step 4 -->
+                <div class="flex flex-col items-center text-center">
+                    <div
+                        class="w-10 h-10 rounded-full bg-blue-500 text-white font-bold flex items-center justify-center mb-4 ring-4 ring-blue-100">
+                        4</div>
+                    <h3 class="font-bold text-lg text-brand-secondary">Get Your Results</h3>
+                    <p class="text-gray-500 text-sm mb-6 px-4">View detailed insights and track your health over time
+                    </p>
+                    <div
+                        class="w-56 h-96 bg-white rounded-3xl border-8 border-gray-900 shadow-xl overflow-hidden relative">
+                        <img alt="App interface results screen" class="w-full h-full object-cover"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuA3U_o7oShKLb3leosBNwwUvR8VjeU0iSMBn1PBAWEPx7cab9EmuDrKepzq_Ak2S1jxPkMxVsMmPtFq7S6AKxsU_ZQ4mNib0kATPy5LjYxEY2lOnGXmAWVPUZvEB35QNnqQEB1Sgj-rvvohPnje3KZZwKXdDr2sLCaaI-A_UUfYq1cB0QepBgQjTF0MTwDpisoCReGG_WK0OWXgNXvAo22G_Mq9F3xo_7wZM67t1FDWP1sgegOdKXxup_kpqzMNcU_G-hfIXqut-tRL" />
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- END: How It Works -->
+        <!-- BEGIN: Science Section -->
+        <section class="py-16 px-6 bg-white" data-purpose="science-section">
+            <div class="flex justify-center mb-6">
+                <div class="w-12 h-12 bg-blue-400 text-white rounded-full flex items-center justify-center shadow-lg">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-linecap="round" stroke-linejoin="round"
+                            stroke-width="2"></path>
+                    </svg>
+                </div>
+            </div>
+            <div class="text-center mb-10">
+                <h2 class="text-2xl font-bold text-brand-secondary mb-2">The Science: PPG Technology</h2>
+                <p class="text-xs text-gray-500 uppercase tracking-widest">Powered by Photoplethysmography (PPG) -
+                    Medical-grade technology in your pocket</p>
+            </div>
+            <div class="bg-blue-50 rounded-3xl p-8 border border-blue-100">
+                <div class="space-y-6">
+                    <div>
+                        <div class="flex items-center gap-2 mb-2">
+                            <svg class="h-5 w-5 text-blue-500" fill="none" stroke="currentColor" viewbox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                    stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+                            </svg>
+                            <h4 class="font-bold text-brand-secondary">What is PPG?</h4>
+                        </div>
+                        <p class="text-sm text-gray-600 leading-relaxed">
+                            Photoplethysmography (PPG) is a clinically validated, non-invasive optical technique that
+                            detects blood volume changes in the microvascular bed of tissue. When light from your
+                            smartphone camera illuminates your skin, it's partially absorbed by blood vessels. By
+                            analyzing these subtle changes in light absorption, our AI can extract vital health metrics.
+                        </p>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2 mb-2">
+                            <svg class="h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewbox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round"
+                                    stroke-linejoin="round" stroke-width="2"></path>
+                            </svg>
+                            <h4 class="font-bold text-brand-secondary">Clinically Validated</h4>
+                        </div>
+                        <p class="text-sm text-gray-600 leading-relaxed">
+                            PPG technology has been used in medical devices for decades and is the same principle used
+                            in hospital pulse oximeters. My Wellfie leverages advanced computer vision and AI algorithms
+                            to deliver accurate health measurements from your smartphone - no additional hardware
+                            required.
+                        </p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4 mt-10">
+                    <div class="text-center">
+                        <p class="text-2xl font-bold text-blue-600">98%+</p>
+                        <p class="text-[10px] text-gray-500 uppercase">Accuracy Rate</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-2xl font-bold text-blue-600">60 sec</p>
+                        <p class="text-[10px] text-gray-500 uppercase">Scan Duration</p>
+                    </div>
+                    <div class="text-center col-span-2 mt-4">
+                        <p class="text-2xl font-bold text-blue-600">10+</p>
+                        <p class="text-[10px] text-gray-500 uppercase">Health Metrics</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- END: Science Section -->
+        <!-- BEGIN: Pricing Section -->
+        <section class="py-20 px-6 bg-brand-secondary text-white" data-purpose="pricing-section">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold mb-4">Choose Your Wellness Plan</h2>
+                <p class="text-gray-400 text-sm">Flexible scan packs to fit your health monitoring needs</p>
+                <div class="mt-6">
+                    <p class="text-xs text-gray-400 mb-2">Looking for corporate wellness solutions?</p>
+                    <a class="inline-block py-2 px-6 bg-white/10 rounded-lg text-white font-medium text-xs"
+                        href="#">Contact Sales</a>
+                </div>
+            </div>
+            <!-- Pricing Stack -->
+            <div class="space-y-6">
+                <!-- Plan 1 -->
+                <div class="bg-white p-6 rounded-2xl text-brand-secondary flex flex-col pricing-card-shadow">
+                    <h4 class="font-bold text-gray-500 text-sm uppercase">Single Scan</h4>
+                    <div class="flex items-baseline gap-1 mt-2">
+                        <span class="text-3xl font-bold">S$5</span>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-1">1 Scan</p>
+                    <div class="mt-4 pt-4 border-t border-gray-100">
+                        <p class="text-xs text-gray-400">S$5.00 per scan</p>
+                    </div>
+                </div>
+                <!-- Plan 2 - Featured -->
+                <div
+                    class="bg-white p-6 rounded-2xl text-brand-secondary flex flex-col pricing-card-shadow border-4 border-brand-primary relative">
+                    <div
+                        class="absolute -top-3 left-1/2 -translate-x-1/2 bg-brand-primary text-white text-[10px] font-bold py-1 px-3 rounded-full uppercase tracking-widest">
+                        Most Popular
+                    </div>
+                    <h4 class="font-bold text-gray-500 text-sm uppercase">Basic Pack</h4>
+                    <div class="flex items-baseline gap-1 mt-2">
+                        <span class="text-3xl font-bold">S$16</span>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-1">4 Scans</p>
+                    <div class="mt-4 pt-4 border-t border-gray-100">
+                        <p class="text-xs text-gray-400">S$4.00 per scan</p>
+                    </div>
+                </div>
+                <!-- Plan 3 -->
+                <div class="bg-white p-6 rounded-2xl text-brand-secondary flex flex-col pricing-card-shadow">
+                    <h4 class="font-bold text-gray-500 text-sm uppercase">Standard Pack</h4>
+                    <div class="flex items-baseline gap-1 mt-2">
+                        <span class="text-3xl font-bold">S$24</span>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-1">6 Scans</p>
+                    <div class="mt-4 pt-4 border-t border-gray-100">
+                        <p class="text-xs text-gray-400">S$4.00 per scan</p>
+                    </div>
+                </div>
+                <!-- Plan 4 -->
+                <div class="bg-white p-6 rounded-2xl text-brand-secondary flex flex-col pricing-card-shadow">
+                    <h4 class="font-bold text-gray-500 text-sm uppercase">Premium Pack</h4>
+                    <div class="flex items-baseline gap-1 mt-2">
+                        <span class="text-3xl font-bold">S$36</span>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-1">12 Scans</p>
+                    <div class="mt-4 pt-4 border-t border-gray-100">
+                        <p class="text-xs text-gray-400">S$3.00 per scan</p>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-10 text-center">
+                <a class="inline-flex items-center justify-center gap-2 bg-white text-brand-secondary px-8 py-3 rounded-xl font-bold w-full"
+                    href="#">
+                    View All Plans
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round"
+                            stroke-width="2"></path>
+                    </svg>
+                </a>
+            </div>
+        </section>
+        <!-- END: Pricing Section -->
+        <!-- BEGIN: Final CTA -->
+        <section class="py-20 px-6 text-center" data-purpose="cta-section">
+            <h2 class="text-3xl font-extrabold text-brand-secondary mb-4 leading-tight">
+                Ready to Take Control of Your Health?
+            </h2>
+            <p class="text-gray-500 mb-8 max-w-sm mx-auto">
+                Join thousands of users monitoring their wellness with My Wellfie - your personal health companion
+            </p>
+            <a class="bg-brand-primary text-white font-bold py-4 px-10 rounded-xl shadow-lg inline-block w-full max-w-xs transition-transform active:scale-95"
+                href="#">
+                Start Your Journey →
+            </a>
+        </section>
+        <!-- END: Final CTA -->
+    </main>
+    <!-- BEGIN: Footer -->
+    <footer class="bg-brand-secondary text-white py-16 px-6" data-purpose="main-footer">
+        <div class="mb-12">
+            <div class="flex items-center gap-2 mb-4">
+                <div class="w-6 h-6 bg-brand-primary rounded-full flex items-center justify-center">
+                    <span class="text-white font-bold text-[10px]">W</span>
+                </div>
+                <span class="font-bold text-lg">My Wellfie</span>
+            </div>
+            <p class="text-gray-400 text-xs leading-relaxed max-w-xs">
+                Smart health monitoring powered by advanced PPG technology.
+            </p>
+        </div>
+        <div class="grid grid-cols-2 gap-10 mb-12">
+            <div>
+                <h5 class="text-white font-bold text-sm mb-4">Quick Links</h5>
+                <ul class="space-y-3 text-gray-400 text-sm">
+                    <li><a class="hover:text-brand-primary transition-colors" href="#">Home</a></li>
+                    <li><a class="hover:text-brand-primary transition-colors" href="#">Pricing</a></li>
+                    <li><a class="hover:text-brand-primary transition-colors" href="#">Resources</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="text-white font-bold text-sm mb-4">Support</h5>
+                <ul class="space-y-3 text-gray-400 text-sm">
+                    <li><a class="hover:text-brand-primary transition-colors" href="#">Help Center</a></li>
+                    <li><a class="hover:text-brand-primary transition-colors" href="#">Contact Us</a></li>
+                    <li><a class="hover:text-brand-primary transition-colors" href="#">Privacy Policy</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="mb-12">
+            <h5 class="text-white font-bold text-sm mb-4">Connect</h5>
+            <p class="text-gray-400 text-sm mb-2">Stay updated with health tips and news</p>
+            <a class="text-brand-primary text-sm font-medium" href="mailto:info@mywellfie.com">info@mywellfie.com</a>
+        </div>
+        <div class="pt-8 border-t border-white/5 text-center">
+            <p class="text-[10px] text-gray-500">© 2024 MyWellfie. All rights reserved.</p>
+        </div>
+    </footer>
+    <!-- END: Footer -->
+</body>
+
+</html>
+
+<!-- Community Challenges -->
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Community Challenges - MyWellfie</title>
+    <!-- Tailwind CSS v3 CDN with plugins -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Google Fonts: Inter (commonly used for modern dashboards) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <style data-purpose="custom-typography">
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+    <style data-purpose="custom-layout">
+        .bg-dashboard {
+            background-color: #f9fafb;
+        }
+
+        .card-shadow {
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        }
+    </style>
+</head>
+
+<body class="bg-dashboard text-slate-800">
+    <!-- BEGIN: MainHeader -->
+    <header class="bg-white border-b border-gray-100 py-4 px-8 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <!-- Logo -->
+            <div class="flex items-center">
+                <img alt="MyWellfie Logo" class="h-10 object-contain" data-purpose="brand-logo"
+                    src="https://lh3.googleusercontent.com/aida/ADBb0uiAxAdvGWcILHX-xAEPTioHudxR61DE9ergOgkNSrw8nks_5J-Zitff42G6qQ3Jp_DCX2Ytf6nJQvKEsogGJiwc1P_XA3NxJzKG_eN_a9GZYTaQ9YEryuuUhoKYcxJI2L5NgckMpZDW699RbJ6aHVkZSHcG3HEXhzxbyDUz2GzPrFmjOLMU4uYlCJM_OHHU7MozgLluvLyYHf4ug1GZ56eQRve58I-282Z3Ipwa3GyqY9x5HEm7VtgRZt1YUgfh_mCRjl0IF35DzA" />
+            </div>
+            <!-- Navigation Links -->
+            <nav class="hidden md:flex items-center space-x-8 text-sm font-medium text-gray-600">
+                <a class="flex items-center gap-1 hover:text-blue-600" href="#">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+                            stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+                    </svg>
+                    Home
+                </a>
+                <a class="flex items-center gap-1 hover:text-blue-600" href="#">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                            stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+                    </svg>
+                    Pricing
+                </a>
+                <!-- Dropdown Active -->
+                <div class="relative group">
+                    <button class="flex items-center gap-1 text-blue-600">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                                stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+                        </svg>
+                        Health &amp; Wellness
+                        <svg class="w-3 h-3 ml-0.5" fill="none" stroke="currentColor" viewbox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                            </path>
+                        </svg>
+                    </button>
+                    <!-- Active Menu Indicator / Simple Dropdown Simulation -->
+                    <div
+                        class="absolute top-full left-0 mt-2 w-48 bg-white border border-gray-100 rounded-lg shadow-xl p-2 z-50">
+                        <a class="block px-4 py-2 text-blue-600 bg-blue-50 rounded-md font-semibold flex items-center gap-2"
+                            href="#">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round"
+                                    stroke-linejoin="round" stroke-width="2"></path>
+                            </svg>
+                            Challenges
+                        </a>
+                        <a class="block px-4 py-2 hover:bg-gray-50 rounded-md flex items-center gap-2" href="#">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                                    stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+                            </svg>
+                            Community
+                        </a>
+                    </div>
+                </div>
+                <a class="flex items-center gap-1 hover:text-blue-600" href="#">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                            stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+                    </svg>
+                    Resources
+                    <svg class="w-3 h-3 ml-0.5" fill="none" stroke="currentColor" viewbox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+                    </svg>
+                </a>
+            </nav>
+            <!-- User Profile -->
+            <div class="flex items-center gap-3">
+                <div
+                    class="w-8 h-8 rounded-full bg-cyan-500 flex items-center justify-center text-white text-xs font-bold">
+                    A</div>
+                <span class="text-sm font-semibold text-gray-700">Adith Suresh</span>
+                <svg class="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewbox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+                </svg>
+            </div>
+        </div>
+    </header>
+    <!-- END: MainHeader -->
+    <!-- BEGIN: MainContent -->
+    <main class="max-w-7xl mx-auto px-8 py-10">
+        <!-- Title and Create Button -->
+        <div class="flex justify-between items-start mb-8">
+            <div>
+                <h1 class="text-3xl font-bold text-slate-900">Community Challenges</h1>
+                <p class="text-slate-500 mt-1">Join health challenges, compete with friends, and achieve your wellness
+                    goals together</p>
+            </div>
+            <button
+                class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-semibold flex items-center gap-2 transition-colors">
+                <svg class="w-5 h-5" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <path clip-rule="evenodd"
+                        d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                        fill-rule="evenodd"></path>
+                </svg>
+                Create Challenge
+            </button>
+        </div>
+        <!-- BEGIN: SummaryCards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10" data-purpose="status-cards-container">
+            <!-- Active Challenges Card -->
+            <div class="bg-white p-6 rounded-xl border border-gray-100 card-shadow flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-500">Active Challenges</p>
+                    <p class="text-4xl font-bold text-blue-600 mt-1">0</p>
+                </div>
+                <div class="text-blue-100">
+                    <svg class="w-12 h-12" fill="none" stroke="currentColor" viewbox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                            stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path>
+                    </svg>
+                </div>
+            </div>
+            <!-- Completed Card -->
+            <div class="bg-white p-6 rounded-xl border border-gray-100 card-shadow flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-500">Completed</p>
+                    <p class="text-4xl font-bold text-green-500 mt-1">0</p>
+                </div>
+                <div class="text-green-100">
+                    <svg class="w-12 h-12" fill="none" stroke="currentColor" viewbox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-7.714 2.143L11 21l-2.286-6.857L1 12l7.714-2.143L11 3z"
+                            stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path>
+                    </svg>
+                </div>
+            </div>
+            <!-- Total Progress Card -->
+            <div class="bg-white p-6 rounded-xl border border-gray-100 card-shadow flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-500">Total Progress</p>
+                    <p class="text-4xl font-bold text-purple-600 mt-1">0</p>
+                </div>
+                <div class="text-purple-100">
+                    <svg class="w-12 h-12" fill="none" stroke="currentColor" viewbox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-linecap="round" stroke-linejoin="round"
+                            stroke-width="1.5"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+        <!-- END: SummaryCards -->
+        <!-- BEGIN: TabsNavigation -->
+        <div class="bg-gray-100 p-1 rounded-lg flex mb-8 overflow-x-auto" data-purpose="tab-navigation">
+            <button
+                class="flex-1 py-2 text-sm font-semibold rounded-md bg-white shadow-sm text-slate-800 whitespace-nowrap px-4">Active
+                (0)</button>
+            <button
+                class="flex-1 py-2 text-sm font-medium text-gray-500 hover:text-slate-800 transition-colors whitespace-nowrap px-4">My
+                Challenges (0)</button>
+            <button
+                class="flex-1 py-2 text-sm font-medium text-gray-500 hover:text-slate-800 transition-colors whitespace-nowrap px-4">Upcoming
+                (0)</button>
+            <button
+                class="flex-1 py-2 text-sm font-medium text-gray-500 hover:text-slate-800 transition-colors whitespace-nowrap px-4">Completed
+                (0)</button>
+        </div>
+        <!-- END: TabsNavigation -->
+        <!-- BEGIN: EmptyState -->
+        <div class="bg-white border border-gray-100 rounded-2xl py-24 flex flex-col items-center justify-center card-shadow"
+            data-purpose="empty-state-container">
+            <div class="mb-4 text-gray-200">
+                <!-- Large Trophy Icon -->
+                <svg class="w-20 h-20" fill="none" stroke="currentColor" viewbox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+                        stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path>
+                </svg>
+            </div>
+            <p class="text-gray-500 font-medium">No active challenges at the moment</p>
+        </div>
+        <!-- END: EmptyState -->
+    </main>
+    <!-- END: MainContent -->
+    <!-- BEGIN: MainFooter -->
+    <footer class="bg-slate-900 text-white mt-12 py-16 px-8">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
+            <!-- Brand/About -->
+            <div class="col-span-1">
+                <div class="bg-white p-2 inline-block rounded mb-4">
+                    <img alt="MyWellfie Logo" class="h-8 object-contain"
+                        src="https://lh3.googleusercontent.com/aida/ADBb0uiAxAdvGWcILHX-xAEPTioHudxR61DE9ergOgkNSrw8nks_5J-Zitff42G6qQ3Jp_DCX2Ytf6nJQvKEsogGJiwc1P_XA3NxJzKG_eN_a9GZYTaQ9YEryuuUhoKYcxJI2L5NgckMpZDW699RbJ6aHVkZSHcG3HEXhzxbyDUz2GzPrFmjOLMU4uYlCJM_OHHU7MozgLluvLyYHf4ug1GZ56eQRve58I-282Z3Ipwa3GyqY9x5HEm7VtgRZt1YUgfh_mCRjl0IF35DzA" />
+                </div>
+                <p class="text-slate-400 text-sm leading-relaxed mt-4">
+                    Smart health monitoring powered by advanced PPG technology.
+                </p>
+            </div>
+            <!-- Quick Links -->
+            <div data-purpose="footer-links">
+                <h3 class="font-bold text-lg mb-6">Quick Links</h3>
+                <ul class="space-y-4 text-slate-400 text-sm">
+                    <li><a class="hover:text-white transition-colors" href="#">Home</a></li>
+                    <li><a class="hover:text-white transition-colors" href="#">Pricing</a></li>
+                    <li><a class="hover:text-white transition-colors" href="#">Resources</a></li>
+                </ul>
+            </div>
+            <!-- Support -->
+            <div data-purpose="footer-links">
+                <h3 class="font-bold text-lg mb-6">Support</h3>
+                <ul class="space-y-4 text-slate-400 text-sm">
+                    <li><a class="hover:text-white transition-colors" href="#">Help Center</a></li>
+                    <li><a class="hover:text-white transition-colors" href="#">Contact Us</a></li>
+                    <li><a class="hover:text-white transition-colors" href="#">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <!-- Connect -->
+            <div>
+                <h3 class="font-bold text-lg mb-6">Connect</h3>
+                <p class="text-slate-400 text-sm mb-4">Stay updated with health tips and news</p>
+                <a class="text-slate-300 hover:text-white text-sm font-medium block"
+                    href="mailto:info@mywellfie.com">info@mywellfie.com</a>
+            </div>
+        </div>
+        <!-- Copyright -->
+        <div
+            class="max-w-7xl mx-auto pt-12 mt-12 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center text-slate-500 text-sm">
+            <p>© 2024 MyWellfie. All rights reserved.</p>
+            <!-- Small Platform Badge Simulation -->
+            <div class="mt-4 md:mt-0 flex items-center gap-2 bg-black px-3 py-1.5 rounded-md border border-slate-700">
+                <div class="w-3 h-3 bg-orange-500 rounded-full"></div>
+                <span class="text-xs">Edit with <b>Base44</b></span>
+                <svg class="w-3 h-3 ml-2 cursor-pointer" fill="none" stroke="currentColor" viewbox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                    </path>
+                </svg>
+            </div>
+        </div>
+    </footer>
+    <!-- END: MainFooter -->
+</body>
+
+</html>
+
+<!-- Health & Wellness Resources -->
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Health &amp; Wellness Resources | MyWellfie</title>
+    <!-- Tailwind CSS CDN with Plugins -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'navy-dark': '#0a192f',
+                        'navy-content': '#112240',
+                        'mywellfie-blue': '#22D3EE',
+                    }
+                }
+            }
+        }
+    </script>
+    <style data-purpose="typography">
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-white text-slate-800">
+    <!-- BEGIN: MainHeader -->
+    <header class="w-full border-b border-gray-100 bg-white sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center">
+                    <img alt="MyWellfie Logo" class="h-12 w-auto object-contain"
+                        src="https://lh3.googleusercontent.com/aida/ADBb0uiyRXtpJ4YdIKir6MlWnTTaQ4mYVYgqlDhQVnXjI9oghamoCGpzBjvfDTYLhM9IeepjrUBInut6oZfIIFPTDvv7JslOCtFP8Wf0SUpyfKB8MsUd55ELFXgQIdUQxZO3yNQGZxmc70bwAJrbZMwzkEvINwSXj8vRyzGXL-OKgg9_DQuCOaLE0EA3ggVUeu0SjXa7biszqPppryOz1vxyqVngnGvl0ZvsW1vFzdGKr4Rhp3f-2inEYP056QTF9eRYTEzdaI2XJAIGnik"
+                        style="clip-path: inset(0% 80% 90% 0%); transform: scale(4); transform-origin: top left;" />
+                </div>
+                <!-- Navigation Links -->
+                <nav class="hidden md:flex space-x-8 items-center">
+                    <a class="text-gray-700 hover:text-cyan-600 px-3 py-2 text-sm font-medium flex items-center gap-1"
+                        href="#">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                            <path
+                                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+                                stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+                        </svg>
+                        Home
+                    </a>
+                    <a class="text-gray-700 hover:text-cyan-600 px-3 py-2 text-sm font-medium flex items-center gap-1"
+                        href="#">
+                        <span class="font-bold">$</span> Pricing
+                    </a>
+                    <div class="relative group">
+                        <button
+                            class="text-gray-700 hover:text-cyan-600 px-3 py-2 text-sm font-medium flex items-center gap-1">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                                <path
+                                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                                    stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+                            </svg>
+                            Health &amp; Wellness
+                            <svg class="w-3 h-3 ml-1" fill="currentColor" viewbox="0 0 20 20">
+                                <path clip-rule="evenodd"
+                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                    fill-rule="evenodd"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <a class="text-cyan-600 border-b-2 border-cyan-600 px-3 py-2 text-sm font-medium flex items-center gap-1"
+                        href="#">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                            <path
+                                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                                stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+                        </svg>
+                        Resources
+                        <svg class="w-3 h-3 ml-1" fill="currentColor" viewbox="0 0 20 20">
+                            <path clip-rule="evenodd"
+                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                fill-rule="evenodd"></path>
+                        </svg>
+                    </a>
+                </nav>
+                <!-- User Profile -->
+                <div class="flex items-center space-x-2 cursor-pointer group">
+                    <div
+                        class="w-8 h-8 rounded-full bg-cyan-500 flex items-center justify-center text-white text-xs font-bold">
+                        A</div>
+                    <span class="text-sm font-medium text-gray-700">Adith Suresh</span>
+                    <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewbox="0 0 20 20">
+                        <path clip-rule="evenodd"
+                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                            fill-rule="evenodd"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- END: MainHeader -->
+    <!-- BEGIN: HeroSection -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div class="text-center mb-12" data-purpose="hero-content">
+            <h1 class="text-4xl md:text-5xl font-bold text-slate-800 mb-4 tracking-tight">Health &amp; Wellness
+                Resources</h1>
+            <p class="text-lg text-slate-500 max-w-3xl mx-auto leading-relaxed">
+                Explore expert advice, recipes, tips, and educational content to support your wellness journey
+            </p>
+        </div>
+        <!-- BEGIN: FilterTabs -->
+        <div class="bg-gray-50 p-1.5 rounded-xl max-w-4xl mx-auto mb-16 flex items-center justify-between shadow-sm overflow-x-auto"
+            data-purpose="category-filters">
+            <button
+                class="flex-1 min-w-[100px] py-2.5 px-4 bg-white rounded-lg shadow-sm text-sm font-semibold text-slate-800 transition-all">All</button>
+            <button
+                class="flex-1 min-w-[100px] py-2.5 px-4 text-sm font-medium text-slate-500 hover:text-slate-800 flex items-center justify-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                    <path
+                        d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
+                    </path>
+                </svg>
+                Articles
+            </button>
+            <button
+                class="flex-1 min-w-[100px] py-2.5 px-4 text-sm font-medium text-slate-500 hover:text-slate-800 flex items-center justify-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                    <path
+                        d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z">
+                    </path>
+                </svg>
+                Videos
+            </button>
+            <button
+                class="flex-1 min-w-[100px] py-2.5 px-4 text-sm font-medium text-slate-500 hover:text-slate-800 flex items-center justify-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                    <path d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                Recipes
+            </button>
+            <button
+                class="flex-1 min-w-[100px] py-2.5 px-4 text-sm font-medium text-slate-500 hover:text-slate-800 flex items-center justify-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                    <path
+                        d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z">
+                    </path>
+                </svg>
+                Tips
+            </button>
+        </div>
+        <!-- END: FilterTabs -->
+        <!-- BEGIN: ContentGrid -->
+        <section data-purpose="articles-section">
+            <h2 class="text-2xl font-bold text-slate-800 mb-8">Latest Articles</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Article Card -->
+                <div class="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+                    data-purpose="article-card">
+                    <div
+                        class="inline-block px-3 py-1 rounded-full bg-black text-white text-[10px] font-bold uppercase tracking-wider mb-4">
+                        general_wellness
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-4">Ways of Health Monitoring</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed mb-6">
+                        # Transforming Wellness: The Latest Ways of Health Monitoring In today's fast-paced world,
+                        maintaining optimal health has never been mor...
+                    </p>
+                    <a class="text-slate-800 font-semibold text-sm flex items-center gap-2 group" href="#">
+                        Read More
+                        <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none"
+                            stroke="currentColor" viewbox="0 0 24 24">
+                            <path d="M17 8l4 4m0 0l-4 4m4-4H3" stroke-linecap="round" stroke-linejoin="round"
+                                stroke-width="2"></path>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </section>
+        <!-- END: ContentGrid -->
+    </main>
+    <!-- END: HeroSection -->
+    <!-- BEGIN: Footer -->
+    <footer class="bg-navy-dark text-white pt-16 pb-8 mt-20" data-purpose="main-footer">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+                <!-- Brand Info -->
+                <div class="col-span-1">
+                    <div class="bg-white p-2 rounded inline-block mb-6">
+                        <img alt="MyWellfie Logo" class="h-8 w-auto object-contain"
+                            src="https://lh3.googleusercontent.com/aida/ADBb0uiyRXtpJ4YdIKir6MlWnTTaQ4mYVYgqlDhQVnXjI9oghamoCGpzBjvfDTYLhM9IeepjrUBInut6oZfIIFPTDvv7JslOCtFP8Wf0SUpyfKB8MsUd55ELFXgQIdUQxZO3yNQGZxmc70bwAJrbZMwzkEvINwSXj8vRyzGXL-OKgg9_DQuCOaLE0EA3ggVUeu0SjXa7biszqPppryOz1vxyqVngnGvl0ZvsW1vFzdGKr4Rhp3f-2inEYP056QTF9eRYTEzdaI2XJAIGnik"
+                            style="clip-path: inset(0% 80% 90% 0%); transform: scale(4); transform-origin: top left;" />
+                    </div>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Smart health monitoring powered by advanced PPG technology
+                    </p>
+                </div>
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="text-white font-bold mb-6">Quick Links</h4>
+                    <ul class="space-y-4 text-sm text-slate-400">
+                        <li><a class="hover:text-white transition-colors" href="#">Home</a></li>
+                        <li><a class="hover:text-white transition-colors" href="#">Pricing</a></li>
+                        <li><a class="hover:text-white transition-colors" href="#">Resources</a></li>
+                    </ul>
+                </div>
+                <!-- Support -->
+                <div>
+                    <h4 class="text-white font-bold mb-6">Support</h4>
+                    <ul class="space-y-4 text-sm text-slate-400">
+                        <li><a class="hover:text-white transition-colors" href="#">Help Center</a></li>
+                        <li><a class="hover:text-white transition-colors" href="#">Contact Us</a></li>
+                        <li><a class="hover:text-white transition-colors" href="#">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <!-- Connect -->
+                <div>
+                    <h4 class="text-white font-bold mb-6">Connect</h4>
+                    <p class="text-sm text-slate-400 mb-4">Stay updated with health tips and news</p>
+                    <a class="text-sm text-slate-400 hover:text-white transition-colors"
+                        href="mailto:info@mywellfie.com">info@mywellfie.com</a>
+                </div>
+            </div>
+            <!-- Copyright -->
+            <div class="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-center items-center gap-4">
+                <p class="text-sm text-slate-500">© 2024 MyWellfie. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    <!-- END: Footer -->
+</body>
+
+</html>

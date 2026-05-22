@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MyWellfie | Clinical Precision Meets Luxury Lifestyle</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-background": "#d3e4fe",
+                        "on-primary": "#003824",
+                        "inverse-surface": "#d3e4fe",
+                        "error-container": "#93000a",
+                        "tertiary": "#bec6e0",
+                        "on-surface-variant": "#bbcabf",
+                        "secondary-container": "#0053db",
+                        "surface-dim": "#031427",
+                        "background": "#031427",
+                        "on-secondary-fixed-variant": "#003ea8",
+                        "on-primary-fixed": "#002113",
+                        "on-tertiary-fixed-variant": "#3f465c",
+                        "tertiary-fixed-dim": "#bec6e0",
+                        "on-secondary": "#002a78",
+                        "surface": "#031427",
+                        "on-primary-fixed-variant": "#005236",
+                        "tertiary-container": "#9ba2bb",
+                        "on-error": "#690005",
+                        "outline-variant": "#3c4a42",
+                        "secondary-fixed-dim": "#b4c5ff",
+                        "on-surface": "#d3e4fe",
+                        "primary": "#4edea3",
+                        "inverse-primary": "#006c49",
+                        "surface-container-highest": "#26364a",
+                        "primary-fixed": "#6ffbbe",
+                        "tertiary-fixed": "#dae2fd",
+                        "surface-container-lowest": "#000f21",
+                        "on-error-container": "#ffdad6",
+                        "surface-bright": "#2a3a4f",
+                        "secondary-fixed": "#dbe1ff",
+                        "primary-fixed-dim": "#4edea3",
+                        "surface-tint": "#4edea3",
+                        "outline": "#86948a",
+                        "error": "#ffb4ab",
+                        "on-secondary-fixed": "#00174b",
+                        "secondary": "#b4c5ff",
+                        "on-primary-container": "#00422b",
+                        "surface-variant": "#26364a",
+                        "primary-container": "#10b981",
+                        "inverse-on-surface": "#213145",
+                        "on-tertiary-fixed": "#131b2e",
+                        "on-secondary-container": "#cdd7ff",
+                        "on-tertiary-container": "#31394d",
+                        "on-tertiary": "#283044",
+                        "surface-container-low": "#0b1c30",
+                        "surface-container": "#102034",
+                        "surface-container-high": "#1b2b3f"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-desktop": "64px",
+                        "margin-mobile": "20px",
+                        "xl": "4rem",
+                        "unit": "4px",
+                        "xs": "0.5rem",
+                        "lg": "2.5rem",
+                        "gutter": "24px",
+                        "sm": "1rem",
+                        "md": "1.5rem"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Manrope"],
+                        "body-md": ["Manrope"],
+                        "headline-lg": ["Manrope"],
+                        "headline-lg-mobile": ["Manrope"],
+                        "display-lg": ["Manrope"],
+                        "headline-md": ["Manrope"],
+                        "label-caps": ["Manrope"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", {"lineHeight": "1.6", "letterSpacing": "0.01em", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "label-caps": ["12px", {"lineHeight": "1", "letterSpacing": "0.1em", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #031427;
+            color: #d3e4fe;
+            font-family: 'Manrope', sans-serif;
+            overflow-x: hidden;
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .emerald-glow {
+            box-shadow: 0 0 25px -5px rgba(78, 222, 163, 0.3);
+        }
+        .ai-insight-glow {
+            border: 1px solid rgba(78, 222, 163, 0.4);
+            box-shadow: inset 0 0 15px rgba(78, 222, 163, 0.1);
+        }
+    </style>
+</head>
+<body class="selection:bg-primary selection:text-on-primary">
+<!-- TopNavBar -->
+<header class="bg-surface/70 backdrop-blur-xl border-b border-white/10 backdrop-blur-md shadow-sm docked full-width top-0 sticky z-50">
+<div class="flex justify-between items-center w-full px-margin-desktop py-4 max-w-7xl mx-auto">
+<div class="text-headline-md font-headline-md font-bold tracking-tight text-primary"><img alt="MyWellfie Logo" class="w-auto object-contain h-16 h-24" src="https://lh3.googleusercontent.com/aida/ADBb0ugxQnJqLf_R2UEQk_ckDiojQ7F5iYwlTiytC4oSJjAlL8WnH4sMXrzvYisSlMNk84uppfl2BYrNEgik9prkU0vA6JCEI_Dic44OJXdBMZOS3NffAUKHY6OJTMrd0vrFAH5ZVXjigyTFUp-EZiJNIEsNZo-fBoN83X7tb-zAstnciHw3oFvn_WQmaCBhQRdys3R0QDFhfn2nEqq8_ZjlkORJNLki_mBdKfx2i-eYvTwvky9uhZJSbPAHV5qpuzv4m0ZYiNX_4SgvKiA"/></div>
+<nav class="hidden md:flex gap-md items-center">
+<a class="font-body-md text-body-md text-primary font-bold border-b-2 border-primary pb-1" href="#">Home</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors" href="#">Dashboard</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors" href="#">Community</a>
+</nav>
+<button class="bg-primary text-on-primary px-md py-xs rounded-full font-label-caps text-label-caps hover:opacity-80 scale-95 transition-transform">Start Scan</button>
+</div>
+</header>
+<main>
+<!-- Hero Section -->
+<section class="relative min-h-[921px] flex items-center pt-xl px-margin-mobile md:px-margin-desktop overflow-hidden">
+<div class="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-lg items-center z-10">
+<div class="space-y-md">
+<div class="inline-flex items-center gap-xs px-sm py-xs bg-primary/10 border border-primary/20 rounded-full text-primary font-label-caps text-label-caps">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+                        CLINICAL GRADE AI VITAL ANALYSIS
+                    </div>
+<h1 class="font-display-lg text-display-lg text-white leading-tight">
+                        The Future of Health <br/><span class="text-primary">Starts with a Glance.</span>
+</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-xl">MyWellfie transforms your smartphone into a high-precision medical scanner. Using advanced face-scanning technology, measure your vitals in 30 seconds with surgical accuracy.</p>
+<div class="flex flex-col sm:flex-row gap-sm pt-sm">
+<button class="bg-primary text-on-primary px-lg py-md rounded-xl font-headline-md text-headline-md emerald-glow hover:scale-[1.02] transition-all">Start Your First Scan</button>
+<button class="glass-card text-white px-lg py-md rounded-xl font-headline-md text-headline-md border border-white/10 hover:bg-white/5 transition-all">View Technology</button>
+</div>
+</div>
+<div class="relative">
+<div class="absolute -top-10 -right-10 w-64 h-64 bg-primary/20 rounded-full blur-[100px]"></div>
+<div class="glass-card rounded-[2.5rem] p-md ai-insight-glow relative overflow-hidden">
+<img alt="AI Face Scan Visualization" class="rounded-[1.5rem] w-full h-[500px] object-cover" data-alt="A high-tech cinematic close-up of a diverse person's face being scanned by a holographic emerald green light grid. The lighting is moody and deep navy with vibrant neon green accents tracing facial contours. Subtle data points and health metrics float elegantly around the face in a glassmorphic interface style, conveying clinical precision and luxury health-tech." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6r8VO_UrWFrEpVT4MPQiNJWOybio37_riTqoHYLaugE-znAUlMuGt3R-knHAojn7dtRsA2P9FhbNEws3G1TW2qrAKUwP0iRWWk6q3dBTsGm5qje6SGhBVJ_QK6zFYTKcYTKhp9MDPK-FUcKeuDOuXsrX3PFRr1H2KsCg7gLomxvRiLvRp1LDxpqROiXlJfFdhB8MZjp_atIp2Vr5bz8KvNi91WqFyS9I8pVdi1NPgno_rO1OveMHSclIFoiEp4lElfrsidzm6y355"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent"></div>
+<div class="absolute bottom-6 left-6 right-6 flex justify-between items-end">
+<div class="space-y-1">
+<p class="font-label-caps text-label-caps text-primary uppercase">Live Analysis</p>
+<p class="font-headline-md text-headline-md text-white">Analyzing Blood Flow...</p>
+</div>
+<div class="flex gap-xs">
+<div class="w-2 h-8 bg-primary rounded-full animate-pulse"></div>
+<div class="w-2 h-12 bg-primary rounded-full animate-pulse" style="animation-delay: 0.2s"></div>
+<div class="w-2 h-6 bg-primary rounded-full animate-pulse" style="animation-delay: 0.4s"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Features Bento Grid -->
+<section class="py-xl px-margin-mobile md:px-margin-desktop max-w-7xl mx-auto">
+<div class="text-center mb-xl space-y-sm">
+<h2 class="font-headline-lg text-headline-lg text-white">Advanced Wellness Diagnostics</h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl mx-auto">Comprehensive health monitoring powered by proprietary AI models trained on millions of clinical data points.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-md">
+<!-- Heart Health -->
+<div class="md:col-span-8 glass-card p-lg rounded-[2rem] flex flex-col justify-between group">
+<div class="space-y-sm">
+<span class="material-symbols-outlined text-primary text-[48px]">favorite</span>
+<h3 class="font-headline-md text-headline-md text-white">Comprehensive Heart Health</h3>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-md">Real-time Heart Rate Variability (HRV) and BPM analysis to monitor cardiac stress levels and recovery patterns.</p>
+</div>
+<div class="mt-lg border-t border-white/5 pt-md flex items-center justify-between">
+<div class="flex gap-sm">
+<span class="px-sm py-1 bg-primary/20 text-primary text-[12px] font-bold rounded-full">BPM</span>
+<span class="px-sm py-1 bg-primary/20 text-primary text-[12px] font-bold rounded-full">HRV</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">arrow_forward</span>
+</div>
+</div>
+<!-- Vital Signs -->
+<div class="md:col-span-4 glass-card p-lg rounded-[2rem] space-y-md">
+<span class="material-symbols-outlined text-secondary text-[48px]">respiratory_rate</span>
+<h3 class="font-headline-md text-headline-md text-white">Vital Signs</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Instant oxygen saturation (SpO2) and respiration rate monitoring without wearable devices.</p>
+</div>
+<!-- Stress & Wellness -->
+<div class="md:col-span-4 glass-card p-lg rounded-[2rem] space-y-md">
+<span class="material-symbols-outlined text-primary text-[48px]">psychology</span>
+<h3 class="font-headline-md text-headline-md text-white">Stress Indices</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Quantify your nervous system balance to optimize daily performance and mental clarity.</p>
+</div>
+<!-- Accessibility -->
+<div class="md:col-span-8 glass-card p-lg rounded-[2rem] bg-gradient-to-br from-surface-container-high to-surface-container relative overflow-hidden flex flex-col md:flex-row items-center gap-md">
+<div class="flex-1 space-y-sm z-10">
+<h3 class="font-headline-md text-headline-md text-white">Anytime, Anywhere</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">No hardware. No friction. Just you and your smartphone. Health monitoring that fits your luxury lifestyle, whether in the office or on a private jet.</p>
+</div>
+<div class="flex-1 flex justify-center z-10">
+<div class="w-48 h-48 rounded-full border-4 border-primary/30 flex items-center justify-center emerald-glow">
+<span class="material-symbols-outlined text-primary text-[64px]" style="font-variation-settings: 'FILL' 1;">language</span>
+</div>
+</div>
+<div class="absolute inset-0 opacity-10">
+<img alt="Abstract Data Visualization" class="w-full h-full object-cover" data-alt="A sophisticated abstract dark-mode background featuring glowing, translucent network lines and soft emerald data points. The aesthetic is deep navy and futuristic, representing global connectivity and high-speed clinical data processing in a minimalist, luxury digital environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAdxsPukzYRKfqCqK6qSNJ1tqMERxVwsW5YXdIIBZ8ka0-fLHnfog2cujVS8LMrfCwICq32ugfysN8M4vrzCnt2RNinBIJBC_25GlbkosM7AFTU08OkrnSfmmO2FN5v1gfqR3m0w64znuthuh-1fZz-p7-7tEh1i2LboXxIUGLYFcP8-8zI0icjZrjJ-hOdwVZ9kUkcApvEL5m4_WhK-9bBmaycX-SAcpTUDwnJhMqorvqB1oRR6rjTyCdlNCN07lUCCDQ0M2gSx0tu"/>
+</div>
+</div>
+</div>
+</section>
+<!-- How It Works -->
+<section class="py-xl bg-surface-container-low">
+<div class="max-w-7xl mx-auto px-margin-mobile md:px-margin-desktop">
+<div class="flex flex-col md:flex-row justify-between items-end mb-xl gap-md">
+<div class="space-y-sm">
+<p class="font-label-caps text-label-caps text-primary">THE PROCESS</p>
+<h2 class="font-headline-lg text-headline-lg text-white">Four Steps to Precision</h2>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-sm">From initiation to insight in less than a minute. Our streamlined flow prioritizes your time.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-md">
+<!-- Step 1 -->
+<div class="relative group">
+<div class="text-display-lg text-white/5 absolute -top-10 left-0 font-black">01</div>
+<div class="pt-8 space-y-sm">
+<div class="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-md group-hover:bg-primary transition-colors">
+<span class="material-symbols-outlined text-primary group-hover:text-on-primary">shopping_cart</span>
+</div>
+<h4 class="font-headline-md text-headline-md text-white">Purchase Scan Pack</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Select a plan that fits your health routine and unlock instant scanning credits.</p>
+</div>
+</div>
+<!-- Step 2 -->
+<div class="relative group">
+<div class="text-display-lg text-white/5 absolute -top-10 left-0 font-black">02</div>
+<div class="pt-8 space-y-sm">
+<div class="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-md group-hover:bg-primary transition-colors">
+<span class="material-symbols-outlined text-primary group-hover:text-on-primary">face</span>
+</div>
+<h4 class="font-headline-md text-headline-md text-white">Position Your Face</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Simply hold your device at eye level. Our AI guides you for perfect alignment.</p>
+</div>
+</div>
+<!-- Step 3 -->
+<div class="relative group">
+<div class="text-display-lg text-white/5 absolute -top-10 left-0 font-black">03</div>
+<div class="pt-8 space-y-sm">
+<div class="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-md group-hover:bg-primary transition-colors">
+<span class="material-symbols-outlined text-primary group-hover:text-on-primary">query_stats</span>
+</div>
+<h4 class="font-headline-md text-headline-md text-white">AI Analyzes Vitals</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Our engine detects sub-threshold blood flow changes using PPG technology.</p>
+</div>
+</div>
+<!-- Step 4 -->
+<div class="relative group">
+<div class="text-display-lg text-white/5 absolute -top-10 left-0 font-black">04</div>
+<div class="pt-8 space-y-sm">
+<div class="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-md group-hover:bg-primary transition-colors">
+<span class="material-symbols-outlined text-primary group-hover:text-on-primary">receipt_long</span>
+</div>
+<h4 class="font-headline-md text-headline-md text-white">Get Your Results</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Receive a detailed wellness report with actionable bio-optimization tips.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Technology Section -->
+<section class="py-xl px-margin-mobile md:px-margin-desktop max-w-7xl mx-auto">
+<div class="glass-card rounded-[3rem] p-lg md:p-xl flex flex-col lg:flex-row gap-xl items-center ai-insight-glow">
+<div class="flex-1 space-y-md">
+<h2 class="font-headline-lg text-headline-lg text-white">The Science of <span class="text-primary">PPG</span></h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Photoplethysmography (PPG) is an optical technique that detects blood volume changes in the microvascular bed of tissue. MyWellfie leverages the high-resolution sensors in modern devices to capture these fluctuations from your face—providing clinical-grade accuracy without physical contact.</p>
+<ul class="space-y-sm">
+<li class="flex items-center gap-sm text-white font-body-md">
+<span class="material-symbols-outlined text-primary">check_circle</span>
+                            Medical-grade signal processing
+                        </li>
+<li class="flex items-center gap-sm text-white font-body-md">
+<span class="material-symbols-outlined text-primary">check_circle</span>
+                            Ambient light compensation algorithms
+                        </li>
+<li class="flex items-center gap-sm text-white font-body-md">
+<span class="material-symbols-outlined text-primary">check_circle</span>
+                            Secure, encrypted on-device processing
+                        </li>
+</ul>
+</div>
+<div class="flex-1 w-full">
+<div class="relative aspect-video rounded-2xl overflow-hidden border border-white/10 shadow-2xl">
+<img alt="PPG Technology visualization" class="w-full h-full object-cover" data-alt="A futuristic medical visualization of a human circulatory system represented by glowing emerald green pulses and data waves. The scene is set in a dark clinical lab with deep navy shadows and soft bokeh lights. High-end glassmorphic charts overlay the pulse waves, showing scientific rigor and luxury digital design." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA2wJOjr-iU84otyrG4yA5Q54ca8NuKFi-Z-K627EDbNhMloQwpaAy4ZGUMqekzvVFeiSNGFbyZaQTfYX6M1aT6ok97Kbo-8OebJOULFvcmscY-6-6OqIddOBVdVdMXBX4qA7ltn8b4XsndxCNQ-TRfZWekugmPS4QXAC4y7fgwkPJc92IALK_wVb23DsJdEnEbdTzt-wd7hxrdpCmFxIEw9ICQ0HwXo1r1oiMo3q3hln5lZnekFnFEQ4OJpL0fXb_t5KYzd7KsQElU"/>
+<div class="absolute inset-0 flex items-center justify-center bg-background/20 backdrop-blur-sm">
+<div class="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center border border-primary/40 animate-pulse">
+<span class="material-symbols-outlined text-primary text-[40px]" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Pricing Section -->
+<section class="py-xl px-margin-mobile md:px-margin-desktop max-w-7xl mx-auto">
+<div class="text-center mb-xl">
+<h2 class="font-headline-lg text-headline-lg text-white mb-sm">Choose Your Wellness Plan</h2>
+<div class="flex justify-center gap-sm">
+<span class="text-body-md text-on-surface-variant">Monthly</span>
+<div class="w-12 h-6 bg-surface-container-highest rounded-full p-1 relative">
+<div class="w-4 h-4 bg-primary rounded-full absolute right-1"></div>
+</div>
+<span class="text-body-md text-white font-bold">Annual (Save 20%)</span>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-md">
+<!-- Single -->
+<div class="glass-card p-lg rounded-[2rem] flex flex-col border-white/5 hover:border-white/20 transition-all">
+<div class="mb-md">
+<h4 class="font-headline-md text-headline-md text-white">Single</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">One-time deep dive</p>
+</div>
+<div class="mb-lg">
+<span class="font-display-lg text-display-lg text-white">$9.99</span>
+<span class="text-on-surface-variant">/scan</span>
+</div>
+<ul class="space-y-sm mb-xl flex-1">
+<li class="flex items-center gap-xs text-on-surface text-body-md"><span class="material-symbols-outlined text-primary scale-75">check</span> 1 Full Vital Scan</li>
+<li class="flex items-center gap-xs text-on-surface text-body-md"><span class="material-symbols-outlined text-primary scale-75">check</span> 24h Report Access</li>
+</ul>
+<button class="w-full py-sm rounded-xl border border-white/20 text-white font-bold hover:bg-white/5 transition-all">Buy Now</button>
+</div>
+<!-- Basic -->
+<div class="glass-card p-lg rounded-[2rem] flex flex-col border-white/5 hover:border-white/20 transition-all">
+<div class="mb-md">
+<h4 class="font-headline-md text-headline-md text-white">Basic</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Weekly check-ins</p>
+</div>
+<div class="mb-lg">
+<span class="font-display-lg text-display-lg text-white">$29</span>
+<span class="text-on-surface-variant">/mo</span>
+</div>
+<ul class="space-y-sm mb-xl flex-1">
+<li class="flex items-center gap-xs text-on-surface text-body-md"><span class="material-symbols-outlined text-primary scale-75">check</span> 5 Scans per month</li>
+<li class="flex items-center gap-xs text-on-surface text-body-md"><span class="material-symbols-outlined text-primary scale-75">check</span> Monthly Trends</li>
+<li class="flex items-center gap-xs text-on-surface text-body-md"><span class="material-symbols-outlined text-primary scale-75">check</span> Email Support</li>
+</ul>
+<button class="w-full py-sm rounded-xl border border-white/20 text-white font-bold hover:bg-white/5 transition-all">Select Basic</button>
+</div>
+<!-- Standard (Popular) -->
+<div class="glass-card p-lg rounded-[2rem] flex flex-col border-primary/40 emerald-glow relative scale-105 z-10">
+<div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-on-primary px-md py-1 rounded-full text-[10px] font-black tracking-widest uppercase">Most Popular</div>
+<div class="mb-md">
+<h4 class="font-headline-md text-headline-md text-white">Standard</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Daily optimization</p>
+</div>
+<div class="mb-lg">
+<span class="font-display-lg text-display-lg text-white">$59</span>
+<span class="text-on-surface-variant">/mo</span>
+</div>
+<ul class="space-y-sm mb-xl flex-1">
+<li class="flex items-center gap-xs text-on-surface text-body-md"><span class="material-symbols-outlined text-primary scale-75">check</span> 30 Scans per month</li>
+<li class="flex items-center gap-xs text-on-surface text-body-md"><span class="material-symbols-outlined text-primary scale-75">check</span> Advanced AI Insights</li>
+<li class="flex items-center gap-xs text-on-surface text-body-md"><span class="material-symbols-outlined text-primary scale-75">check</span> Weekly Bio-optimization</li>
+<li class="flex items-center gap-xs text-on-surface text-body-md"><span class="material-symbols-outlined text-primary scale-75">check</span> Priority Processing</li>
+</ul>
+<button class="w-full py-sm rounded-xl bg-primary text-on-primary font-bold hover:opacity-90 transition-all">Start Standard</button>
+</div>
+<!-- Premium -->
+<div class="glass-card p-lg rounded-[2rem] flex flex-col border-white/5 hover:border-white/20 transition-all">
+<div class="mb-md">
+<h4 class="font-headline-md text-headline-md text-white">Premium</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Ultimate precision</p>
+</div>
+<div class="mb-lg">
+<span class="font-display-lg text-display-lg text-white">$149</span>
+<span class="text-on-surface-variant">/mo</span>
+</div>
+<ul class="space-y-sm mb-xl flex-1">
+<li class="flex items-center gap-xs text-on-surface text-body-md"><span class="material-symbols-outlined text-primary scale-75">check</span> Unlimited Scans</li>
+<li class="flex items-center gap-xs text-on-surface text-body-md"><span class="material-symbols-outlined text-primary scale-75">check</span> Concierge Dashboard</li>
+<li class="flex items-center gap-xs text-on-surface text-body-md"><span class="material-symbols-outlined text-primary scale-75">check</span> Real-time Alerts</li>
+<li class="flex items-center gap-xs text-on-surface text-body-md"><span class="material-symbols-outlined text-primary scale-75">check</span> Multi-device Sync</li>
+<li class="flex items-center gap-xs text-on-surface text-body-md"><span class="material-symbols-outlined text-primary scale-75">check</span> 24/7 Clinical Support</li>
+</ul>
+<button class="w-full py-sm rounded-xl border border-white/20 text-white font-bold hover:bg-white/5 transition-all">Go Premium</button>
+</div>
+</div>
+</section>
+<!-- CTA Section -->
+<section class="py-xl px-margin-mobile md:px-margin-desktop">
+<div class="max-w-4xl mx-auto glass-card rounded-[3rem] p-lg md:p-xl text-center space-y-md bg-gradient-to-t from-primary/10 to-transparent border-primary/20">
+<h2 class="font-display-lg text-display-lg text-white">Ready for your first scan?</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Join thousands of high-performers who trust MyWellfie for their daily wellness monitoring.</p>
+<div class="pt-md">
+<button class="bg-primary text-on-primary px-xl py-md rounded-2xl font-headline-md text-headline-md emerald-glow hover:scale-[1.05] transition-all">Get Started Instantly</button>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-lowest dark:bg-surface-container-lowest border-t border-white/5">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-lg px-margin-desktop py-xl max-w-7xl mx-auto">
+<div class="space-y-md">
+<div class="text-headline-sm font-headline-sm font-black text-on-surface"><img alt="MyWellfie Logo" class="w-auto object-contain mb-4 h-14 h-20" src="https://lh3.googleusercontent.com/aida/ADBb0ugxQnJqLf_R2UEQk_ckDiojQ7F5iYwlTiytC4oSJjAlL8WnH4sMXrzvYisSlMNk84uppfl2BYrNEgik9prkU0vA6JCEI_Dic44OJXdBMZOS3NffAUKHY6OJTMrd0vrFAH5ZVXjigyTFUp-EZiJNIEsNZo-fBoN83X7tb-zAstnciHw3oFvn_WQmaCBhQRdys3R0QDFhfn2nEqq8_ZjlkORJNLki_mBdKfx2i-eYvTwvky9uhZJSbPAHV5qpuzv4m0ZYiNX_4SgvKiA"/></div>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-xs">© 2024 MyWellfie. Clinical Precision meets Luxury Lifestyle.</p>
+<div class="flex gap-md">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary transition-colors">public</span>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary transition-colors">share</span>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary transition-colors">smart_display</span>
+</div>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-3 gap-md">
+<div class="space-y-xs">
+<p class="font-label-caps text-label-caps text-white mb-sm">Product</p>
+<a class="block font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Technology</a>
+<a class="block font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Pricing</a>
+<a class="block font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Dashboard</a>
+</div>
+<div class="space-y-xs">
+<p class="font-label-caps text-label-caps text-white mb-sm">Company</p>
+<a class="block font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Careers</a>
+<a class="block font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy</a>
+<a class="block font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Terms</a>
+</div>
+<div class="space-y-xs">
+<p class="font-label-caps text-label-caps text-white mb-sm">Support</p>
+<a class="block font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Support</a>
+<a class="block font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Help Center</a>
+<a class="block font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">API Docs</a>
+</div>
+</div>
+</div>
+</footer>
+</body></html>

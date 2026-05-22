@@ -1,0 +1,338 @@
+[
+    {
+        "code": 8,
+        "name": "DEVICE_CODE_MINIMUM_OS_VERSION_ERROR",
+        "domain": "DEVICE",
+        "cause": "The device's operating system version is lower than the minimum version required to run the SDK.",
+        "solution": "Upgrade the device operating system or use another device."
+    },
+    {
+        "code": 17,
+        "name": "DEVICE_CODE_CLOCK_SKEW_ERROR",
+        "domain": "DEVICE",
+        "cause": "Severe clock skew detected",
+        "solution": "The user should verify that the device date, time and timezone are set correctly. It is recommended to enable 'Set automatically' in the device settings."
+    },
+    {
+        "code": 18,
+        "name": "DEVICE_CODE_MINIMUM_BROWSER_VERSION_ERROR",
+        "domain": "DEVICE",
+        "cause": "The browser version is older than the minimum required version.",
+        "solution": "Upgrade the device's browser or use another browser."
+    },
+    {
+        "code": 1001,
+        "name": "CAMERA_CODE_NO_CAMERA_ERROR",
+        "domain": "CAMERA",
+        "cause": "The `session.start()` command was called, but the device has no camera with the required specifications.",
+        "solution": "The camera must support a resolution of 640x480 at 30FPS. The user should verify that the device camera works properly."
+    },
+    {
+        "code": 1002,
+        "name": "CAMERA_CODE_CAMERA_OPEN_ERROR",
+        "domain": "CAMERA",
+        "cause": "Could not operate the camera.",
+        "solution": "The user should verify that the device camera works properly and try again. If the problem persists, the user should restart the application."
+    },
+    {
+        "code": 1005,
+        "name": "CAMERA_CODE_CAMERA_MISSING_PERMISSIONS_ERROR",
+        "domain": "CAMERA",
+        "cause": "The application does not have permission to access the camera.",
+        "solution": "The user should grant the web page permission to use the camera."
+    },
+    {
+        "code": 1501,
+        "name": "CAMERA_CODE_UNEXPECTED_IMAGE_DIMENSIONS_WARNING",
+        "domain": "CAMERA",
+        "cause": "The images received from the camera have a different resolution than the requested resolution.",
+        "solution": "Instruct the user to retry taking the measurements. If the problem persists, then the device is probably malfunctioning, or does not support VGA resolution.  The user should be instructed to use a different device. Although this is just a \"warning\" alert, and the measurement continues, the accuracy of the measurement may be impacted by the unexpected resolution."
+    },
+    {
+        "code": 2002,
+        "name": "LICENSE_CODE_ACTIVATION_LIMIT_REACHED_ERROR",
+        "domain": "LICENSE",
+        "cause": "No more devices can be used with your license.",
+        "solution": "Contact the sales team to increase the number of device authorizations in your license."
+    },
+    {
+        "code": 2003,
+        "name": "LICENSE_CODE_METER_ATTRIBUTE_USES_LIMIT_REACHED_ERROR",
+        "domain": "LICENSE",
+        "cause": "No more measurements are allowed for the provided license.",
+        "solution": "Contact the sales team to increase the number of measurements in your license."
+    },
+    {
+        "code": 2004,
+        "name": "LICENSE_CODE_AUTHENTICATION_FAILED_ERROR",
+        "domain": "LICENSE",
+        "cause": "Several issues might cause this error: clock skew detected, the SDK was unable to authenticate the license, a bad token was received from the license server",
+        "solution": "The user should take the following actions: Check the internet connection. Set the device time correctly. Verify that the device has sufficient storage."
+    },
+    {
+        "code": 2007,
+        "name": "LICENSE_CODE_INVALID_LICENSE_KEY_ERROR",
+        "domain": "LICENSE",
+        "cause": "The provided license key is invalid.",
+        "solution": "Use the license key provided by the support team. If the problem persists, contact the support team."
+    },
+    {
+        "code": 2010,
+        "name": "LICENSE_CODE_REVOKED_LICENSE_ERROR",
+        "domain": "LICENSE",
+        "cause": "The license was revoked.",
+        "solution": "Contact the customer support team."
+    },
+    {
+        "code": 2016,
+        "name": "LICENSE_CODE_INTERNAL_ERROR_9",
+        "domain": "LICENSE",
+        "cause": "SSL error. Unable to authenticate the license server response.",
+        "solution": "The user should check the device's local time, internet connection, try a different network, or try again later."
+    },
+    {
+        "code": 2017,
+        "name": "LICENSE_CODE_LICENSE_EXPIRED_ERROR",
+        "domain": "LICENSE",
+        "cause": "The license has expired.",
+        "solution": "Contact the customer support team."
+    },
+    {
+        "code": 2018,
+        "name": "LICENSE_CODE_LICENSE_SUSPENDED_ERROR",
+        "domain": "LICENSE",
+        "cause": "The license is suspended.",
+        "solution": "Contact the customer support team."
+    },
+    {
+        "code": 2024,
+        "name": "LICENSE_CODE_NETWORK_ISSUES_ERROR",
+        "domain": "DEVICE",
+        "cause": "No internet connection.",
+        "solution": "The user should check the internet connection and try again."
+    },
+    {
+        "code": 2025,
+        "name": "LICENSE_CODE_SSL_HANDSHAKE_ERROR",
+        "domain": "DEVICE",
+        "cause": "SSL certificate security warning.",
+        "solution": "The user should check the device's local time, internet connection, try a different network, or try again later."
+    },
+    {
+        "code": 2032,
+        "name": "LICENSE_CODE_INPUT_LICENSE_KEY_EMPTY_ERROR",
+        "domain": "LICENSE",
+        "cause": "No license key was provided to the SDK.",
+        "solution": "Initiate the SDK with a valid license key, provided by the support team."
+    },
+    {
+        "code": 2034,
+        "name": "LICENSE_CODE_INPUT_PRODUCT_ID_ILLEGAL_ERROR",
+        "domain": "LICENSE",
+        "cause": "An invalid product ID was provided.",
+        "solution": "The product ID must be `null` when establishing a session."
+    },
+    {
+        "code": 2035,
+        "name": "LICENSE_CODE_CANNOT_OPEN_FILE_FOR_READ_ERROR",
+        "domain": "LICENSE",
+        "cause": "The SDK cannot read from the file system, or a file may be corrupted.",
+        "solution": "Instruct the user to check the installation integrity."
+    },
+    {
+        "code": 2036,
+        "name": "LICENSE_CODE_MONTHLY_USAGE_TRACKING_REQUIRES_SYNC_ERROR",
+        "domain": "LICENSE",
+        "cause": "The SDK failed to authenticate with the license server as required by the license type.",
+        "solution": "Instruct the user to check the internet connection and try again."
+    },
+    {
+        "code": 2037,
+        "name": "LICENSE_CODE_SSL_HANDSHAKE_DEVICE_DATE_ERROR",
+        "domain": "LICENSE",
+        "cause": "SSL certificate security warning.",
+        "solution": "The user should check the device's local time, internet connection, try a different network, or try again later."
+    },
+    {
+        "code": 2038,
+        "name": "LICENSE_CODE_SSL_HANDSHAKE_CERTIFICATE_EXPIRED_ERROR",
+        "domain": "LICENSE",
+        "cause": "SSL certificate security warning.",
+        "solution": "The user should check the device's local time, internet connection, try a different network, or try again later."
+    },
+    {
+        "code": 2039,
+        "name": "LICENSE_CODE_MIN_SDK_ERROR",
+        "domain": "LICENSE",
+        "cause": "The SDK version is too old to be used with this license.",
+        "solution": "Upgrade to the latest SDK version or contact the support team."
+    },
+    {
+        "code": 2042,
+        "name": "LICENSE_CODE_NETWORK_TIMEOUT_ERROR",
+        "domain": "LICENSE",
+        "cause": "Network timeout reached for a single call",
+        "solution": "Advise the user to try the following steps: verify the internet connection speed, restart the application, wait briefly, attempt using another network, or try again later. If the issue persists, please contact our support team."
+    },
+    {
+        "code": 3003,
+        "name": "MEASUREMENT_CODE_MISDETECTION_DURATION_EXCEEDS_LIMIT_ERROR",
+        "domain": "MEASUREMENT",
+        "cause": "The face was not detected for a period of over 0.5 seconds several times.",
+        "solution": "The user should ensure that the face remains still during the measurement and follow the best practices provided by the provider for taking accurate measurements."
+    },
+    {
+        "code": 3004,
+        "name": "MEASUREMENT_CODE_INVALID_RECENT_DETECTION_RATE_ERROR",
+        "domain": "MEASUREMENT",
+        "cause": "More than two periods of multiple frame losses were detected during the measurement. This issue may occur if the device is overloaded and unable to process video frames in real-time, or if there is insufficient lighting on the user's face.",
+        "solution": "For the User: - Ensure the device is not overloaded, overheated, or running low on resources. - Improve the lighting on your face to enhance SDK performance. - If the problem persists, close other applications or services, or restart the device. - Follow best practices for taking a measurement and provide guidance on optimizing device performance. For the Application Developer: - Avoid using debugging or developer tools or performing intensive logging during the measurement."
+    },
+    {
+        "code": 3006,
+        "name": "MEASUREMENT_CODE_LICENSE_ACTIVATION_FAILED_ERROR",
+        "domain": "MEASUREMENT",
+        "cause": "The license activation failed.",
+        "solution": "The user should check the device's internet connection, and should check that no invalid proxy configuration is used. If the problem persists, the user should contact the support team."
+    },
+    {
+        "code": 3008,
+        "name": "MEASUREMENT_CODE_INVALID_MEASUREMENT_AVERAGE_DETECTION_RATE_ERROR",
+        "domain": "MEASUREMENT",
+        "cause": "The average frame rate is significantly lower than expected. This issue may result from device overloading or insufficient lighting on the user's face.",
+        "solution": "For the User:  Close resource-intensive applications to free up device resources. Ensure the device is not busy, overheated, or overloaded. Allow the device to cool down and retry the measurement. If the problem persists, consider using another device. For the Application Developer:  Verify that the SDK implementation does not impose excessive demands on the device. Provide users with clear instructions to optimize their device performance and follow best practices for taking a measurement. Ensure your application minimizes background activity during SDK operations."
+    },
+    {
+        "code": 3009,
+        "name": "MEASUREMENT_CODE_TOO_MANY_FRAMES_INORDER_ERROR",
+        "domain": "MEASUREMENT",
+        "cause": "Multiple consecutive frames were received in incorrect timestamp order. This error occurs if warning 3506 is issued multiple times.",
+        "solution": "The user should rerun the measurement."
+    },
+    {
+        "code": 3500,
+        "name": "MEASUREMENT_CODE_MISDETECTION_DURATION_EXCEEDS_LIMIT_WARNING",
+        "domain": "MEASUREMENT",
+        "cause": "A face was not detected for a period of over 0.5 seconds.",
+        "solution": "The instantaneous vital signs should not be displayed to the user for a few seconds until the algorithms overcome the detection issues. The user must follow the best practices for taking a measurement."
+    },
+    {
+        "code": 3505,
+        "name": "MEASUREMENT_CODE_INVALID_RECENT_FPS_RATE_WARNING",
+        "domain": "MEASUREMENT",
+        "cause": "Camera FPS is degraded and may affect the measurement quality.",
+        "solution": "The user should make sure to follow the best practices for taking a measurement."
+    },
+    {
+        "code": 3506,
+        "name": "MEASUREMENT_CODE_MEASUREMENT_MISPLACED_FRAME_WARNING",
+        "domain": "MEASUREMENT",
+        "cause": "A frame was received in incorrect timestamp order.",
+        "solution": "The user should proceed with the measurement."
+    },
+    {
+        "code": 4505,
+        "name": "VITAL_SIGN_CODE_BLOOD_PRESSURE_PROCESSING_FAILED_WARNING",
+        "domain": "VITAL_SIGNS",
+        "cause": "Failure to calculate blood pressure in this measurement. This warning does not impact other vital sign measurements. The failure may have been caused by corrupted installation files.",
+        "solution": "Blood pressure will not be calculated for this measurement session. The other vital sign results will be presented. The user can retry the measurement.  If the problem persists, the user should reinstall/repair the app."
+    },
+    {
+        "code": 4506,
+        "name": "VITAL_SIGN_CODE_MEASURING_WITH_NO_ENABLED_VITAL_SIGNS_WARNING",
+        "domain": "VITAL_SIGNS",
+        "cause": "No vital signs were processed as part of this measurement.",
+        "solution": "This warning is issued when the license does not support the calculation of any vital signs, or when the SDK cannot access license information. The user should check the internet connection and try another measurement."
+    },
+    {
+        "code": 6004,
+        "name": "SESSION_CODE_ILLEGAL_START_CALL_ERROR",
+        "domain": "SESSION",
+        "cause": "A session `start` call was made when the session is not in READY state",
+        "solution": "Wait for session state to become READY before calling `start`."
+    },
+    {
+        "code": 6005,
+        "name": "SESSION_CODE_ILLEGAL_STOP_CALL_ERROR",
+        "domain": "SESSION",
+        "cause": "A session `stop` call was made when the session is not in PROCESSING state",
+        "solution": "Call `stop` only when session is processing."
+    },
+    {
+        "code": 7002,
+        "name": "INITIALIZATION_CODE_INVALID_PROCESSING_TIME_ERROR",
+        "domain": "INITIALIZATION",
+        "cause": "An invalid session time was provided when creating a session.",
+        "solution": "Use a valid session time. The valid session time range is between 20-180 seconds."
+    },
+    {
+        "code": 7005,
+        "name": "INITIALIZATION_CODE_INVALID_LICENSE_FORMAT",
+        "domain": "INITIALIZATION",
+        "cause": "The provided license key is either empty or its format is invalid.",
+        "solution": "Check the SDK license key provided by the support team. Ensure it is not empty and follows a valid format - avoid including spaces, newlines, or special characters."
+    },
+    {
+        "code": 7006,
+        "name": "INITIALIZATION_CODE_SDK_LOAD_FAILURE",
+        "domain": "INITIALIZATION",
+        "cause": "The SDK fails to load the algorithmic binary file (a.wasm.gz).",
+        "solution": "Make sure a.wasm.gz is white listed and is deliverable by the server."
+    },
+    {
+        "code": 7007,
+        "name": "INITIALIZATION_CODE_UNSUPPORTED_USER_WEIGHT",
+        "domain": "INITIALIZATION",
+        "cause": "The weight submitted by the user is not supported. The supported weight range is between 40 to 200 kilograms.",
+        "solution": "The user should either submit a weight within the supported range, or not specify a weight at all."
+    },
+    {
+        "code": 7008,
+        "name": "INITIALIZATION_CODE_UNSUPPORTED_USER_AGE",
+        "domain": "INITIALIZATION",
+        "cause": "The age submitted by the user is not supported. The supported age range is between 18 to 110 years.",
+        "solution": "The user should either submit an age within the supported range or not specify an age at all."
+    },
+    {
+        "code": 7009,
+        "name": "INITIALIZATION_CODE_CONCURRENT_SESSIONS_ERROR",
+        "domain": "INITIALIZATION",
+        "cause": "Trying to create a new session before terminating the previous session.",
+        "solution": "The previous session should be terminated before establishing a new one."
+    },
+    {
+        "code": 7012,
+        "name": "INITIALIZATION_CODE_UNSUPPORTED_USER_HEIGHT",
+        "domain": "INITIALIZATION",
+        "cause": "The height submitted by the user is not supported. The supported height range is between 130 to 230 centimeters.",
+        "solution": "The application should specify a height value within the supported range or not specify a height at all."
+    },
+    {
+        "code": 7013,
+        "name": "INITIALIZATION_CODE_MEMORY_ALLOCATION_ERROR",
+        "domain": "INITIALIZATION",
+        "cause": "The memory allocation failed due to an internal bug in Emscripten when running on iOS 17 or earlier. This is caused due to several invocations of the SDK in the same tab one after the other, e.g. when \u2018refreshing\u2019 the page several times. For additional information see https://bugs.webkit.org/show_bug.cgi?id=222097#c17.",
+        "solution": "To mitigate this, it is recommended that each measurement be initiated in a new tab. If this issue arises, advise the user to restart the browser or open the page in a new tab (provide a clickable link while preserving the context) and continue as normal. This Webkit issue has been resolved in iOS 18. For further information, refer to  https://bugs.webkit.org/show_bug.cgi?id=222097#c17 and  https://bugs.webkit.org/show_bug.cgi?id=255103."
+    },
+    {
+        "code": 7014,
+        "name": "INITIALIZATION_CODE_INITIAL_MEMORY_ALLOCATION_ERROR",
+        "domain": "INITIALIZATION",
+        "cause": "Memory allocation failure",
+        "solution": "Instruct the user to close all other applications and active browser tabs, wait for a few seconds and try again. If the problem still persists it means the device is too weak to run the SDK."
+    },
+    {
+        "code": 7015,
+        "name": "INITIALIZATION_CODE_BROWSER_NOT_SUPPORTING_SHARED_ARRAY_BUFFER_ERROR",
+        "domain": "INITIALIZATION",
+        "cause": "The user's browser does not support SharedArrayBuffer.",
+        "solution": "Instruct the user to upgrade the browser's version or use another browser/device."
+    },
+    {
+        "code": 7501,
+        "name": "INITIALIZATION_MEMORY_CONSUMPTION_WARNING",
+        "domain": "INITIALIZATION",
+        "cause": "The application is attempting to invoke the SDK in a tab where it has been invoked before. Due to an internal bug in Emscripten for iOS17 and below there is a potential memory leak that might prevent running the SDK properly.",
+        "solution": "Recurring SDK invocations within the same tab (e.g., refreshing the page multiple times) can result in a memory leak, which may eventually lead to memory allocation failures. To mitigate this, it is recommended that each measurement be initiated in a new tab. If this issue arises, advise the user to restart the browser or open the page in a new tab (provide a clickable link while preserving the context) and continue as normal. This Webkit issue has been resolved in iOS 18. For further information, refer to Webkit https://bugs.webkit.org/show_bug.cgi?id=222097#c17 and Webkit https://bugs.webkit.org/show_bug.cgi?id=255103."
+    }
+]
