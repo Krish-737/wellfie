@@ -281,7 +281,9 @@ const Navbar: React.FC = () => {
           />
 
           {/* Drawer panel */}
-          <div style={{
+
+
+          {/* <div style={{
             position: 'fixed', top: 0, right: 0, bottom: 0,
             width: Math.min(400, window.innerWidth),
             zIndex: 99,
@@ -291,7 +293,21 @@ const Navbar: React.FC = () => {
             transition: 'transform 0.3s cubic-bezier(0.4,0,0.2,1)',
             display: 'flex',
             flexDirection: 'column',
-          }}>
+          }}></div> */}
+          <div 
+            aria-hidden={!menuOpen}
+            style={{
+              position: 'fixed', top: 0, right: 0, bottom: 0,
+              width: Math.min(400, window.innerWidth),
+              zIndex: 99,
+              background: '#ffffff',
+              boxShadow: '-4px 0 32px rgba(0,0,0,0.12)',
+              transform: menuOpen ? 'translateX(0)' : 'translateX(100%)',
+              visibility: menuOpen ? 'visible' : 'hidden',
+              transition: 'transform 0.3s cubic-bezier(0.4,0,0.2,1), visibility 0.3s',
+              display: 'flex',
+              flexDirection: 'column',
+            }}>
             {/* Drawer header */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px', borderBottom: '1px solid #f1f5f9' }}>
               <img src={logoSrc} alt="MyWellfie" style={{ height: 44, width: 'auto', objectFit: 'contain' }} />

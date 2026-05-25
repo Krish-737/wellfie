@@ -14,17 +14,10 @@ const LabelRow = styled.div`
 `;
 
 const ScanLabel = styled.span`
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: #64748b;
-`;
-
-const PctLabel = styled.span`
   font-size: 13px;
   font-weight: 700;
-  color: #0653f4;
+  color: #14b8a6;
+  transition: all 0.3s ease;
 `;
 
 const BarTrack = styled.div`
@@ -43,15 +36,39 @@ const BarFill = styled.div<{ pct: number }>`
   transition: width 0.9s linear;
 `;
 
+const MESSAGES = [
+  'Measuring blood pressure...',
+  'Analyzing pulse rate...',
+  'Calculating stress levels...',
+  'Checking oxygen saturation...',
+  'Processing wellness index...',
+  'Detecting heart rate variability...',
+  'Finalizing health insights...',
+];
+
 const Timer = ({ started, durationSeconds }) => {
   const seconds = useTimer(started, durationSeconds);
   const pct = started ? Math.min(100, Math.round((seconds / durationSeconds) * 100)) : 0;
+  
+  const [msgIdx, setMsgIdx] = React.useState(0);
+
+  React.useEffect(() => {
+    if (!started) {
+      setMsgIdx(0);
+      return;
+    }
+    const interval = setInterval(() => {
+      setMsgIdx(prev => (prev + 1) % MESSAGES.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [started]);
 
   return (
     <Wrapper>
       <LabelRow>
-        <ScanLabel>Scan Progress</ScanLabel>
-        <PctLabel>{pct}%</PctLabel>
+        <ScanLabel>
+          {started ? MESSAGES[msgIdx] : 'Ready to scan'}
+        </ScanLabel>
       </LabelRow>
       <BarTrack>
         <BarFill pct={pct} />
