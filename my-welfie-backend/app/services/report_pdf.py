@@ -148,29 +148,24 @@ class ReportBuilder:
 
     def _pill(self, x: float, y: float, label: str,
               w: float = 22 * mm, h: float = 4.5 * mm) -> None:
-        """Draw a small rounded status pill."""
-        bg, fg = _pill_colors(label)
+        """Draw simple bold colored text for status instead of a card-like pill."""
+        _, fg = _pill_colors(label)
         c = self.c
-        c.setFillColor(bg)
-        c.roundRect(x, y - 0.5 * mm, w, h, 1.5 * mm, fill=1, stroke=0)
         c.setFillColor(fg)
-        c.setFont("Helvetica-Bold", 7)
-        c.drawCentredString(x + w / 2, y + 1.2 * mm, label)
+        c.setFont("Helvetica-Bold", 8)
+        c.drawString(x, y + 1.2 * mm, label.upper())
 
     def _section_bar(self, title: str) -> None:
-        """Full-width teal section heading bar; advances y."""
-        bar_h = 7.5 * mm
-        self._check_space(bar_h + 2 * mm)
+        """Simple formal section heading with underline; advances y."""
+        self._check_space(10 * mm)
         c = self.c
         c.setFillColor(TEAL)
-        c.rect(ML, self.y - bar_h, CW, bar_h, fill=1, stroke=0)
-        # left accent tab
-        c.setFillColor(TEAL_MID)
-        c.rect(ML, self.y - bar_h, 3 * mm, bar_h, fill=1, stroke=0)
-        c.setFillColor(WHITE)
-        c.setFont("Helvetica-Bold", 8.5)
-        c.drawString(ML + 5 * mm, self.y - bar_h + 2.5 * mm, title.upper())
-        self.y -= bar_h
+        c.setFont("Helvetica-Bold", 10)
+        c.drawString(ML, self.y - 5 * mm, title.upper())
+        c.setStrokeColor(TEAL)
+        c.setLineWidth(1)
+        c.line(ML, self.y - 6.5 * mm, W - MR, self.y - 6.5 * mm)
+        self.y -= 10 * mm
 
     def _h_line(self, alpha: float = 1.0) -> None:
         c = self.c
@@ -271,61 +266,6 @@ class ReportBuilder:
         self.c.showPage()
         self.page_num += 1
 
-    # ── Summary card row (4 big cards across top of page 1) ───────────────────
-
-    def _draw_summary_cards(self) -> None:
-        scan = self.scan
-        cards = [
-            ("PULSE RATE",
-             f"{_fmt(scan.pulse_rate, 0)} bpm",
-             RISK_LABEL.get(getattr(scan, "high_blood_pressure_risk", None), "—")),
-            ("BLOOD PRESSURE",
-             (f"{_fmt(scan.blood_pressure_systolic, 0)}/{_fmt(scan.blood_pressure_diastolic, 0)} mmHg"
-              if scan.blood_pressure_systolic else "—"),
-             _risk_pill(getattr(scan, "high_blood_pressure_risk", None))),
-            ("SpO\u2082",
-             f"{_fmt(scan.oxygen_saturation, 1)} %",
-             "—"),
-            ("STRESS",
-             STRESS_LABEL.get(getattr(scan, "stress_level", None), "—"),
-             STRESS_LABEL.get(getattr(scan, "stress_level", None), "—")),
-        ]
-
-        self._check_space(30 * mm)
-        card_w = (CW - 3 * 3 * mm) / 4
-        card_h = 26 * mm
-        x = ML
-        c = self.c
-
-        for label, value, status in cards:
-            # shadow
-            c.setFillColor(SLATE_200)
-            c.roundRect(x + 0.6 * mm, self.y - card_h - 0.6 * mm,
-                        card_w, card_h, 2.5 * mm, fill=1, stroke=0)
-            # card
-            c.setFillColor(WHITE)
-            c.roundRect(x, self.y - card_h, card_w, card_h, 2.5 * mm, fill=1, stroke=0)
-            # teal top strip
-            c.setFillColor(TEAL)
-            c.roundRect(x, self.y - 4 * mm, card_w, 4 * mm, 2 * mm, fill=1, stroke=0)
-            c.rect(x, self.y - 4 * mm, card_w, 2 * mm, fill=1, stroke=0)
-            # label
-            c.setFillColor(SLATE_500)
-            c.setFont("Helvetica-Bold", 6.5)
-            c.drawString(x + 2.5 * mm, self.y - 8 * mm, label)
-            # value
-            c.setFillColor(SLATE_900)
-            c.setFont("Helvetica-Bold", 13)
-            c.drawString(x + 2.5 * mm, self.y - 16 * mm, value)
-            # status pill
-            if status and status not in ("—", ""):
-                self._pill(x + 2.5 * mm,
-                           self.y - card_h + 2 * mm,
-                           status, w=card_w - 5 * mm)
-            x += card_w + 3 * mm
-
-        self.y -= card_h + 5 * mm
-
     # ── Generic metric row ────────────────────────────────────────────────────
     # Each row: | Indicator name + description | Value | Target | Status pill |
     #           |<-- 68mm -->|<--- 30mm --->|<--- 30mm --->|<--- 38mm --->|
@@ -353,7 +293,7 @@ class ReportBuilder:
                     status: str, link: str = "",
                     even: bool = True) -> None:
         """
-        Draw one metric row. Auto-wraps description text and paginates.
+        Draw one clean metric row. No background boxes or links.
         """
         c = self.c
         name_p  = Paragraph(f"<b>{name}</b>", self.st_label)
@@ -361,29 +301,13 @@ class ReportBuilder:
 
         name_w, name_h = name_p.wrap(63 * mm, H)
         desc_w, desc_h = desc_p.wrap(63 * mm, H)
-        row_h = name_h + desc_h + 5 * mm
+        row_h = name_h + desc_h + 4 * mm
 
         self._check_space(row_h)
 
-        # Zebra background
-        c.setFillColor(SLATE_50 if even else WHITE)
-        c.rect(ML, self.y - row_h, CW, row_h, fill=1, stroke=0)
-
-        # Left border accent
-        c.setFillColor(TEAL_MID)
-        c.rect(ML, self.y - row_h, 1.2 * mm, row_h, fill=1, stroke=0)
-
         # Name + description
-        name_p.drawOn(c, self.COL_NAME + 2.5 * mm, self.y - name_h - 2 * mm)
-        desc_p.drawOn(c, self.COL_NAME + 2.5 * mm, self.y - name_h - desc_h - 2 * mm)
-
-        # Column dividers
-        c.setStrokeColor(SLATE_200)
-        c.setLineWidth(0.3)
-        for x in (self.COL_VAL - 2 * mm,
-                  self.COL_TGT - 2 * mm,
-                  self.COL_STAT - 2 * mm):
-            c.line(x, self.y, x, self.y - row_h)
+        name_p.drawOn(c, self.COL_NAME, self.y - name_h - 1 * mm)
+        desc_p.drawOn(c, self.COL_NAME, self.y - name_h - desc_h - 1 * mm)
 
         # Value
         c.setFillColor(SLATE_900)
@@ -395,22 +319,9 @@ class ReportBuilder:
         c.setFont("Helvetica", 8)
         c.drawString(self.COL_TGT, self.y - name_h - 1 * mm, target)
 
-        # Status pill
+        # Status
         if status and status != "—":
-            self._pill(self.COL_STAT, self.y - row_h + 1.5 * mm,
-                       status, w=35 * mm, h=4.5 * mm)
-
-        # Link
-        if link:
-            lx = self.COL_STAT
-            ly = self.y - row_h + 7 * mm
-            c.setFillColor(LINK_BLUE)
-            c.setFont("Helvetica", 7)
-            c.drawString(lx, ly, "Learn more \u2192")
-            tw = c.stringWidth("Learn more \u2192", "Helvetica", 7)
-            c.linkURL(link,
-                      (lx, ly - 1.5, lx + tw + 2, ly + 6),
-                      thickness=0, color=None)
+            self._pill(self.COL_STAT, self.y - name_h - 1.5 * mm, status)
 
         # Bottom border
         c.setStrokeColor(SLATE_200)
@@ -434,32 +345,24 @@ class ReportBuilder:
              "is well-lit, device is stable, and follow the preparation checklist before retrying."),
         ]
 
-        box_h = 52 * mm
-        self._check_space(box_h + 4 * mm)
+        self._check_space(40 * mm)
         c = self.c
-
-        # Box background
-        c.setFillColor(TEAL_PALE)
-        c.roundRect(ML, self.y - box_h, CW, box_h, 3 * mm, fill=1, stroke=0)
-        c.setStrokeColor(TEAL_MID)
-        c.setLineWidth(0.5)
-        c.roundRect(ML, self.y - box_h, CW, box_h, 3 * mm, fill=0, stroke=1)
-        # Left teal bar
-        c.setFillColor(TEAL)
-        c.roundRect(ML, self.y - box_h, 2.5 * mm, box_h, 1.5 * mm, fill=1, stroke=0)
 
         c.setFillColor(TEAL)
         c.setFont("Helvetica-Bold", 8.5)
-        c.drawString(ML + 5 * mm, self.y - 5 * mm, "SCAN QUALITY NOTES & COMPLIANCE INFORMATION")
+        c.drawString(ML, self.y - 5 * mm, "SCAN QUALITY NOTES & COMPLIANCE INFORMATION")
+        c.setStrokeColor(TEAL)
+        c.setLineWidth(0.5)
+        c.line(ML, self.y - 6.5 * mm, W - MR, self.y - 6.5 * mm)
 
-        ny = self.y - 10 * mm
+        ny = self.y - 12 * mm
         for title, body in notes:
             p = Paragraph(f"<b>{title}:</b> {body}", self.st_note)
-            _, ph = p.wrap(CW - 8 * mm, H)
-            p.drawOn(c, ML + 5 * mm, ny - ph)
+            _, ph = p.wrap(CW, H)
+            p.drawOn(c, ML, ny - ph)
             ny -= ph + 3 * mm
 
-        self.y -= box_h + 4 * mm
+        self.y = ny - 5 * mm
 
     # ── Main build method ─────────────────────────────────────────────────────
 
@@ -469,23 +372,20 @@ class ReportBuilder:
         # ── PAGE 1 ─────────────────────────────────────────────────────────────
         self._begin_page()
 
-        # Patient summary strip
+        # Patient summary strip - Simple text no background
         c = self.c
-        c.setFillColor(TEAL_PALE)
-        c.rect(ML, self.y - 9 * mm, CW, 9 * mm, fill=1, stroke=0)
-        c.setFillColor(TEAL)
-        c.setFont("Helvetica-Bold", 8)
-        c.drawString(ML + 3 * mm, self.y - 6 * mm, "HEALTH SCAN SUMMARY REPORT")
-        c.setFillColor(SLATE_700)
+        c.setFillColor(SLATE_900)
+        c.setFont("Helvetica-Bold", 10)
+        c.drawString(ML, self.y - 6 * mm, "HEALTH SCAN SUMMARY REPORT")
+        c.setFillColor(SLATE_500)
         c.setFont("Helvetica", 8)
         scan_id = getattr(s, "id", "—")
         c.drawRightString(W - MR, self.y - 6 * mm,
                           f"Scan ID: {str(scan_id)[:8].upper() if scan_id != '—' else '—'}")
-        self.y -= 9 * mm + 3 * mm
-
-        # 4 summary cards
-        self._draw_summary_cards()
-        self.y -= 2 * mm
+        c.setStrokeColor(SLATE_200)
+        c.setLineWidth(0.5)
+        c.line(ML, self.y - 8 * mm, W - MR, self.y - 8 * mm)
+        self.y -= 12 * mm
 
         # ── SECTION 1: Cardiovascular ─────────────────────────────────────────
         self._section_bar("1 · Cardiovascular")
