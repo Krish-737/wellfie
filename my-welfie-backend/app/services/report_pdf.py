@@ -678,7 +678,7 @@ def build_scan_pdf(scan: Any, user_name: str, user_email: str,
     return ReportBuilder(scan, user_name, user_email, logo_path).build()
 
 
-# # ── Sample runner (full data) ─────────────────────────────────────────────────
+# ── Sample runner (full data) ─────────────────────────────────────────────────
 
 # class _SampleFull:
 #     id = "abc12345"
@@ -762,15 +762,14 @@ def build_scan_pdf(scan: Any, user_name: str, user_email: str,
 
 
 # if __name__ == "__main__":
-#     import sys
-#     mode = sys.argv[1] if len(sys.argv) > 1 else "full"
+    # import sys
+    # mode = sys.argv[1] if len(sys.argv) > 1 else "full"
 
-#     scan = _SamplePartial() if mode == "partial" else _SampleFull()
-#     label = "partial" if mode == "partial" else "full"
+    # scan = _SamplePartial() if mode == "partial" else _SampleFull()
+    # label = "partial" if mode == "partial" else "full"
 
-#     pdf = build_scan_pdf(scan, "Alex Johnson", "alex.johnson@example.com", logo_path="")
-#     out = f"/mnt/user-data/outputs/mywellfie_report_v40_{label}.pdf"
-#     with open(out, "wb") as f:
-#         f.write(pdf)
-#     print(f"Saved [{label}] → {out}  ({len(pdf):,} bytes)")
-
+    # pdf = build_scan_pdf(scan, "Alex Johnson", "alex.johnson@example.com", logo_path="")
+    # out = f"/mnt/user-data/outputs/mywellfie_report_v40_{label}.pdf"
+    # with open(out, "wb") as f:
+    #     f.write(pdf)
+    # print(f"Saved [{label}] → {out}  ({len(pdf):,} bytes)")
