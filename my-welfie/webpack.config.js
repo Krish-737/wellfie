@@ -100,18 +100,25 @@ function common() {
       }),
       new HtmlWebpackPlugin({ template: paths.html, favicon: paths.icon }),
       new CopyPlugin({
-        patterns: [
-          {
-            from: path.resolve(paths.node_modules, '@biosensesignal/web-sdk/dist'),
-            to: path.resolve(paths.build),
-            globOptions: {
-             ignore: ['**/main.*', '**/_headers', '**/_redirects']
-            },
-          },
-          { from: path.resolve(paths.src, '_headers'), to: paths.build },
-          { from: path.resolve(paths.src, '_redirects'), to: paths.build },
+  patterns: [
+    {
+      from: path.resolve(paths.node_modules, '@biosensesignal/web-sdk/dist'),
+      to: path.resolve(paths.build),
+      globOptions: {
+        // Explicitly ignore files, folders, and everything inside them
+        ignore: [
+          '**/main.*',
+          '**/_headers/**',
+          '**/_headers',
+          '**/_redirects/**',
+          '**/_redirects'
         ],
-      }),
+      },
+    },
+    { from: path.resolve(paths.src, '_headers'), to: paths.build },
+    { from: path.resolve(paths.src, '_redirects'), to: paths.build },
+  ],
+}),
     ],
   };
 }
