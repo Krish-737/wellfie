@@ -1,6 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin'); // 1. Import Terser
 const webpack = require('webpack');
 const envFile = process.env.ENV_FILE || '.env';
 require('dotenv').config({ path: path.resolve(__dirname, envFile), override: false });
@@ -14,8 +15,10 @@ const paths = {
 };
 
 function common() {
+  const isProduction = process.env.NODE_ENV === 'production';
+
   return {
-    mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
+    mode: isProduction ? 'production' : 'development',
     output: {
       publicPath: '/',
     },
@@ -26,16 +29,13 @@ function common() {
       https: false,
       host: 'localhost',
       disableHostCheck: true,
-      historyApiFallback: true, // SPA routes (/auth/callback, /dashboard, …)
+      historyApiFallback: true,
       headers: {
         'Cross-Origin-Opener-Policy': 'same-origin',
         'Cross-Origin-Embedder-Policy': 'require-corp',
       },
-      // Proxy API calls to the backend so HTTPS→HTTP mixed-content is avoided.
-      // Only active in local dev (no BACKEND_URL set); ngrok mode uses BACKEND_URL directly.
       ...(!process.env.BACKEND_URL && {
         proxy: {
-          // Proxy only backend auth routes — NOT /auth/callback (frontend OAuth landing).
           '/auth/oauth': { target: 'http://localhost:8001', secure: false, changeOrigin: true },
           '/auth/login': { target: 'http://localhost:8001', secure: false, changeOrigin: true },
           '/auth/signup': { target: 'http://localhost:8001', secure: false, changeOrigin: true },
@@ -54,6 +54,14 @@ function common() {
       modules: [paths.node_modules, paths.src],
     },
     experiments: { asyncWebAssembly: true },
+    optimization: {
+      minimize: isProduction,
+      minimizer: [
+        new TerserPlugin({
+          parallel: false, // 2. Prevents worker threads from overloading Netlify's RAM
+        }),
+      ],
+    },
     module: {
       rules: [
         { test: /\.tsx?$/, loader: 'ts-loader' },
