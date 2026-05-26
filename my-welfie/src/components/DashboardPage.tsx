@@ -18,6 +18,7 @@ interface ScanResult {
   oxygen_saturation?: number | null;
   stress_level?: number | null;
   wellness_index?: number | null;
+  respiration_rate?: number | null;
 }
 
 // ── Inline metric icons ───────────────────────────────────────────────────────

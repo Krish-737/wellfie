@@ -4,7 +4,7 @@
   "scripts": {
     "start": "cross-env NODE_OPTIONS=--openssl-legacy-provider NODE_ENV=development webpack serve",
     "start:ngrok": "cross-env ENV_FILE=.env.ngrok NODE_ENV=development webpack serve",
-    "build": "cross-env NODE_ENV=production webpack --progress && cp _headers dist/_headers"
+    "build": "cross-env NODE_ENV=production webpack --progress"
   },
   "dependencies": {
     "@biosensesignal/web-sdk": "./biosensesignal-web-sdk-v5.11.4-1.tgz",

@@ -3,7 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const webpack = require('webpack');
 const envFile = process.env.ENV_FILE || '.env';
-require('dotenv').config({ path: path.resolve(__dirname, envFile) });
+require('dotenv').config({ path: path.resolve(__dirname, envFile), override: false });
 
 const paths = {
   src: path.resolve(__dirname, 'src'),
@@ -15,7 +15,7 @@ const paths = {
 
 function common() {
   return {
-    mode: 'development',
+    mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
     output: {
       publicPath: '/',
     },
@@ -100,6 +100,8 @@ function common() {
               ignore: ['**/main.*'],
             },
           },
+          { from: path.resolve(paths.src, '_headers'), to: paths.build },
+          { from: path.resolve(paths.src, '_redirects'), to: paths.build },
         ],
       }),
     ],
