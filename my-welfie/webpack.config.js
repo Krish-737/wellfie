@@ -15,7 +15,7 @@ const paths = {
 
 function common() {
   return {
-    mode: 'development',
+    mode: 'production',
     output: {
       publicPath: '/',
     },
