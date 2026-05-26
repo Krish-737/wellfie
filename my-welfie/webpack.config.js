@@ -105,7 +105,7 @@ function common() {
             from: path.resolve(paths.node_modules, '@biosensesignal/web-sdk/dist'),
             to: path.resolve(paths.build),
             globOptions: {
-              ignore: ['**/main.*'],
+             ignore: ['**/main.*', '**/_headers', '**/_redirects']
             },
           },
           { from: path.resolve(paths.src, '_headers'), to: paths.build },
