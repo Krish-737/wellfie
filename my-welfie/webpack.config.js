@@ -3,7 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const webpack = require('webpack');
 const envFile = process.env.ENV_FILE || '.env';
-require('dotenv').config({ path: path.resolve(__dirname, envFile) });
+require('dotenv').config({ path: path.resolve(__dirname, envFile), override: false });
 
 const paths = {
   src: path.resolve(__dirname, 'src'),
