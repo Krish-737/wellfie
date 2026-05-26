@@ -18,6 +18,10 @@ function common() {
     mode: 'production',
     output: {
       publicPath: '/',
+      path: paths.build, // Added explicitly for clarity
+      filename: '[name].js',
+      publicPath: '/',
+      crossOriginLoading: 'anonymous'
     },
     devtool: 'cheap-module-source-map',
     devServer: {
