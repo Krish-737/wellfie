@@ -1,25 +1,10 @@
 """
-My Wellfie — Health Scan PDF Report Generator  v3.0
+My Wellfie — Health Scan PDF Report Generator  v3.1
 =====================================================
-Produces a clean, accurate, clinical-grade A4 PDF using all 34 scan fields.
-
-Layout
-------
-  Page 1  : Header + Patient summary bar + Vital Signs overview cards
-            + Cardiovascular section + Respiratory section
-  Page 2  : HRV / Autonomic section + Stress & Wellness section
-  Page 3  : Metabolic / Bloodless Biomarkers + Risk Scores + ASCVD
-            + Scan Quality notes + Footer
-
-Design rules
-------------
-  • Teal (#0f766e) brand colour throughout
-  • Every nullable field renders "—" gracefully — never crashes
-  • All enum values are mapped to human labels before display
-  • Status pills colour-coded: green=good, amber=watch, red=act, grey=unknown
-  • Interactive hyperlinks on "Learn more" text (opens in browser)
-  • Logo loaded from disk if found, text fallback otherwise
-  • Page numbers + disclaimer on every footer
+Changes from v3.0:
+  - STATUS column removed; status text embedded into YOUR RESULT column
+  - Description moved from sub-row into dedicated INDICATOR EXPLANATION column
+  - 4-column layout: INDICATOR | YOUR RESULT | TARGET RANGE | INDICATOR EXPLANATION
 """
 
 from __future__ import annotations
@@ -57,13 +42,13 @@ GREY_BG     = colors.HexColor("#f1f5f9")
 LINK_BLUE   = colors.HexColor("#2563eb")
 
 # ── Page geometry ──────────────────────────────────────────────────────────────
-W, H        = A4            # 595.28 x 841.89 pt
+W, H        = A4
 ML          = 18 * mm
 MR          = 18 * mm
-CW          = W - ML - MR   # usable content width
+CW          = W - ML - MR
 HEADER_H    = 44 * mm
 FOOTER_H    = 16 * mm
-TOP_Y       = H - HEADER_H  # y-cursor starts here after header
+TOP_Y       = H - HEADER_H
 
 DEFAULT_LOGO_PATH = r"C:\Users\KishorekumarS\Downloads\my-welfie-2\my-welfie-2\my-welfie-backend\app\services\mywellfie-header-logo.png"
 
@@ -74,23 +59,19 @@ STRESS_LABEL = {None: "—", 0: "Unknown", 1: "Very Low", 2: "Low",
                 3: "Normal", 4: "High",  5: "Extreme"}
 WELLNESS_LABEL = {None: "—", 0: "Unknown", 1: "Low", 2: "Normal", 3: "High"}
 
-# ── Status → colour mapping ────────────────────────────────────────────────────
-_GOOD    = {"Low", "Very Low", "Normal", "Optimal", "Healthy", "Good", "High (SpO2)"}
-_WATCH   = {"Medium", "Moderate", "Elevated", "High (Stress)", "Low (HRV)"}
-_BAD     = {"High", "Extreme", "Critical"}
+# ── Status colour sets (used only for colouring the result text) ───────────────
+_GOOD  = {"Low", "Very Low", "Normal", "Optimal", "Healthy", "Good", "High (SpO2)"}
+_WATCH = {"Medium", "Moderate", "Elevated", "High (Stress)", "Low (HRV)"}
+_BAD   = {"High", "Extreme", "Critical"}
 
-def _pill_colors(label: str):
-    """Return (bg, fg) for a status pill."""
-    if label in _GOOD:
-        return GREEN_BG, GREEN
-    if label in _WATCH:
-        return AMBER_BG, AMBER
-    if label in _BAD:
-        return RED_BG, RED
-    return GREY_BG, SLATE_500
+def _status_color(label: str):
+    """Return a foreground color based on status label."""
+    if label in _GOOD:  return GREEN
+    if label in _WATCH: return AMBER
+    if label in _BAD:   return RED
+    return SLATE_900
 
 def _risk_pill(risk_int):
-    """Map 0-3 risk integer → human label."""
     return RISK_LABEL.get(risk_int, "—")
 
 def _fmt(value, decimals: int = 1) -> str:
@@ -115,6 +96,14 @@ def _int(value) -> str:
 # ══════════════════════════════════════════════════════════════════════════════
 
 class ReportBuilder:
+
+    # ── Column positions — 4-column layout ────────────────────────────────────
+    # INDICATOR(35mm) | YOUR RESULT(30mm) | TARGET RANGE(25mm) | EXPLANATION(rest)
+    COL_NAME = ML
+    COL_VAL  = ML + 38 * mm
+    COL_TGT  = ML + 70 * mm
+    COL_DESC = ML + 100 * mm
+
     def __init__(self, scan: Any, user_name: str, user_email: str,
                  logo_path: str = DEFAULT_LOGO_PATH):
         self.scan       = scan
@@ -122,14 +111,13 @@ class ReportBuilder:
         self.user_email = user_email
         self.logo_path  = logo_path
 
-        self.buf        = io.BytesIO()
+        self.buf  = io.BytesIO()
         from reportlab.pdfgen import canvas as rl_canvas
-        self.c          = rl_canvas.Canvas(self.buf, pagesize=A4)
+        self.c    = rl_canvas.Canvas(self.buf, pagesize=A4)
         self.c.setTitle("My Wellfie — Digital Health Scan Report")
-        self.page_num   = 1
-        self.y          = TOP_Y   # current vertical cursor
+        self.page_num = 1
+        self.y    = TOP_Y
 
-        # Paragraph styles
         styles = getSampleStyleSheet()
         self.st_label = ParagraphStyle(
             "Label", parent=styles["Normal"],
@@ -146,17 +134,7 @@ class ReportBuilder:
 
     # ── Primitives ─────────────────────────────────────────────────────────────
 
-    def _pill(self, x: float, y: float, label: str,
-              w: float = 22 * mm, h: float = 4.5 * mm) -> None:
-        """Draw simple bold colored text for status instead of a card-like pill."""
-        _, fg = _pill_colors(label)
-        c = self.c
-        c.setFillColor(fg)
-        c.setFont("Helvetica-Bold", 8)
-        c.drawString(x, y + 1.2 * mm, label.upper())
-
     def _section_bar(self, title: str) -> None:
-        """Simple formal section heading with underline; advances y."""
         self._check_space(10 * mm)
         c = self.c
         c.setFillColor(TEAL)
@@ -167,14 +145,7 @@ class ReportBuilder:
         c.line(ML, self.y - 6.5 * mm, W - MR, self.y - 6.5 * mm)
         self.y -= 10 * mm
 
-    def _h_line(self, alpha: float = 1.0) -> None:
-        c = self.c
-        c.setStrokeColor(SLATE_200)
-        c.setLineWidth(0.4)
-        c.line(ML, self.y, W - MR, self.y)
-
     def _check_space(self, needed: float) -> None:
-        """If not enough vertical room, emit a new page."""
         if self.y - needed < FOOTER_H + 6 * mm:
             self._end_page()
             self._begin_page()
@@ -185,11 +156,9 @@ class ReportBuilder:
         c = self.c
         scan = self.scan
 
-        # Banner
         c.setFillColor(TEAL)
         c.rect(0, H - HEADER_H, W, HEADER_H, fill=1, stroke=0)
 
-        # Logo or text fallback
         if self.logo_path and os.path.exists(self.logo_path):
             try:
                 c.drawImage(self.logo_path, ML, H - 26 * mm,
@@ -199,12 +168,10 @@ class ReportBuilder:
         else:
             self._draw_brand_text()
 
-        # Tagline
         c.setFillColor(TEAL_LIGHT)
         c.setFont("Helvetica", 8.5)
         c.drawString(ML, H - 33 * mm, "Digital Health Scan Report")
 
-        # Right side — patient info cluster
         c.setFillColor(WHITE)
         c.setFont("Helvetica-Bold", 9)
         c.drawRightString(W - MR, H - 14 * mm, self.user_name)
@@ -221,7 +188,6 @@ class ReportBuilder:
         c.setFont("Helvetica-Oblique", 7.5)
         c.drawRightString(W - MR, H - 32 * mm, "Method: Facial optical scan · 40 s duration")
 
-        # Thin accent line
         c.setStrokeColor(TEAL_LIGHT)
         c.setLineWidth(0.6)
         c.line(0, H - HEADER_H, W, H - HEADER_H)
@@ -237,25 +203,21 @@ class ReportBuilder:
         c.setStrokeColor(SLATE_200)
         c.setLineWidth(0.4)
         c.line(ML, FOOTER_H, W - MR, FOOTER_H)
-
         c.setFillColor(SLATE_500)
         c.setFont("Helvetica", 6.5)
         c.drawCentredString(
             W / 2, FOOTER_H - 4 * mm,
             "For informational purposes only. Not a substitute for clinical diagnosis. "
-            "Consult a qualified healthcare professional."
-        )
+            "Consult a qualified healthcare professional.")
         c.drawCentredString(
             W / 2, FOOTER_H - 8 * mm,
-            "Powered by BioSense Core Metrics Framework  ·  Confidential"
-        )
+            "Generated using AI-assisted physiological signal analysis · Confidential")
         c.setFont("Helvetica", 7.5)
         c.setFillColor(SLATE_700)
         c.drawString(ML, FOOTER_H - 6 * mm, f"Page {self.page_num}")
         c.drawRightString(
             W - MR, FOOTER_H - 6 * mm,
-            f"Generated: {datetime.utcnow().strftime('%d %b %Y %H:%M UTC')}"
-        )
+            f"Generated: {datetime.utcnow().strftime('%d %b %Y %H:%M UTC')}")
 
     def _begin_page(self) -> None:
         self._draw_header()
@@ -266,14 +228,7 @@ class ReportBuilder:
         self.c.showPage()
         self.page_num += 1
 
-    # ── Generic metric row ────────────────────────────────────────────────────
-    # Each row: | Indicator name + description | Value | Target | Status pill |
-    #           |<-- 68mm -->|<--- 30mm --->|<--- 30mm --->|<--- 38mm --->|
-
-    COL_NAME  = ML
-    COL_VAL   = ML + 69 * mm
-    COL_TGT   = ML + 100 * mm
-    COL_STAT  = ML + 131 * mm
+    # ── Table header — 4 columns ───────────────────────────────────────────────
 
     def _table_header(self) -> None:
         c = self.c
@@ -282,48 +237,72 @@ class ReportBuilder:
         c.rect(ML, self.y - hh, CW, hh, fill=1, stroke=0)
         c.setFillColor(SLATE_500)
         c.setFont("Helvetica-Bold", 7)
-        c.drawString(self.COL_NAME + 2 * mm,  self.y - 3.8 * mm, "INDICATOR")
-        c.drawString(self.COL_VAL,             self.y - 3.8 * mm, "YOUR RESULT")
-        c.drawString(self.COL_TGT,             self.y - 3.8 * mm, "TARGET RANGE")
-        c.drawString(self.COL_STAT,            self.y - 3.8 * mm, "STATUS")
+        c.drawString(self.COL_NAME + 2 * mm, self.y - 3.8 * mm, "INDICATOR")
+        c.drawString(self.COL_VAL,           self.y - 3.8 * mm, "YOUR RESULT")
+        c.drawString(self.COL_TGT,           self.y - 3.8 * mm, "TARGET RANGE")
+        c.drawString(self.COL_DESC,          self.y - 3.8 * mm, "INDICATOR EXPLANATION")
         self.y -= hh
+
+    # ── Metric row — status embedded in YOUR RESULT, explanation as column ─────
 
     def _metric_row(self, name: str, description: str,
                     value: str, target: str,
-                    status: str, link: str = "",
-                    even: bool = True) -> None:
+                    status: str = "—") -> None:
         """
-        Draw one clean metric row. No background boxes or links.
+        4-column metric row:
+          INDICATOR       — bold name only (no sub-description)
+          YOUR RESULT     — value, with status appended in colour if available
+          TARGET RANGE    — reference range
+          INDICATOR EXPLANATION — the description text as its own column
         """
         c = self.c
-        name_p  = Paragraph(f"<b>{name}</b>", self.st_label)
-        desc_p  = Paragraph(description, self.st_desc)
 
-        name_w, name_h = name_p.wrap(63 * mm, H)
-        desc_w, desc_h = desc_p.wrap(63 * mm, H)
-        row_h = name_h + desc_h + 4 * mm
+        # ── Col 1: Indicator name ──────────────────────────────────────────────
+        name_p = Paragraph(f"<b>{name}</b>", self.st_label)
+        _, name_h = name_p.wrap(34 * mm, H)
+
+        # ── Col 2: Value + status (coloured) ──────────────────────────────────
+        # Build combined value string: "72 bpm\nNormal" — status on new line in colour
+        if status and status not in ("—", ""):
+            stat_color = _status_color(status)
+            # Encode color as hex for Paragraph markup
+            hex_col = "#{:02x}{:02x}{:02x}".format(
+                int(stat_color.red * 255),
+                int(stat_color.green * 255),
+                int(stat_color.blue * 255),
+            )
+            val_html = (
+                f'<b>{value}</b><br/>'
+                f'<font color="{hex_col}"><b>{status}</b></font>'
+            )
+        else:
+            val_html = f"<b>{value}</b>"
+
+        val_p = Paragraph(val_html, self.st_desc)
+        _, val_h = val_p.wrap(27 * mm, H)
+
+        # ── Col 3: Target ──────────────────────────────────────────────────────
+        tgt_p = Paragraph(target, self.st_desc)
+        _, tgt_h = tgt_p.wrap(25 * mm, H)
+
+        # ── Col 4: Explanation ─────────────────────────────────────────────────
+        desc_p = Paragraph(description, self.st_desc)
+        desc_col_w = W - MR - self.COL_DESC          # remaining width to right margin
+        _, desc_h = desc_p.wrap(desc_col_w, H)
+
+        # Row height = tallest column + padding
+        row_h = max(name_h, val_h, tgt_h, desc_h) + 5 * mm
 
         self._check_space(row_h)
 
-        # Name + description
-        name_p.drawOn(c, self.COL_NAME, self.y - name_h - 1 * mm)
-        desc_p.drawOn(c, self.COL_NAME, self.y - name_h - desc_h - 1 * mm)
+        base_y = self.y - 1.5 * mm   # top padding inside row
 
-        # Value
-        c.setFillColor(SLATE_900)
-        c.setFont("Helvetica-Bold", 9.5)
-        c.drawString(self.COL_VAL, self.y - name_h - 1 * mm, value)
+        name_p.drawOn(c, self.COL_NAME, base_y - name_h)
+        val_p.drawOn(c,  self.COL_VAL,  base_y - val_h)
+        tgt_p.drawOn(c,  self.COL_TGT,  base_y - tgt_h)
+        desc_p.drawOn(c, self.COL_DESC, base_y - desc_h)
 
-        # Target
-        c.setFillColor(SLATE_500)
-        c.setFont("Helvetica", 8)
-        c.drawString(self.COL_TGT, self.y - name_h - 1 * mm, target)
-
-        # Status
-        if status and status != "—":
-            self._pill(self.COL_STAT, self.y - name_h - 1.5 * mm, status)
-
-        # Bottom border
+        # Bottom divider
         c.setStrokeColor(SLATE_200)
         c.setLineWidth(0.3)
         c.line(ML, self.y - row_h, W - MR, self.y - row_h)
@@ -344,35 +323,30 @@ class ReportBuilder:
              "A '—' result means the SDK could not produce that metric for this session. Ensure face "
              "is well-lit, device is stable, and follow the preparation checklist before retrying."),
         ]
-
         self._check_space(40 * mm)
         c = self.c
-
         c.setFillColor(TEAL)
         c.setFont("Helvetica-Bold", 8.5)
         c.drawString(ML, self.y - 5 * mm, "SCAN QUALITY NOTES & COMPLIANCE INFORMATION")
         c.setStrokeColor(TEAL)
         c.setLineWidth(0.5)
         c.line(ML, self.y - 6.5 * mm, W - MR, self.y - 6.5 * mm)
-
         ny = self.y - 12 * mm
         for title, body in notes:
             p = Paragraph(f"<b>{title}:</b> {body}", self.st_note)
             _, ph = p.wrap(CW, H)
             p.drawOn(c, ML, ny - ph)
             ny -= ph + 3 * mm
-
         self.y = ny - 5 * mm
 
-    # ── Main build method ─────────────────────────────────────────────────────
+    # ── Build ──────────────────────────────────────────────────────────────────
 
     def build(self) -> bytes:
         s = self.scan
 
-        # ── PAGE 1 ─────────────────────────────────────────────────────────────
+        # ══ PAGE 1 ════════════════════════════════════════════════════════════
         self._begin_page()
 
-        # Patient summary strip - Simple text no background
         c = self.c
         c.setFillColor(SLATE_900)
         c.setFont("Helvetica-Bold", 10)
@@ -391,62 +365,56 @@ class ReportBuilder:
         self._section_bar("1 · Cardiovascular")
         self._table_header()
 
-        bp_val = (f"{_fmt(s.blood_pressure_systolic,0)} / {_fmt(s.blood_pressure_diastolic,0)}"
-                  if s.blood_pressure_systolic else "—")
-        bp_status = _risk_pill(getattr(s,"high_blood_pressure_risk",None))
+        bp_val = (
+            f"{_fmt(s.blood_pressure_systolic,0)} / {_fmt(s.blood_pressure_diastolic,0)} mmHg"
+            if getattr(s, "blood_pressure_systolic", None) else "—"
+        )
+        bp_status = _risk_pill(getattr(s, "high_blood_pressure_risk", None))
 
         rows_cardio = [
             ("Heart Rate",
-             "Resting heart beats per minute. Normal adults: 60–100 bpm.",
-             f"{_fmt(s.pulse_rate,0)} bpm", "60–100 bpm", "—",
-             "https://mywellfie.com/hr-info"),
+             "Heart Rate reflects the number of heart beats per minute. Healthy resting values for most adults typically range between 60–100 bpm.",
+             f"{_fmt(s.pulse_rate,0)} bpm", "60–100 bpm", "—"),
             ("Blood Pressure",
-             "Systolic (contraction) / Diastolic (rest) pressure. Stage 1 hypertension: ≥130/80.",
-             bp_val, "<129/80 mmHg", bp_status,
-             "https://mywellfie.com/bp-info"),
+             "Blood Pressure measures the force of blood against artery walls during heart contraction and relaxation phases.",
+             bp_val, "<129/80 mmHg", bp_status),
             ("Pulse Pressure",
-             "Difference between systolic and diastolic. Elevated values suggest arterial stiffness.",
-             f"{_fmt(s.pulse_pressure,0)} mmHg", "25–50 mmHg", "—",
-             "https://mywellfie.com/pulse-pressure"),
+             "Pulse Pressure reflects the difference between systolic and diastolic pressure and may indicate arterial flexibility.",
+             f"{_fmt(s.pulse_pressure,0)} mmHg", "25–50 mmHg", "—"),
             ("Mean Arterial Pressure",
-             "Average perfusion pressure across one cardiac cycle. Critical for organ blood flow.",
-             f"{_fmt(s.mean_arterial_pressure,0)} mmHg", "70–100 mmHg", "—",
-             "https://mywellfie.com/map-info"),
+             "Mean Arterial Pressure estimates the average arterial pressure throughout one cardiac cycle and helps assess tissue perfusion.",
+             f"{_fmt(s.mean_arterial_pressure,0)} mmHg", "70–100 mmHg", "—"),
             ("Cardiac Workload",
-             "Approximates myocardial oxygen demand (Rate-Pressure Product proxy).",
-             _fmt(s.cardiac_workload, 1), "3.9–4.2", "—",
-             "https://mywellfie.com/workload-info"),
+             "Cardiac Workload estimates the physiological demand placed on the heart during circulation.",
+             _fmt(s.cardiac_workload, 1), "3.9–4.2", "—"),
             ("Heart Age",
-             "Framingham model estimate of vascular age vs. chronological age.",
-             f"{_fmt(s.heart_age,0)} yrs", "Match your age", "—",
-             "https://mywellfie.com/heartage-info"),
+             "Heart Age estimates cardiovascular system health relative to expected physiological age using multiple cardiac indicators.",
+             f"{_fmt(s.heart_age,0)} yrs", "Match your age", "—"),
         ]
-        for i, (nm, desc, val, tgt, st, lnk) in enumerate(rows_cardio):
-            self._metric_row(nm, desc, val, tgt, st, lnk, even=(i%2==0))
+        for nm, desc, val, tgt, st in rows_cardio:
+            self._metric_row(nm, desc, val, tgt, st)
         self.y -= 3 * mm
 
         # ── SECTION 2: Respiratory ────────────────────────────────────────────
         self._section_bar("2 · Respiratory")
         self._table_header()
 
-        spo2_val = f"{_fmt(s.oxygen_saturation,1)} %"
-        spo2_status = "High (SpO2)" if (s.oxygen_saturation or 0) >= 95 else "High"
+        spo2_val    = f"{_fmt(s.oxygen_saturation,1)} %"
+        spo2_status = "High (SpO2)" if (getattr(s,"oxygen_saturation",None) or 0) >= 95 else "High"
 
         rows_resp = [
             ("Breathing Rate",
-             "Respiratory cycles per minute at rest. Elevated rate may indicate stress or illness.",
-             f"{_fmt(s.respiration_rate,0)} brpm", "12–20 brpm", "—",
-             "https://mywellfie.com/respiration-info"),
-            ("Oxygen Saturation (SpO\u2082)",
-             "Percentage of haemoglobin carrying oxygen. Below 95% warrants clinical attention.",
-             spo2_val, ">95%", spo2_status,
-             "https://mywellfie.com/spo2-info"),
+             "Breathing Rate reflects the number of respiratory cycles per minute during rest.",
+             f"{_fmt(s.respiration_rate,0)} brpm", "12–20 brpm", "—"),
+            ("Oxygen Saturation (SpO2)",
+             "Oxygen Saturation measures the percentage of oxygen carried by red blood cells throughout the body.",
+             spo2_val, ">95%", spo2_status),
         ]
-        for i, (nm, desc, val, tgt, st, lnk) in enumerate(rows_resp):
-            self._metric_row(nm, desc, val, tgt, st, lnk, even=(i%2==0))
+        for nm, desc, val, tgt, st in rows_resp:
+            self._metric_row(nm, desc, val, tgt, st)
         self.y -= 3 * mm
 
-        # ── PAGE 2 ─────────────────────────────────────────────────────────────
+        # ══ PAGE 2 ════════════════════════════════════════════════════════════
         self._end_page()
         self._begin_page()
 
@@ -454,86 +422,73 @@ class ReportBuilder:
         self._section_bar("3 · HRV & Autonomic Nervous System")
         self._table_header()
 
-        pns_label = ZONE_LABEL.get(getattr(s,"pns_zone",None), "—")
-        sns_label = ZONE_LABEL.get(getattr(s,"sns_zone",None), "—")
+        pns_label = ZONE_LABEL.get(getattr(s, "pns_zone", None), "—")
+        sns_label = ZONE_LABEL.get(getattr(s, "sns_zone", None), "—")
 
         rows_hrv = [
             ("SDNN",
-             "Standard deviation of NN intervals — overall HRV. Low SDNN linked to cardiovascular risk.",
-             f"{_fmt(s.sdnn,1)} ms", "≥50 ms", "Low (HRV)" if (s.sdnn or 999) < 50 else "Normal",
-             "https://mywellfie.com/sdnn-info"),
+             "SDNN is a Heart Rate Variability metric reflecting overall autonomic nervous system adaptability and recovery capacity.",
+             f"{_fmt(s.sdnn,1)} ms", ">=50 ms",
+             "Low (HRV)" if (getattr(s,"sdnn",None) or 999) < 50 else "Normal"),
             ("RMSSD",
-             "Root mean square of successive RR differences — reflects parasympathetic (vagal) tone.",
-             f"{_fmt(s.rmssd,1)} ms", "20–43 ms", "—",
-             "https://mywellfie.com/rmssd-info"),
+             "RMSSD reflects short-term heart rate variability associated with parasympathetic nervous system activity and recovery state.",
+             f"{_fmt(s.rmssd,1)} ms", "20–43 ms", "—"),
             ("Mean RRI",
-             "Average R-R (inter-beat) interval. Longer values imply stronger parasympathetic activity.",
-             f"{_fmt(s.mean_rri,0)} ms", "<1000 ms", "—",
-             "https://mywellfie.com/rri-info"),
+             "Mean RRi represents the average interval between consecutive heartbeats.",
+             f"{_fmt(s.mean_rri,0)} ms", "<1000 ms", "—"),
             ("SD1",
-             "Poincare plot short-axis — immediate beat-to-beat variability (vagal modulation).",
-             f"{_fmt(s.sd1,1)} ms", ">10 ms", "—",
-             "https://mywellfie.com/sd1-info"),
+             "SD1 reflects short-term beat-to-beat variability associated with autonomic regulation.",
+             f"{_fmt(s.sd1,1)} ms", ">10 ms", "—"),
             ("SD2",
-             "Poincare plot long-axis — slower, longer-term HRV (sympatho-vagal balance).",
-             f"{_fmt(s.sd2,1)} ms", ">20 ms", "—",
-             "https://mywellfie.com/sd2-info"),
+             "SD2 reflects long-term variability patterns associated with cardiovascular adaptability.",
+             f"{_fmt(s.sd2,1)} ms", ">20 ms", "—"),
             ("LF/HF Ratio",
-             "Ratio of low-frequency to high-frequency HRV power — sympatho-vagal balance index.",
-             _fmt(s.lfhf, 2), "0.5–2.0", "—",
-             "https://mywellfie.com/lfhf-info"),
+             "LF/HF Ratio reflects the balance between sympathetic and parasympathetic nervous system activity.",
+             _fmt(s.lfhf, 2), "0.5–2.0", "—"),
             ("PRQ",
-             "Pulse-Respiration Quotient — efficiency of heart-lung coordination.",
-             _fmt(s.prq, 1), "~5", "—",
-             "https://mywellfie.com/prq-info"),
+             "PRQ reflects the coordination efficiency between respiratory and cardiovascular activity.",
+             _fmt(s.prq, 1), "~5", "—"),
             ("PNS Index / Zone",
-             "Parasympathetic nervous system activity. Higher = more rest-and-digest tone.",
-             f"{_fmt(s.pns_index,2)} / {pns_label}", "Normal zone", pns_label,
-             "https://mywellfie.com/pns-info"),
+             "PNS Index estimates parasympathetic nervous system activity associated with recovery and relaxation responses.",
+             f"{_fmt(s.pns_index,2)} / {pns_label}", "Normal zone", pns_label),
             ("SNS Index / Zone",
-             "Sympathetic nervous system activity. Elevated = fight-or-flight dominance.",
-             f"{_fmt(s.sns_index,2)} / {sns_label}", "Normal zone", sns_label,
-             "https://mywellfie.com/sns-info"),
+             "SNS Index estimates sympathetic nervous system activity associated with physiological stress response.",
+             f"{_fmt(s.sns_index,2)} / {sns_label}", "Normal zone", sns_label),
         ]
-        for i, (nm, desc, val, tgt, st, lnk) in enumerate(rows_hrv):
-            self._metric_row(nm, desc, val, tgt, st, lnk, even=(i%2==0))
+        for nm, desc, val, tgt, st in rows_hrv:
+            self._metric_row(nm, desc, val, tgt, st)
         self.y -= 3 * mm
 
         # ── SECTION 4: Stress & Wellness ──────────────────────────────────────
         self._section_bar("4 · Stress & Wellness")
         self._table_header()
 
-        stress_label   = STRESS_LABEL.get(getattr(s,"stress_level",None), "—")
-        wellness_label = WELLNESS_LABEL.get(getattr(s,"wellness_level",None), "—")
+        stress_label   = STRESS_LABEL.get(getattr(s, "stress_level", None), "—")
+        wellness_label = WELLNESS_LABEL.get(getattr(s, "wellness_level", None), "—")
 
         rows_stress = [
             ("Stress Level",
-             "Baevsky Stress Index classification. Reflects how the ANS handles homeostatic load.",
+             "Stress Level reflects autonomic nervous system activity and the body's physiological response to stress.",
              stress_label, "Low / Normal",
-             "High (Stress)" if stress_label in ("High","Extreme") else stress_label,
-             "https://mywellfie.com/stress-labs"),
+             "High (Stress)" if stress_label in ("High","Extreme") else stress_label),
             ("Stress Index (raw)",
-             "Non-negative mathematical index of sympathetic nervous system dominance.",
-             _fmt(s.stress_index, 0), "<150", "—",
-             "https://mywellfie.com/stress-index"),
+             "Stress Index is a numerical representation of autonomic nervous system load and cardiovascular stress adaptation.",
+             _fmt(s.stress_index, 0), "<150", "—"),
             ("Normalised Stress Index",
-             "Stress Index scaled to 0–100 for cross-session comparison.",
-             f"{_fmt(s.normalized_stress_index,0)}%", "<40%", "—",
-             "https://mywellfie.com/stress-normalized"),
+             "Normalized Stress Index scales physiological stress measurements into a standardized percentage range.",
+             f"{_fmt(s.normalized_stress_index,0)}%", "<40%", "—"),
             ("Wellness Level",
-             "Overall cardiovascular wellness classification derived from combined vital signals.",
-             wellness_label, "Normal / High", wellness_label,
-             "https://mywellfie.com/wellness-info"),
+             "Wellness Level represents overall physiological balance derived from multiple cardiovascular indicators.",
+             wellness_label, "Normal / High", wellness_label),
             ("Wellness Index",
-             "Numeric wellness score (Binah model) predicting 5–10 year cardiovascular risk.",
-             _fmt(s.wellness_index, 1), ">6", "—",
-             "https://mywellfie.com/wellness-index"),
+             "Wellness Index is a composite physiological wellness indicator associated with cardiovascular balance and recovery efficiency.",
+             _fmt(s.wellness_index, 1), ">6", "—"),
         ]
-        for i, (nm, desc, val, tgt, st, lnk) in enumerate(rows_stress):
-            self._metric_row(nm, desc, val, tgt, st, lnk, even=(i%2==0))
+        for nm, desc, val, tgt, st in rows_stress:
+            self._metric_row(nm, desc, val, tgt, st)
         self.y -= 3 * mm
 
-        # ── PAGE 3 ─────────────────────────────────────────────────────────────
+        # ══ PAGE 3 ════════════════════════════════════════════════════════════
         self._end_page()
         self._begin_page()
 
@@ -541,101 +496,130 @@ class ReportBuilder:
         self._section_bar("5 · Metabolic & Bloodless Biomarkers")
         self._table_header()
 
-        hba1c_risk  = _risk_pill(getattr(s,"high_hemoglobin_a1c_risk",None))
-        hgb_risk    = _risk_pill(getattr(s,"low_hemoglobin_risk",None))
+        hba1c_risk = _risk_pill(getattr(s, "high_hemoglobin_a1c_risk", None))
+        hgb_risk   = _risk_pill(getattr(s, "low_hemoglobin_risk", None))
 
         rows_meta = [
             ("Haemoglobin A1c (HbA1c)",
-             "3-month average blood glucose proxy. Pre-diabetes: 5.7–6.4%. Diabetes: ≥6.5%.",
-             f"{_fmt(s.hemoglobin_a1c,1)}%", "<5.7%", hba1c_risk,
-             "https://mywellfie.com/hba1c-biomarker"),
+             "HbA1c reflects average blood glucose levels over the previous 2–3 months.",
+             f"{_fmt(s.hemoglobin_a1c,1)}%", "<5.7%", hba1c_risk),
             ("Haemoglobin",
-             "Blood haemoglobin concentration. Low levels indicate anaemia risk.",
-             f"{_fmt(s.hemoglobin,1)} g/dL", "M: 14–18 / F: 12–16 g/dL", hgb_risk,
-             "https://mywellfie.com/hemoglobin-biomarker"),
+             "Haemoglobin is responsible for transporting oxygen throughout the body.",
+             f"{_fmt(s.hemoglobin,1)} g/dL", "M: 14–18 / F: 12–16 g/dL", hgb_risk),
         ]
-        for i, (nm, desc, val, tgt, st, lnk) in enumerate(rows_meta):
-            self._metric_row(nm, desc, val, tgt, st, lnk, even=(i%2==0))
+        for nm, desc, val, tgt, st in rows_meta:
+            self._metric_row(nm, desc, val, tgt, st)
         self.y -= 3 * mm
 
         # ── SECTION 6: Cardio-Metabolic Risk Scores ───────────────────────────
         self._section_bar("6 · Cardio-Metabolic Risk Scores")
         self._table_header()
 
-        ascvd_level = _risk_pill(getattr(s,"ascvd_risk_level",None))
-
         rows_risk = [
             ("High Blood Pressure Risk",
-             "Probability that systolic/diastolic readings exceed clinical hypertension threshold.",
+             "Indicates whether measured blood pressure values exceed standard healthy thresholds.",
              _risk_pill(getattr(s,"high_blood_pressure_risk",None)), "Low",
-             _risk_pill(getattr(s,"high_blood_pressure_risk",None)),
-             "https://mywellfie.com/hbp-info"),
+             _risk_pill(getattr(s,"high_blood_pressure_risk",None))),
             ("High HbA1c Risk",
-             "Risk that HbA1c level exceeds 5.7% — early indicator of insulin resistance.",
+             "Indicates whether HbA1c values exceed standard glucose regulation thresholds.",
              _risk_pill(getattr(s,"high_hemoglobin_a1c_risk",None)), "Low",
-             _risk_pill(getattr(s,"high_hemoglobin_a1c_risk",None)),
-             "https://mywellfie.com/hba1c-info"),
+             _risk_pill(getattr(s,"high_hemoglobin_a1c_risk",None))),
             ("High Fasting Glucose Risk",
-             "Risk of impaired fasting glucose (≥100 mg/dL). Disregard if not fasting ≥8 hrs.",
+             "Indicates whether fasting glucose values may exceed recommended healthy ranges.",
              _risk_pill(getattr(s,"high_fasting_glucose_risk",None)), "Low",
-             _risk_pill(getattr(s,"high_fasting_glucose_risk",None)),
-             "https://mywellfie.com/glucose-info"),
+             _risk_pill(getattr(s,"high_fasting_glucose_risk",None))),
             ("High Total Cholesterol Risk",
-             "Risk of total cholesterol exceeding 200 mg/dL — cardiovascular disease marker.",
+             "Indicates whether total cholesterol values may exceed recommended healthy ranges.",
              _risk_pill(getattr(s,"high_total_cholesterol_risk",None)), "Low",
-             _risk_pill(getattr(s,"high_total_cholesterol_risk",None)),
-             "https://mywellfie.com/cholesterol-info"),
+             _risk_pill(getattr(s,"high_total_cholesterol_risk",None))),
             ("Low Haemoglobin Risk",
-             "Risk of haemoglobin dropping below normal — anaemia screening indicator.",
+             "Indicates whether haemoglobin levels may fall below recommended healthy ranges.",
              _risk_pill(getattr(s,"low_hemoglobin_risk",None)), "Low",
-             _risk_pill(getattr(s,"low_hemoglobin_risk",None)),
-             "https://mywellfie.com/hemoglobin-info"),
+             _risk_pill(getattr(s,"low_hemoglobin_risk",None))),
         ]
-        for i, (nm, desc, val, tgt, st, lnk) in enumerate(rows_risk):
-            self._metric_row(nm, desc, val, tgt, st, lnk, even=(i%2==0))
+        for nm, desc, val, tgt, st in rows_risk:
+            self._metric_row(nm, desc, val, tgt, st)
         self.y -= 3 * mm
 
-        # ── SECTION 7: ASCVD 10-Year Risk ────────────────────────────────────
+        # ── SECTION 7: ASCVD ──────────────────────────────────────────────────
         self._section_bar("7 · ASCVD 10-Year Cardiovascular Risk")
         self._table_header()
 
+        ascvd_level = _risk_pill(getattr(s, "ascvd_risk_level", None))
+
         rows_ascvd = [
             ("ASCVD Risk Score",
-             "Framingham-based probability of an adverse cardiovascular event within 10 years.",
-             f"{_fmt(s.ascvd_risk,1)}%", "<10% (Low)", ascvd_level,
-             "https://mywellfie.com/ascvd-info"),
+             "ASCVD Risk estimates the likelihood of future cardiovascular events based on multiple physiological indicators.",
+             f"{_fmt(s.ascvd_risk,1)}%", "<10% (Low)", ascvd_level),
             ("ASCVD Risk Level",
-             "Stratified risk category derived from the ASCVD percentage score.",
-             ascvd_level, "Low", ascvd_level,
-             "https://mywellfie.com/ascvd-info"),
+             "ASCVD Risk Level categorizes cardiovascular risk into generalized severity groups.",
+             ascvd_level, "Low", ascvd_level),
             ("Heart Age",
-             "Vascular age estimate vs. your chronological age using Framingham Heart Age model.",
-             f"{_fmt(s.heart_age,0)} yrs", "Match your age", "—",
-             "https://mywellfie.com/heartage-info"),
+             "Heart Age estimates cardiovascular system health relative to expected physiological age.",
+             f"{_fmt(s.heart_age,0)} yrs", "Match your age", "—"),
         ]
-        for i, (nm, desc, val, tgt, st, lnk) in enumerate(rows_ascvd):
-            self._metric_row(nm, desc, val, tgt, st, lnk, even=(i%2==0))
+        for nm, desc, val, tgt, st in rows_ascvd:
+            self._metric_row(nm, desc, val, tgt, st)
         self.y -= 5 * mm
 
-        # ── Notes & Compliance box ────────────────────────────────────────────
+        # ── Notes & Compliance ────────────────────────────────────────────────
         self._notes_box()
 
-        # Commit
         self._end_page()
         self.c.save()
         return self.buf.getvalue()
 
 
-# ── Public entry point (called by reports.py router) ─────────────────────────
+# ── Public entry point ────────────────────────────────────────────────────────
 
-def build_scan_pdf(
-    scan: Any,
-    user_name: str,
-    user_email: str,
-    logo_path: str = DEFAULT_LOGO_PATH,
-) -> bytes:
-    """
-    Generate a full A4 health report PDF and return it as raw bytes.
-    Called by routers/reports.py for both download and email delivery.
-    """
+def build_scan_pdf(scan: Any, user_name: str, user_email: str,
+                   logo_path: str = DEFAULT_LOGO_PATH) -> bytes:
     return ReportBuilder(scan, user_name, user_email, logo_path).build()
+
+
+# ── Sample runner ─────────────────────────────────────────────────────────────
+
+class _Sample:
+    id = "abc12345"
+    scanned_at = None
+    pulse_rate = 72
+    blood_pressure_systolic  = 118
+    blood_pressure_diastolic = 76
+    pulse_pressure           = 42
+    mean_arterial_pressure   = 90
+    cardiac_workload         = 4.1
+    heart_age                = 34
+    respiration_rate         = 15
+    oxygen_saturation        = 98.2
+    sdnn        = 62.4
+    rmssd       = 38.1
+    mean_rri    = 833
+    sd1         = 27.0
+    sd2         = 83.5
+    lfhf        = 1.2
+    prq         = 4.9
+    pns_index   = 0.45
+    pns_zone    = 2
+    sns_index   = -0.30
+    sns_zone    = 2
+    stress_index              = 120
+    stress_level              = 3
+    normalized_stress_index   = 32
+    wellness_index            = 7.2
+    wellness_level            = 3
+    hemoglobin_a1c            = 5.3
+    hemoglobin                = 15.6
+    ascvd_risk                = 4.7
+    ascvd_risk_level          = 1
+    high_blood_pressure_risk  = 1
+    high_hemoglobin_a1c_risk  = 1
+    low_hemoglobin_risk       = 1
+    high_fasting_glucose_risk = 1
+    high_total_cholesterol_risk = 1
+
+if __name__ == "__main__":
+    pdf = build_scan_pdf(_Sample(), "Alex Johnson", "alex.johnson@example.com", logo_path="")
+    out = "/mnt/user-data/outputs/mywellfie_report_v31.pdf"
+    with open(out, "wb") as f:
+        f.write(pdf)
+    print(f"Saved → {out}  ({len(pdf):,} bytes)")
