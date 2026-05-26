@@ -39,11 +39,12 @@ import ScanWarningToast from './scan-alerts/ScanWarningToast';
 import Loader from './Loader';
 import Mask from '../assets/mask.svg';
 const MonitorWrapper = styled(Flex)<{ isSettingsOpen: boolean }>`
+  position: relative;
   flex-direction: column;
   width: 100%;
+  flex: 1;
   justify-content: start;
   align-items: center;
-  flex: 1;
   z-index: ${({ isSettingsOpen }) => isSettingsOpen && '-1'};
   ${media.tablet`
     width: fit-content;
@@ -52,13 +53,15 @@ const MonitorWrapper = styled(Flex)<{ isSettingsOpen: boolean }>`
 `;
 
 const MeasurementContentWrapper = styled(Flex)<{ isMobile: boolean }>`
-  width: auto;
+  width: 100%;
   height: ${({ isMobile }) => isMobile && '100%'};
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
+  box-sizing: border-box;
   ${media.mobile`
-    margin: 20px 0 40px 0;
+    margin: 16px 0 32px 0;
+    padding: 0 16px;
   `}
 `;
 
@@ -165,6 +168,7 @@ const BiosenseSignalMonitor = ({
   const [startMeasuring, setStartMeasuring] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [videoReady, setVideoReady] = useState<boolean>(false);
+  const [sessionVersion, setSessionVersion] = useState(0);
   const [loadingTimeoutPromise, setLoadingTimeoutPromise] = useState<number>();
   const isPageVisible = usePageVisibility();
   const [processingTime] = useMeasurementDuration();
@@ -195,6 +199,7 @@ const BiosenseSignalMonitor = ({
     null,
     startMeasuring,
     sdkUserInformation,
+    sessionVersion,
   );
   const prevSessionState = usePrevious(sessionState);
   const navigate = useNavigate();
@@ -285,6 +290,15 @@ const BiosenseSignalMonitor = ({
   }, [finalReport]);
 
   useEffect(() => {
+    // When the settings menu is closed, reset the video ready state 
+    // and increment sessionVersion to trigger a fresh SDK session.
+    if (!isSettingsOpen) {
+      setSessionVersion(v => v + 1);
+      setVideoReady(false);
+    }
+  }, [isSettingsOpen]);
+
+  useEffect(() => {
     setVideoReady(false);
   }, [cameraId]);
 
@@ -303,17 +317,36 @@ const BiosenseSignalMonitor = ({
 
   const mobile = useMemo(() => isMobile(), []);
   const desktop = useMemo(() => !isTablet() && !isMobile(), []);
+// ── Early return AFTER all hooks ─────────────────────────────────────────
+if (!showMonitor) {
+  return null;
+}
 
-  // ── Early return AFTER all hooks ─────────────────────────────────────────
-  if (!showMonitor) {
-    return null;
-  }
+const isReadyForInteraction = 
+  videoReady && 
+  (sessionState === SessionState.ACTIVE || sessionState === SessionState.MEASURING);
 
-  return (
-    <>
-      <TopBar onSettingsClick={onSettingsClick} isMeasuring={isMeasuring()} />
-      <MonitorWrapper isSettingsOpen={isSettingsOpen}>
-        <MeasurementContentWrapper isMobile={mobile}>
+return (
+  <>
+    <TopBar onSettingsClick={onSettingsClick} isMeasuring={isMeasuring()} />
+    <MonitorWrapper isSettingsOpen={isSettingsOpen}>
+      {/* Full-page Loader (relative to MonitorWrapper) */}
+      {!isReadyForInteraction && licenseKey && <Loader />}
+
+      <MeasurementContentWrapper isMobile={mobile}>
+        {/* Progress bar — moved to top for better visibility */}
+        {isMeasuring() && (
+          <div
+            style={{
+              width: '100%',
+              maxWidth: desktop ? '800px' : '100%',
+              marginBottom: 24,
+              padding: 0,
+            }}
+          >
+            <Timer started={true} durationSeconds={processingTime} />
+          </div>
+        )}
           <VideoAndStatsWrapper isMobile={mobile}>
             <VideoWrapper>
               <BlurOverlay maskUrl={Mask} isDesktop={desktop} />
@@ -334,16 +367,10 @@ const BiosenseSignalMonitor = ({
               />
             )}
             {isMeasuring() && <InfoAlert message={info.message} />}
-            {!videoReady && licenseKey && <Loader />}
           </VideoAndStatsWrapper>
 
           {/* ── Control panel below video ── */}
           <ControlPanel>
-            {/* Progress bar — only visible while actively scanning */}
-            {isMeasuring() && (
-              <Timer started={true} durationSeconds={processingTime} />
-            )}
-
             {/* SDK initialising — show subtle status instead of the button */}
             {sessionState === undefined && (
               <div style={{

@@ -46,6 +46,18 @@ const BrainIcon = () => (
   </svg>
 );
 
+const WellnessIcon = () => (
+  <svg width="22" height="22" fill="none" stroke="#14b8a6" strokeWidth="2" viewBox="0 0 24 24">
+    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+const LungsIcon = () => (
+  <svg width="22" height="22" fill="none" stroke="#14b8a6" strokeWidth="2" viewBox="0 0 24 24">
+    <path d="M7 3C4.23858 3 2 5.23858 2 8V12C2 14.7614 4.23858 17 7 17H8V21H16V17H17C19.7614 17 22 14.7614 22 12V8C22 5.23858 19.7614 3 17 3H14V7H10V3H7Z" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
 const DownloadIcon = () => (
   <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -103,6 +115,19 @@ function stressStatus(v?: number | null): { label: string; color: string; bg: st
   if (v <= 2) return { label: 'Low', color: '#166534', bg: '#f0fdf4' };
   if (v <= 3) return { label: 'Moderate', color: '#92400e', bg: '#fffbeb' };
   return { label: 'Higher Stress', color: '#991b1b', bg: '#fef2f2' };
+}
+
+function wellnessStatus(v?: number | null): { label: string; color: string; bg: string } {
+  if (v == null) return { label: '—', color: '#64748b', bg: '#f1f5f9' };
+  if (v >= 7.5) return { label: 'Excellent', color: '#166534', bg: '#f0fdf4' };
+  if (v >= 6) return { label: 'Good', color: '#0f766e', bg: '#f0fdfa' };
+  return { label: 'Fair', color: '#92400e', bg: '#fffbeb' };
+}
+
+function respStatus(v?: number | null): { label: string; color: string; bg: string } {
+  if (v == null) return { label: '—', color: '#64748b', bg: '#f1f5f9' };
+  if (v >= 12 && v <= 20) return { label: 'Normal', color: '#166534', bg: '#f0fdf4' };
+  return { label: 'Out of range', color: '#991b1b', bg: '#fef2f2' };
 }
 
 // ── Time-ago formatter ────────────────────────────────────────────────────────
@@ -309,38 +334,68 @@ const DashboardPage: React.FC = () => {
 
   const userInitial = useMemo(() => firstName.charAt(0).toUpperCase(), [firstName]);
 
-  const metrics = useMemo(() => [
-    {
-      icon: <HeartIcon />,
-      label: 'PULSE',
-      value: latest?.pulse_rate != null ? `${Math.round(latest.pulse_rate)}` : '--',
-      unit: 'bpm',
-      status: pulseStatus(latest?.pulse_rate),
-    },
-    {
-      icon: <WaveIcon />,
-      label: 'BLOOD PRESSURE',
-      value: latest?.blood_pressure_systolic != null && latest?.blood_pressure_diastolic != null
-        ? `${Math.round(latest.blood_pressure_systolic)}/${Math.round(latest.blood_pressure_diastolic)}`
-        : '--',
-      unit: 'mmHg',
-      status: bpStatus(latest?.blood_pressure_systolic),
-    },
-    {
-      icon: <WindIcon />,
-      label: 'SPO2',
-      value: latest?.oxygen_saturation != null ? `${Math.round(latest.oxygen_saturation)}` : '--',
-      unit: '%',
-      status: spo2Status(latest?.oxygen_saturation),
-    },
-    {
-      icon: <BrainIcon />,
-      label: 'STRESS LEVEL',
-      value: latest?.stress_level != null ? `${Math.round(latest.stress_level)}` : '--',
-      unit: '/100',
-      status: stressStatus(latest?.stress_level),
-    },
-  ], [latest]);
+  const metrics = useMemo(() => {
+    const candidates = [
+      {
+        icon: <HeartIcon />,
+        label: 'PULSE',
+        value: latest?.pulse_rate != null ? `${Math.round(latest.pulse_rate)}` : null,
+        unit: 'bpm',
+        status: pulseStatus(latest?.pulse_rate),
+      },
+      {
+        icon: <WaveIcon />,
+        label: 'BLOOD PRESSURE',
+        value: latest?.blood_pressure_systolic != null && latest?.blood_pressure_diastolic != null
+          ? `${Math.round(latest.blood_pressure_systolic)}/${Math.round(latest.blood_pressure_diastolic)}`
+          : null,
+        unit: 'mmHg',
+        status: bpStatus(latest?.blood_pressure_systolic),
+      },
+      {
+        icon: <WindIcon />,
+        label: 'SPO2',
+        value: latest?.oxygen_saturation != null ? `${Math.round(latest.oxygen_saturation)}` : null,
+        unit: '%',
+        status: spo2Status(latest?.oxygen_saturation),
+      },
+      {
+        icon: <BrainIcon />,
+        label: 'STRESS LEVEL',
+        value: latest?.stress_level != null ? `${Math.round(latest.stress_level)}` : null,
+        unit: '/100',
+        status: stressStatus(latest?.stress_level),
+      },
+      {
+        icon: <WellnessIcon />,
+        label: 'WELLNESS INDEX',
+        value: latest?.wellness_index != null ? `${latest.wellness_index.toFixed(1)}` : null,
+        unit: '/10',
+        status: wellnessStatus(latest?.wellness_index),
+      },
+      {
+        icon: <LungsIcon />,
+        label: 'RESPIRATION',
+        value: latest?.respiration_rate != null ? `${Math.round(latest.respiration_rate)}` : null,
+        unit: 'brpm',
+        status: respStatus(latest?.respiration_rate),
+      },
+    ];
+
+    // Filter to only those with values
+    const available = candidates.filter(m => m.value !== null);
+    
+    // If we have fewer than 4 available, pad with the null ones from the original set
+    if (available.length < 4) {
+      const remaining = candidates.filter(m => m.value === null);
+      return [...available, ...remaining.slice(0, 4 - available.length)].map(m => ({
+        ...m,
+        value: m.value || '--'
+      }));
+    }
+
+    return available.slice(0, 4);
+  }, [latest]);
 
   // ── Styles ────────────────────────────────────────────────────────────────
 

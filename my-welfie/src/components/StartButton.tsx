@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import Stop from '../assets/stop.svg';
 import media from '../style/media';
 import Spinner from './Spinner';
 
@@ -42,36 +41,6 @@ const MeasureButton = styled.button`
   }
 `;
 
-const StopButton = styled.button`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #fee2e2;
-  border: 2px solid #fca5a5;
-  border-radius: 50%;
-  cursor: pointer;
-  width: 58px;
-  height: 58px;
-  padding: 0;
-  transition: background 0.15s;
-  ${media.tablet`
-    width: 72px;
-    height: 72px;
-  `}
-  &:hover {
-    background: #fecaca;
-  }
-`;
-
-const StopIcon = styled.img`
-  width: 28px;
-  height: 28px;
-  ${media.tablet`
-    width: 32px;
-    height: 32px;
-  `}
-`;
-
 export interface IStartButton {
   isLoading;
   onClick: () => void;
@@ -84,9 +53,7 @@ const StartButton = ({ isLoading, onClick, isMeasuring }: IStartButton) => {
       {isLoading ? (
         <Spinner />
       ) : isMeasuring ? (
-        <StopButton onClick={onClick} title="Stop scan">
-          <StopIcon src={Stop} />
-        </StopButton>
+        null
       ) : (
         <MeasureButton onClick={onClick}>
           Measure Now

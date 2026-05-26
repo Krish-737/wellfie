@@ -25,6 +25,7 @@ Privacy & security controls
 """
 
 import logging
+import os
 from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -40,6 +41,9 @@ from app.services.mailer import send_report_email
 from app.services.report_pdf import build_scan_pdf
 
 logger = logging.getLogger(__name__)
+
+# Logo path for PDF reports — relative to backend root
+LOGO_PATH = "app/services/mywellfie-header-logo.png"
 
 router = APIRouter(prefix="/reports", tags=["Reports"])
 
@@ -73,7 +77,7 @@ def _build_and_send(scan: ScanResult, to: str, user: User) -> EmailReportRespons
     """Generate the PDF and send it; wrap SMTP errors cleanly."""
     display_name = user.full_name or user.email
     try:
-        pdf_bytes = build_scan_pdf(scan, display_name, user.email)
+        pdf_bytes = build_scan_pdf(scan, display_name, user.email, LOGO_PATH)
     except Exception as exc:
         logger.exception("PDF generation failed for scan %s", scan.id)
         raise HTTPException(
@@ -196,7 +200,7 @@ def download_report(
     display_name = current_user.full_name or current_user.email
 
     try:
-        pdf_bytes = build_scan_pdf(scan, display_name, current_user.email)
+        pdf_bytes = build_scan_pdf(scan, display_name, current_user.email, LOGO_PATH)
     except Exception as exc:
         logger.exception("PDF generation failed for scan %s", scan.id)
         raise HTTPException(

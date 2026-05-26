@@ -4,20 +4,32 @@ import { useTimer } from '../hooks';
 
 const Wrapper = styled.div`
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
 const LabelRow = styled.div`
+  width: 100%;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
 `;
 
-const ScanLabel = styled.span`
-  font-size: 13px;
+const ScanLabel = styled.div`
+  width: 100%;
+  text-align: center;
+
+  font-size: 14px;
   font-weight: 700;
   color: #14b8a6;
-  transition: all 0.3s ease;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  line-height: 1.4;
 `;
 
 const BarTrack = styled.div`

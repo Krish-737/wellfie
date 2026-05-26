@@ -30,7 +30,7 @@ const NAV_SECTIONS = [
   {
     group: null,
     items: [
-      { label: 'Home',    href: '/',        icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6', active: true },
+      { label: 'Home',     href: '/',        icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6', active: true },
       { label: 'Pricing', href: '#pricing', icon: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z', active: false },
     ],
   },
@@ -78,11 +78,18 @@ const Navbar: React.FC = () => {
   const [avatarOpen, setAvatarOpen] = useState(false);
   const avatarRef = useRef<HTMLDivElement>(null);
 
-  // Lock body scroll when drawer is open
+  // Clean, modern scroll lock implementation
   useEffect(() => {
-    document.body.style.overflow = menuOpen ? 'hidden' : '';
-    return () => { document.body.style.overflow = ''; };
-  }, [menuOpen]);
+    if (showHamburger && menuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [menuOpen, showHamburger]);
 
   // Close avatar dropdown on outside click
   useEffect(() => {
@@ -95,9 +102,9 @@ const Navbar: React.FC = () => {
     return () => document.removeEventListener('mousedown', handler);
   }, []);
 
-  const initials = user?.full_name
-    ? user.full_name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
-    : user?.email?.[0]?.toUpperCase() ?? '?';
+  const initials = user?.email
+    ? (user.full_name?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || user.email[0].toUpperCase())
+    : '?';
 
   const displayName = user?.full_name || user?.email || '';
 
@@ -144,7 +151,7 @@ const Navbar: React.FC = () => {
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
 
               {/* Logged-in — avatar dropdown (desktop only) */}
-              {user && !showHamburger && (
+              {user?.email && !showHamburger && (
                 <div ref={avatarRef} style={{ position: 'relative' }}>
                   <button
                     onClick={() => setAvatarOpen(o => !o)}
@@ -166,7 +173,7 @@ const Navbar: React.FC = () => {
                     }}>
                       {initials}
                     </span>
-                    <span style={{ fontSize: 13, fontWeight: 500, color: '#334155', maxWidth: 120, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const }}>
+                    <span style={{ fontSize: 13, fontWeight: 500, color: '#334155', maxWidth: 120, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                       {displayName}
                     </span>
                     {/* Chevron */}
@@ -187,7 +194,7 @@ const Navbar: React.FC = () => {
                     }}>
                       {/* User info header */}
                       <div style={{ padding: '14px 16px', borderBottom: '1px solid #f1f5f9', background: '#f8fafc' }}>
-                        <div style={{ fontSize: 13, fontWeight: 700, color: '#0f172a', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const }}>{displayName}</div>
+                        <div style={{ fontSize: 13, fontWeight: 700, color: '#0f172a', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{displayName}</div>
                         <div style={{ fontSize: 11, color: '#94a3b8', marginTop: 2 }}>{user.email}</div>
                       </div>
 
@@ -239,7 +246,7 @@ const Navbar: React.FC = () => {
               )}
 
               {/* Login button — desktop, not logged in */}
-              {!user && !showHamburger && (
+              {!user?.email && !showHamburger && (
                 <button
                   onClick={() => navigate('/login')}
                   style={{ fontSize: 14, fontWeight: 600, color: '#fff', background: '#14b8a6', border: 'none', borderRadius: 8, padding: '8px 18px', cursor: 'pointer' }}
@@ -268,48 +275,38 @@ const Navbar: React.FC = () => {
       {/* ── Drawer overlay ──────────────────────────────────────────────────── */}
       {showHamburger && (
         <>
-          {/* Backdrop */}
+          {/* Backdrop (Bumped zIndex to 999) */}
           <div
             onClick={() => setMenuOpen(false)}
             style={{
-              position: 'fixed', inset: 0, zIndex: 98,
-              background: 'rgba(0,0,0,0.35)',
+              position: 'fixed', inset: 0, zIndex: 999,
+              background: 'rgba(0,0,0,0.45)',
               opacity: menuOpen ? 1 : 0,
               pointerEvents: menuOpen ? 'auto' : 'none',
               transition: 'opacity 0.25s',
+              touchAction: 'none',
             }}
           />
 
-          {/* Drawer panel */}
-
-
-          {/* <div style={{
-            position: 'fixed', top: 0, right: 0, bottom: 0,
-            width: Math.min(400, window.innerWidth),
-            zIndex: 99,
-            background: '#ffffff',
-            boxShadow: '-4px 0 32px rgba(0,0,0,0.12)',
-            transform: menuOpen ? 'translateX(0)' : 'translateX(100%)',
-            transition: 'transform 0.3s cubic-bezier(0.4,0,0.2,1)',
-            display: 'flex',
-            flexDirection: 'column',
-          }}></div> */}
+          {/* Drawer panel (Bumped zIndex to 1000) */}
           <div 
             aria-hidden={!menuOpen}
             style={{
               position: 'fixed', top: 0, right: 0, bottom: 0,
-              width: Math.min(400, window.innerWidth),
-              zIndex: 99,
+              width: isMobile ? '100%' : 400,
+              zIndex: 1000,
               background: '#ffffff',
-              boxShadow: '-4px 0 32px rgba(0,0,0,0.12)',
+              boxShadow: '-4px 0 32px rgba(0,0,0,0.15)',
               transform: menuOpen ? 'translateX(0)' : 'translateX(100%)',
               visibility: menuOpen ? 'visible' : 'hidden',
               transition: 'transform 0.3s cubic-bezier(0.4,0,0.2,1), visibility 0.3s',
               display: 'flex',
               flexDirection: 'column',
+              overscrollBehavior: 'contain',
+              height: '100%',
             }}>
             {/* Drawer header */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px', borderBottom: '1px solid #f1f5f9' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px', borderBottom: '1px solid #f1f5f9', flexShrink: 0 }}>
               <img src={logoSrc} alt="MyWellfie" style={{ height: 44, width: 'auto', objectFit: 'contain' }} />
               <button
                 onClick={() => setMenuOpen(false)}
@@ -321,8 +318,8 @@ const Navbar: React.FC = () => {
             </div>
 
             {/* If logged in — show user info + quick links */}
-            {user && (
-              <div style={{ borderBottom: '1px solid #f1f5f9', background: '#f8fafc' }}>
+            {user?.email && (
+              <div style={{ borderBottom: '1px solid #f1f5f9', background: '#f8fafc', flexShrink: 0 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '16px 20px' }}>
                   <span style={{
                     width: 42, height: 42, borderRadius: '50%',
@@ -333,8 +330,8 @@ const Navbar: React.FC = () => {
                     {initials}
                   </span>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <p style={{ margin: 0, fontWeight: 600, fontSize: 14, color: '#0f172a', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const }}>{displayName}</p>
-                    <p style={{ margin: 0, fontSize: 12, color: '#94a3b8', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const }}>{user.email}</p>
+                    <p style={{ margin: 0, fontWeight: 600, fontSize: 14, color: '#0f172a', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{displayName}</p>
+                    <p style={{ margin: 0, fontSize: 12, color: '#94a3b8', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user.email}</p>
                   </div>
                 </div>
                 {/* Quick action row */}
@@ -368,7 +365,7 @@ const Navbar: React.FC = () => {
               {NAV_SECTIONS.map((section, si) => (
                 <div key={si} style={{ marginBottom: 8 }}>
                   {section.group && (
-                    <p style={{ margin: '16px 8px 6px', fontSize: 12, fontWeight: 600, color: '#94a3b8', letterSpacing: '0.05em', textTransform: 'uppercase' as const }}>
+                    <p style={{ margin: '16px 8px 6px', fontSize: 12, fontWeight: 600, color: '#94a3b8', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
                       {section.group}
                     </p>
                   )}
@@ -397,8 +394,8 @@ const Navbar: React.FC = () => {
             </div>
 
             {/* Bottom CTA */}
-            <div style={{ padding: '16px 20px', borderTop: '1px solid #f1f5f9' }}>
-              {user ? (
+            <div style={{ padding: '16px 20px', borderTop: '1px solid #f1f5f9', flexShrink: 0 }}>
+              {user?.email ? (
                 <button
                   onClick={handleLogout}
                   style={{ width: '100%', padding: '15px 0', borderRadius: 12, fontSize: 16, fontWeight: 700, color: '#64748b', background: '#f1f5f9', border: 'none', cursor: 'pointer' }}

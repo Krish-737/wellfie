@@ -83,6 +83,7 @@ const useMonitor = (
   productId: string,
   startMeasuring: boolean,
   userInformation?: UserInformation,
+  refreshKey?: any,
 ) => {
   const { token, user, scansRemaining, refreshEntitlement } = useAuth();
 
@@ -274,7 +275,10 @@ const useMonitor = (
           return;
         }
 
-        session && sessionState === SessionState.ACTIVE && session.terminate();
+        if (session) {
+          await session.terminate();
+          setSession(undefined);
+        }
 
         const options: FaceSessionOptions = {
           input: video.current,
@@ -299,7 +303,16 @@ const useMonitor = (
         console.error('Error creating a session', e);
       }
     })();
-  }, [processingTime, isMonitorReady, cameraId, userInformation]);
+  }, [processingTime, isMonitorReady, cameraId, userInformation, refreshKey]);
+
+  useEffect(() => {
+    return () => {
+      if (session) {
+        console.log('Terminating session on unmount');
+        session.terminate();
+      }
+    };
+  }, [session]);
 
   useEffect(() => {
     if (startMeasuring) {

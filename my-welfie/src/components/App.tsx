@@ -27,6 +27,7 @@ const Container = styled(Flex)<{ isSettingsOpen: boolean }>`
   flex-direction: column;
   justify-content: start;
   align-items: center;
+  overflow: hidden;
   background-color: ${({ isSettingsOpen }) =>
     isSettingsOpen ? 'rgba(0, 0, 0, 0.5)' : '#ffffff'};
 `;
