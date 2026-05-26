@@ -101,7 +101,7 @@ function common() {
             },
           },
            { from: path.resolve(paths.src, '_redirects'), to: paths.build },
-          
+           { from: path.resolve(paths.src, '_headers'), to: paths.build }
         ],
       }),
     ],
