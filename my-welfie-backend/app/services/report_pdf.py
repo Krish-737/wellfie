@@ -678,98 +678,99 @@ def build_scan_pdf(scan: Any, user_name: str, user_email: str,
     return ReportBuilder(scan, user_name, user_email, logo_path).build()
 
 
-# ── Sample runner (full data) ─────────────────────────────────────────────────
+# # ── Sample runner (full data) ─────────────────────────────────────────────────
 
-class _SampleFull:
-    id = "abc12345"
-    scanned_at = None
-    pulse_rate = 72
-    blood_pressure_systolic  = 118
-    blood_pressure_diastolic = 76
-    pulse_pressure           = 42
-    mean_arterial_pressure   = 90
-    cardiac_workload         = 4.1
-    heart_age                = 34
-    respiration_rate         = 15
-    oxygen_saturation        = 98.2
-    sdnn        = 62.4
-    rmssd       = 38.1
-    mean_rri    = 833
-    sd1         = 27.0
-    sd2         = 83.5
-    lfhf        = 1.2
-    prq         = 4.9
-    pns_index   = 0.45
-    pns_zone    = 2
-    sns_index   = -0.30
-    sns_zone    = 2
-    stress_index              = 120
-    stress_level              = 3
-    normalized_stress_index   = 32
-    wellness_index            = 7.2
-    wellness_level            = 3
-    hemoglobin_a1c            = 5.3
-    hemoglobin                = 15.6
-    ascvd_risk                = 4.7
-    ascvd_risk_level          = 1
-    high_blood_pressure_risk  = 1
-    high_hemoglobin_a1c_risk  = 1
-    low_hemoglobin_risk       = 1
-    high_fasting_glucose_risk = 1
-    high_total_cholesterol_risk = 1
-
-
-# ── Sample runner (partial data — missing fields skipped) ─────────────────────
-
-class _SamplePartial:
-    """Simulates a scan where several metrics were not captured."""
-    id = "xyz99999"
-    scanned_at = None
-    pulse_rate = 88
-    blood_pressure_systolic  = None   # not captured
-    blood_pressure_diastolic = None
-    pulse_pressure           = None
-    mean_arterial_pressure   = 95
-    cardiac_workload         = None
-    heart_age                = 41
-    respiration_rate         = 18
-    oxygen_saturation        = 97.1
-    sdnn        = 45.0            # below threshold → Low status
-    rmssd       = None
-    mean_rri    = 780
-    sd1         = None
-    sd2         = None
-    lfhf        = 0.8
-    prq         = None
-    pns_index   = None
-    pns_zone    = None
-    sns_index   = 0.12
-    sns_zone    = 2
-    stress_index              = 180   # above threshold → High status
-    stress_level              = 4
-    normalized_stress_index   = None
-    wellness_index            = 5.8
-    wellness_level            = 2
-    hemoglobin_a1c            = None
-    hemoglobin                = 13.2
-    ascvd_risk                = 8.5
-    ascvd_risk_level          = 1
-    high_blood_pressure_risk  = None
-    high_hemoglobin_a1c_risk  = None
-    low_hemoglobin_risk       = 1
-    high_fasting_glucose_risk = None
-    high_total_cholesterol_risk = 2
+# class _SampleFull:
+#     id = "abc12345"
+#     scanned_at = None
+#     pulse_rate = 72
+#     blood_pressure_systolic  = 118
+#     blood_pressure_diastolic = 76
+#     pulse_pressure           = 42
+#     mean_arterial_pressure   = 90
+#     cardiac_workload         = 4.1
+#     heart_age                = 34
+#     respiration_rate         = 15
+#     oxygen_saturation        = 98.2
+#     sdnn        = 62.4
+#     rmssd       = 38.1
+#     mean_rri    = 833
+#     sd1         = 27.0
+#     sd2         = 83.5
+#     lfhf        = 1.2
+#     prq         = 4.9
+#     pns_index   = 0.45
+#     pns_zone    = 2
+#     sns_index   = -0.30
+#     sns_zone    = 2
+#     stress_index              = 120
+#     stress_level              = 3
+#     normalized_stress_index   = 32
+#     wellness_index            = 7.2
+#     wellness_level            = 3
+#     hemoglobin_a1c            = 5.3
+#     hemoglobin                = 15.6
+#     ascvd_risk                = 4.7
+#     ascvd_risk_level          = 1
+#     high_blood_pressure_risk  = 1
+#     high_hemoglobin_a1c_risk  = 1
+#     low_hemoglobin_risk       = 1
+#     high_fasting_glucose_risk = 1
+#     high_total_cholesterol_risk = 1
 
 
-if __name__ == "__main__":
-    import sys
-    mode = sys.argv[1] if len(sys.argv) > 1 else "full"
+# # ── Sample runner (partial data — missing fields skipped) ─────────────────────
 
-    scan = _SamplePartial() if mode == "partial" else _SampleFull()
-    label = "partial" if mode == "partial" else "full"
+# class _SamplePartial:
+#     """Simulates a scan where several metrics were not captured."""
+#     id = "xyz99999"
+#     scanned_at = None
+#     pulse_rate = 88
+#     blood_pressure_systolic  = None   # not captured
+#     blood_pressure_diastolic = None
+#     pulse_pressure           = None
+#     mean_arterial_pressure   = 95
+#     cardiac_workload         = None
+#     heart_age                = 41
+#     respiration_rate         = 18
+#     oxygen_saturation        = 97.1
+#     sdnn        = 45.0            # below threshold → Low status
+#     rmssd       = None
+#     mean_rri    = 780
+#     sd1         = None
+#     sd2         = None
+#     lfhf        = 0.8
+#     prq         = None
+#     pns_index   = None
+#     pns_zone    = None
+#     sns_index   = 0.12
+#     sns_zone    = 2
+#     stress_index              = 180   # above threshold → High status
+#     stress_level              = 4
+#     normalized_stress_index   = None
+#     wellness_index            = 5.8
+#     wellness_level            = 2
+#     hemoglobin_a1c            = None
+#     hemoglobin                = 13.2
+#     ascvd_risk                = 8.5
+#     ascvd_risk_level          = 1
+#     high_blood_pressure_risk  = None
+#     high_hemoglobin_a1c_risk  = None
+#     low_hemoglobin_risk       = 1
+#     high_fasting_glucose_risk = None
+#     high_total_cholesterol_risk = 2
 
-    pdf = build_scan_pdf(scan, "Alex Johnson", "alex.johnson@example.com", logo_path="")
-    out = f"/mnt/user-data/outputs/mywellfie_report_v40_{label}.pdf"
-    with open(out, "wb") as f:
-        f.write(pdf)
-    print(f"Saved [{label}] → {out}  ({len(pdf):,} bytes)")
+
+# if __name__ == "__main__":
+#     import sys
+#     mode = sys.argv[1] if len(sys.argv) > 1 else "full"
+
+#     scan = _SamplePartial() if mode == "partial" else _SampleFull()
+#     label = "partial" if mode == "partial" else "full"
+
+#     pdf = build_scan_pdf(scan, "Alex Johnson", "alex.johnson@example.com", logo_path="")
+#     out = f"/mnt/user-data/outputs/mywellfie_report_v40_{label}.pdf"
+#     with open(out, "wb") as f:
+#         f.write(pdf)
+#     print(f"Saved [{label}] → {out}  ({len(pdf):,} bytes)")
+
