@@ -100,8 +100,8 @@ function common() {
               ignore: ['**/main.*'],
             },
           },
-           { from: path.resolve(paths.src, '_redirects'), to: paths.build },
-           { from: path.resolve(paths.src, '_headers'), to: paths.build }
+           { from: path.resolve(paths.src, '_redirects'), to: path.resolve(paths.build, '_redirects') },,
+           { from: path.resolve(paths.src, '_headers'), to: path.resolve(paths.build, '_headers') },
         ],
       }),
     ],
