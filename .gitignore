@@ -1,0 +1,42 @@
+# Root-level gitignore for monorepo
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Node (frontend)
+node_modules/
+dist/
+.npm
+
+# Python (backend)
+__pycache__/
+.venv
+venv/
+*.egg-info/
+*.pyc
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+*.log
+logs/
+
+# Temporary
+tmp/
+temp/
