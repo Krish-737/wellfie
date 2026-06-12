@@ -36,7 +36,7 @@ import {
   sendKioskReport,
 } from '../../api/kioskApi';
 import { apiFetch } from '../../api/apiFetch';
-import { useKioskMonitor } from '../../hooks/usekioskmonitor';
+import { useKioskMonitor } from '../../hooks/useKioskMonitor';
 import Mask from '../../assets/mask.svg';
 
 // ── Modular Stage Components ──────────────────────────────────────────────────
