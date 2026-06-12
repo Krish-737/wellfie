@@ -51,9 +51,15 @@ const CameraLoadingOverlay = styled.div`
   display: flex; flex-direction: column; align-items: center;
   justify-content: center; gap: 16px;
   background: #f1f5f9; border-radius: 12px;
+  padding: 20px; text-align: center;
   .cs { width:40px;height:40px;border:3px solid #e2e8f0;
     border-top:3px solid #14b8a6;border-radius:50%;
     animation:cs 1s linear infinite; }
+
+  ${media.tablet`
+    .cs { width:44px; height:44px; }
+  `}
+
   @keyframes cs { to { transform:rotate(360deg); } }
 `;
 
@@ -106,8 +112,17 @@ const KioskScanStage: React.FC<KioskScanStageProps> = ({
           {showCameraLoading && (
             <CameraLoadingOverlay>
               <div className="cs" />
-              <p style={{ margin: 0, fontSize: 14, fontWeight: 600, color: '#64748b' }}>
+              <p style={{
+                margin: 0, fontSize: mobileDev ? 15 : 16, fontWeight: 700, color: '#475569',
+                maxWidth: 280,
+              }}>
                 {isPreparingScanner ? 'Preparing scanner…' : 'Initialising camera…'}
+              </p>
+              <p style={{
+                margin: 0, fontSize: 13, fontWeight: 500, color: '#94a3b8',
+                maxWidth: 280,
+              }}>
+                Please stay still and ensure good lighting
               </p>
             </CameraLoadingOverlay>
           )}

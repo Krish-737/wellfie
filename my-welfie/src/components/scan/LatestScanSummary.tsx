@@ -119,6 +119,7 @@ const LatestScanSummary: React.FC<LatestScanSummaryProps> = ({
           scan={scan}
           idx={activeIdx}
           total={INDICATORS.length}
+          isMobile={isMobile}
           onClose={() => setActiveIdx(null)}
           onPrev={() => setActiveIdx((i) => Math.max(0, (i ?? 0) - 1))}
           onNext={() => setActiveIdx((i) => Math.min(INDICATORS.length - 1, (i ?? 0) + 1))}

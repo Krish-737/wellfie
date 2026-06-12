@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import ReactMarkdown from 'react-markdown';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { apiFetch } from '../../api/apiFetch';
@@ -167,30 +168,48 @@ function fallbackAdvice(diff: HealthDiff): any {
 
 // ── Topic text ────────────────────────────────────────────────────────────────
 
-function getTopicText(adv: any, t: Topic): string {
+function getTopicMarkdown(adv: any, t: Topic): string {
   if (!adv) return '';
   if (t === 'summary') {
-    let text = adv.overall_assessment;
-    if (adv.concern_flags?.length) text += ' Areas needing attention: ' + adv.concern_flags.join('. ');
-    return text + ' ' + adv.positive_note;
+    let md = `${adv.overall_assessment}\n\n`;
+    if (adv.concern_flags?.length) {
+      md += `### ⚠️ Areas Needing Attention\n`;
+      adv.concern_flags.forEach((f: any) => {
+        const text = typeof f === 'string' ? f : (f.metric ? `**${f.metric}**: ${f.reason}` : JSON.stringify(f));
+        md += `- ${text}\n`;
+      });
+      md += '\n';
+    }
+    if (adv.positive_note) md += `> 💚 ${adv.positive_note}`;
+    return md;
   }
-  const renderItem = (item: any, i: number) => {
-    if (typeof item === 'string') return `${i + 1}. ${item}`;
-    if (t === 'diet')      return `${i + 1}. ${item.food} — ${item.reason} (${item.frequency})`;
-    if (t === 'exercise')  return `${i + 1}. ${item.activity}, ${item.duration}, ${item.frequency} — ${item.reason}`;
-    if (t === 'avoid')     return `${i + 1}. ${item.item} — ${item.reason}`;
-    if (t === 'lifestyle') return `${i + 1}. ${item.habit} — ${item.reason}`;
-    return `${i + 1}. ${JSON.stringify(item)}`;
-  };
+  if (t === 'followup') return adv.followup || '';
   const HEADERS: Record<string, string> = {
-    diet: 'Your personalised dietary plan: ',
-    exercise: 'Your exercise protocol: ',
-    avoid: 'Based on your readings, please avoid: ',
-    lifestyle: 'Lifestyle changes tailored to your data: ',
+    diet:      '### 🥗 Your Personalised Dietary Plan',
+    exercise:  '### 🏃 Your Exercise Protocol',
+    avoid:     '### 🚫 Based on Your Readings, Please Avoid',
+    lifestyle: '### 🌿 Lifestyle Changes Tailored to Your Data',
   };
-  if (t === 'followup') return adv.followup;
-  const items = adv[t] as any[];
-  return HEADERS[t] + items.map(renderItem).join('  ');
+  const items = (adv[t] as any[]) || [];
+  let md = `${HEADERS[t]}\n\n`;
+  items.forEach((item: any, i: number) => {
+    if (typeof item === 'string') { md += `${i + 1}. ${item}\n`; return; }
+    if (t === 'diet') {
+      md += `**${i + 1}. ${item.food}**\n`;
+      md += `${item.reason}\n`;
+      md += `*Frequency: ${item.frequency}*\n\n`;
+    } else if (t === 'exercise') {
+      md += `**${i + 1}. ${item.activity}** — ${item.duration}, ${item.frequency}\n`;
+      md += `${item.reason}\n\n`;
+    } else if (t === 'avoid') {
+      md += `**${i + 1}. ${item.item}**\n`;
+      md += `${item.reason}\n\n`;
+    } else if (t === 'lifestyle') {
+      md += `**${i + 1}. ${item.habit}**\n`;
+      md += `${item.reason}\n\n`;
+    }
+  });
+  return md;
 }
 
 // ── Styles ────────────────────────────────────────────────────────────────────
@@ -239,13 +258,13 @@ const HealthDiffPage: React.FC = () => {
       }
       setDisplayed(text.slice(0, i + 1));
       setProgress(Math.round((i + 1) / text.length * 100));
-      i++;
-    }, 18);
+      i += 3; // faster for markdown (chunk 3 chars at a time)
+    }, 12);
   };
 
   const switchTopic = (t: Topic) => {
     setTopic(t);
-    if (advice) typeText(getTopicText(advice, t));
+    if (advice) typeText(getTopicMarkdown(advice, t));
   };
 
   useEffect(() => {
@@ -264,7 +283,7 @@ const HealthDiffPage: React.FC = () => {
         try { adv = await fetchGroqAdvice(data); }
         catch { adv = fallbackAdvice(data); }
         setAdvice(adv);
-        typeText(getTopicText(adv, 'summary'));
+        typeText(getTopicMarkdown(adv, 'summary'));
         setAdviceLoading(false);
       })
       .catch(e => setError(e.message))
@@ -364,27 +383,7 @@ const HealthDiffPage: React.FC = () => {
 
       <div style={{ maxWidth: 920, margin: '0 auto', padding: '20px 12px 60px', display: 'flex', flexDirection: 'column', gap: 16 }}>
 
-        {/* ── Concern banner ── */}
-        {concerningMetrics.length > 0 && (
-          <div className="concern-banner" style={{ background: '#fef2f2', border: '1.5px solid #fca5a5', borderRadius: 14, padding: '14px 18px', display: 'flex', alignItems: 'flex-start', gap: 12 }}>
-            <span style={{ fontSize: 22, flexShrink: 0, lineHeight: 1.3 }}>⚠️</span>
-            <div>
-              <div style={{ fontSize: 14, fontWeight: 700, color: '#991b1b', marginBottom: 8 }}>
-                {concerningMetrics.length} metric{concerningMetrics.length > 1 ? 's require' : ' requires'} attention
-              </div>
-              <div className="concern-tags" style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                {concerningMetrics.map(m => (
-                  <span key={m.key} style={{ background: '#fff', border: '1px solid #fca5a5', borderRadius: 8, padding: '4px 10px', fontSize: 12, color: '#991b1b', fontWeight: 600 }}>
-                    {m.label}: {m.current}{m.unit}
-                    {m.is_meaningful_change && m.delta !== null && (
-                      <span style={{ marginLeft: 5 }}>({m.delta > 0 ? '+' : ''}{m.delta}{m.unit})</span>
-                    )}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
+        {/* concern banner removed — metrics strip below already shows this */}
 
         {/* ── Doctor consultation card ── */}
         <div style={{ background: '#fff', borderRadius: 20, overflow: 'hidden', boxShadow: '0 4px 24px rgba(0,0,0,0.08)' }}>
@@ -483,10 +482,23 @@ const HealthDiffPage: React.FC = () => {
                     Generating your personalised consultation…
                   </div>
                 ) : (
-                  <>
-                    {displayed}
+                  <div className="md-response">
+                    <ReactMarkdown
+                      components={{
+                        h3: ({node, ...p}) => <h3 style={{fontSize:14,fontWeight:700,color:'#0f766e',margin:'0 0 10px',borderBottom:'1px solid #e2e8f0',paddingBottom:6}} {...p}/>,
+                        strong: ({node, ...p}) => <strong style={{fontWeight:700,color:'#0f172a'}} {...p}/>,
+                        p: ({node, ...p}) => <p style={{margin:'0 0 10px',lineHeight:1.85}} {...p}/>,
+                        li: ({node, ...p}) => <li style={{marginBottom:6,lineHeight:1.75}} {...p}/>,
+                        ul: ({node, ...p}) => <ul style={{paddingLeft:20,margin:'0 0 10px'}} {...p}/>,
+                        ol: ({node, ...p}) => <ol style={{paddingLeft:20,margin:'0 0 10px'}} {...p}/>,
+                        em: ({node, ...p}) => <em style={{color:'#64748b',fontStyle:'italic'}} {...p}/>,
+                        blockquote: ({node, ...p}) => <blockquote style={{borderLeft:'3px solid #0f766e',paddingLeft:12,margin:'8px 0',color:'#334155',fontStyle:'italic'}} {...p}/>,
+                      }}
+                    >
+                      {displayed}
+                    </ReactMarkdown>
                     {typing && <span className="cursor-blink" />}
-                  </>
+                  </div>
                 )}
               </div>
 

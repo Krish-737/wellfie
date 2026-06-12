@@ -7,6 +7,7 @@ import {
   splitMetricValue,
   statusBadgeChipClasses,
 } from '../../utils/metricDisplay';
+import MetricRangeBar from './MetricRangeBar';
 import {
   getIndicatorConfidence,
   getIndicatorMissingReason,
@@ -172,7 +173,7 @@ const FeaturedMetricCard: React.FC<FeaturedMetricCardProps> = ({
           </p>
         )}
 
-        <div className="mb-3 flex h-3 items-end gap-1.5" aria-hidden>
+        {/* <div className="mb-3 flex h-3 items-end gap-1.5" aria-hidden>
           {trendBars.map((bar, i) => (
             <div
               key={i}
@@ -185,7 +186,76 @@ const FeaturedMetricCard: React.FC<FeaturedMetricCardProps> = ({
               }}
             />
           ))}
-        </div>
+        </div> */}
+
+        {/* Sparkline bars — hidden for metrics that have a richer widget */}
+        {!['spo2', 'hba1c', 'normalized_stress_index', 'hemoglobin',
+            'stress_level', 'wellness_level',
+            'ascvd', 'bp_risk', 'glucose_risk', 'cholesterol_risk',
+            'pns', 'sns'].includes(indicator.id) && (
+          <div className="mb-3 flex h-3 items-end gap-1.5" aria-hidden>
+            {trendBars.map((bar, i) => (
+              <div
+                key={i}
+                className="rounded-full transition-colors"
+                style={{
+                  width: 12,
+                  height: Math.max(4, (bar.heightPct / 100) * 12),
+                  backgroundColor: bar.active ? accentColor : `${accentColor}28`,
+                  opacity: bar.active ? 1 : 0.85,
+                }}
+              />
+            ))}
+          </div>
+        )}
+
+        {/* Rich per-metric widget for non-range cards */}
+        {['spo2', 'hba1c', 'normalized_stress_index', 'hemoglobin',
+          'stress_level', 'wellness_level',
+          'ascvd', 'bp_risk', 'glucose_risk', 'cholesterol_risk',
+          'pns', 'sns'].includes(indicator.id) && (
+          <div className="mb-3">
+            <MetricRangeBar
+              value={(() => {
+                // For percentage metrics pass the raw number; for enums pass null (enumValue handles it)
+                if (indicator.id === 'spo2') return scan.oxygen_saturation ?? null;
+                if (indicator.id === 'hba1c') return scan.hemoglobin_a1c ?? null;
+                if (indicator.id === 'normalized_stress_index') return scan.normalized_stress_index ?? null;
+                if (indicator.id === 'hemoglobin') return scan.hemoglobin ?? null;
+                return null;
+              })()}
+              scaleMin={(() => {
+                if (indicator.id === 'spo2') return 88;
+                if (indicator.id === 'hba1c') return 4;
+                if (indicator.id === 'normalized_stress_index') return 0;
+                if (indicator.id === 'hemoglobin') return 8;
+                return 0;
+              })()}
+              scaleMax={(() => {
+                if (indicator.id === 'spo2') return 100;
+                if (indicator.id === 'hba1c') return 9;
+                if (indicator.id === 'normalized_stress_index') return 100;
+                if (indicator.id === 'hemoglobin') return 20;
+                return 10;
+              })()}
+              accentColor={accentColor}
+              statusColor={status.color}
+              variant="default"
+              metricId={indicator.id}
+              enumValue={(() => {
+                if (indicator.id === 'stress_level') return scan.stress_level ?? null;
+                if (indicator.id === 'wellness_level') return scan.wellness_level ?? null;
+                if (indicator.id === 'ascvd') return scan.ascvd_risk_level ?? null;
+                if (indicator.id === 'bp_risk') return scan.high_blood_pressure_risk ?? null;
+                if (indicator.id === 'glucose_risk') return scan.high_fasting_glucose_risk ?? null;
+                if (indicator.id === 'cholesterol_risk') return scan.high_total_cholesterol_risk ?? null;
+                if (indicator.id === 'pns') return scan.pns_zone ?? null;
+                if (indicator.id === 'sns') return scan.sns_zone ?? null;
+                return null;
+              })()}
+            />
+          </div>
+        )}
 
         <p
           className="text-[13px] leading-relaxed text-slate-500"

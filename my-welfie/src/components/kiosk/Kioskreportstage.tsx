@@ -4,7 +4,7 @@
 // Optimized for Kiosk with mandatory email collection and top-placed action.
 // ─────────────────────────────────────────────────────────────────────────────
 
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { RefreshCw, CheckCircle, Mail, Send } from 'lucide-react';
 import logoSrc from '../../assets/mywellfie-logo.png';
 import LatestScanSummary from '../scan/LatestScanSummary';
@@ -12,6 +12,7 @@ import { type ScanResult } from '../../content/scanIndicators';
 import { kioskPdfUrl } from '../../api/kioskApi';
 import styled from 'styled-components';
 import media from '../../style/media';
+import { useIsMobileLayout } from '../../hooks';
 
 const COLORS = {
   TEAL_DARK: '#0f766e',
@@ -42,12 +43,17 @@ const Header = styled.div`
   z-index: 100;
   background: ${COLORS.WHITE};
   border-bottom: 1px solid #e2e8f0;
-  padding: 0 24px;
+  padding: 0 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-height: 72px;
+  min-height: 60px;
   box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+
+  ${media.tablet`
+    padding: 0 24px;
+    min-height: 72px;
+  `}
 `;
 
 const ScrollArea = styled.div`
@@ -68,45 +74,71 @@ const Container = styled.div`
 
 const HeroCard = styled.div`
   background: linear-gradient(135deg, ${COLORS.TEAL_DARK} 0%, #0e9488 100%);
-  border-radius: 24px;
-  padding: 32px;
+  border-radius: 20px;
+  padding: 24px;
   color: ${COLORS.WHITE};
-  margin-bottom: 20px;
+  margin-bottom: 16px;
   box-shadow: 0 8px 32px rgba(15,118,110,0.2);
+
+  ${media.tablet`
+    border-radius: 24px;
+    padding: 32px;
+    margin-bottom: 20px;
+  `}
 `;
 
 const EmailActionCard = styled.div`
   background: ${COLORS.WHITE};
-  border-radius: 24px;
-  padding: 28px;
-  margin-bottom: 24px;
+  border-radius: 20px;
+  padding: 20px;
+  margin-bottom: 16px;
   box-shadow: 0 4px 20px rgba(0,0,0,0.04);
   border: 1px solid #e2e8f0;
+
+  ${media.tablet`
+    border-radius: 24px;
+    padding: 28px;
+    margin-bottom: 24px;
+  `}
 `;
 
 const EmailInputWrapper = styled.div<{ focused: boolean }>`
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  gap: 10px;
   background: ${p => p.focused ? COLORS.WHITE : COLORS.SLATE100};
   border: 2px solid ${p => p.focused ? COLORS.TEAL_DARK : 'transparent'};
   border-radius: 16px;
-  padding: 4px 4px 4px 16px;
+  padding: 12px;
   transition: all 0.2s ease;
   box-shadow: ${p => p.focused ? `0 0 0 4px ${COLORS.TEAL_FOCUS}` : 'none'};
+  overflow: hidden;
 
   input {
     flex: 1;
     border: none;
     outline: none;
     background: transparent;
-    padding: 12px 0;
-    font-size: 17px;
+    padding: 8px 4px;
+    font-size: 16px;
     font-weight: 600;
     font-family: ${FONT};
     color: ${COLORS.SLATE900};
+    min-width: 0;
     
     &::placeholder { color: ${COLORS.SLATE400}; }
   }
+
+  ${media.tablet`
+    flex-direction: row;
+    align-items: center;
+    padding: 4px 4px 4px 16px;
+
+    input {
+      padding: 12px 0;
+      font-size: 17px;
+    }
+  `}
 `;
 
 const SendButton = styled.button`
@@ -120,9 +152,16 @@ const SendButton = styled.button`
   cursor: pointer;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
   transition: all 0.2s ease;
   font-family: ${FONT};
+  width: 100%;
+  flex-shrink: 0;
+
+  ${media.tablet`
+    width: auto;
+  `}
 
   &:hover:not(:disabled) {
     background: ${COLORS.TEAL};
@@ -165,19 +204,15 @@ export default function KioskReportStage({
   onSendEmail, 
   onDone 
 }: Props) {
+  const isMobile = useIsMobileLayout();
+  const emailInputRef = useRef<HTMLInputElement>(null);
+
   const [emailInput, setEmailInput] = useState(sessionEmail || '');
   const [isFocused, setIsFocused]   = useState(false);
   const [emailing, setEmailing]     = useState(false);
   const [emailMsg, setEmailMsg]     = useState<{ text: string, isError?: boolean } | null>(null);
 
-  const handleSendEmail = useCallback(async (e?: React.FormEvent) => {
-    e?.preventDefault();
-    const target = emailInput.trim();
-    if (!target) {
-      setEmailMsg({ text: 'Please enter an email address to receive your report.', isError: true });
-      return;
-    }
-    
+  const handleSendEmail = useCallback(async (target: string) => {
     setEmailing(true);
     setEmailMsg(null);
     try {
@@ -188,65 +223,91 @@ export default function KioskReportStage({
     } finally {
       setEmailing(false);
     }
-  }, [emailInput, onSendEmail]);
+  }, [onSendEmail]);
+
+  const handleSubmit = useCallback((e?: React.FormEvent) => {
+    e?.preventDefault();
+    const target = emailInput.trim();
+    if (!target) {
+      setEmailMsg({ text: 'Please enter an email address to receive your report.', isError: true });
+      return;
+    }
+    handleSendEmail(target);
+  }, [emailInput, handleSendEmail]);
+
+  const handleEmailLatest = useCallback(() => {
+    if (sessionEmail) {
+      handleSendEmail(sessionEmail);
+    } else {
+      emailInputRef.current?.focus();
+    }
+  }, [sessionEmail, handleSendEmail]);
 
   const firstName = guestName ? guestName.split(' ')[0] : 'there';
 
   return (
     <PageWrapper>
       <Header>
-        <img src={logoSrc} alt="MyWellfie" style={{ height: 40, objectFit: 'contain' }} />
+        <img src={logoSrc} alt="MyWellfie" style={{ height: isMobile ? 32 : 40, objectFit: 'contain' }} />
         <div style={{
-          fontSize: 14, fontWeight: 700, color: '#16a34a',
+          fontSize: isMobile ? 12 : 14, fontWeight: 700, color: '#16a34a',
           background: '#f0fdf4', border: '1px solid #bbf7d0',
-          borderRadius: 24, padding: '6px 16px', display: 'flex', alignItems: 'center', gap: 6
+          borderRadius: 24, padding: isMobile ? '4px 12px' : '6px 16px', display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap'
         }}>
-          <CheckCircle size={16} /> Scan Complete
+          <CheckCircle size={isMobile ? 14 : 16} /> Scan Complete
         </div>
       </Header>
 
       <ScrollArea>
         <Container>
           <HeroCard>
-            <p style={{ fontSize: 15, fontWeight: 600, opacity: 0.9, margin: '0 0 8px' }}>
+            <p style={{ fontSize: isMobile ? 13 : 15, fontWeight: 600, opacity: 0.9, margin: '0 0 6px' }}>
               Your personalized health analysis
             </p>
-            <h1 style={{ fontSize: 36, fontWeight: 800, margin: '0 0 12px', lineHeight: 1.15 }}>
+            <h1 style={{ fontSize: isMobile ? 28 : 36, fontWeight: 800, margin: '0 0 8px', lineHeight: 1.15 }}>
               Great job, {firstName}!
             </h1>
-            <p style={{ fontSize: 16, opacity: 0.85, lineHeight: 1.6, maxWidth: '540px' }}>
+            <p style={{ fontSize: isMobile ? 14 : 16, opacity: 0.85, lineHeight: 1.6, maxWidth: '540px' }}>
               We've processed 34 unique health indicators from your scan. Enter your email below to get your full clinical-grade health analysis sent instantly.
             </p>
           </HeroCard>
 
-          {/* ── TOP ACTION: Email Collection ── */}
+          {/* ── TOP ACTION: Email / Send Report ── */}
           <EmailActionCard>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
-              <div style={{ width: 44, height: 44, borderRadius: 12, background: COLORS.TEAL_FOCUS, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Mail size={22} color={COLORS.TEAL_DARK} strokeWidth={2.2} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
+              <div style={{ width: 40, height: 40, borderRadius: 12, background: COLORS.TEAL_FOCUS, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <Mail size={20} color={COLORS.TEAL_DARK} strokeWidth={2.2} />
               </div>
-              <div>
-                <h3 style={{ fontSize: 18, fontWeight: 800, color: COLORS.SLATE900, margin: 0 }}>Get Your Digital Report</h3>
-                <p style={{ fontSize: 13, color: COLORS.SLATE500, margin: '2px 0 0' }}>Includes all vitals, AI insights and PDF summary</p>
+              <div style={{ minWidth: 0 }}>
+                <h3 style={{ fontSize: isMobile ? 16 : 18, fontWeight: 800, color: COLORS.SLATE900, margin: 0 }}>Get Your Digital Report</h3>
+                <p style={{ fontSize: 12, color: COLORS.SLATE500, margin: '2px 0 0' }}>Includes all vitals, AI insights and PDF summary</p>
               </div>
             </div>
 
-            <form onSubmit={handleSendEmail}>
-              <EmailInputWrapper focused={isFocused}>
-                <input 
-                  type="email"
-                  placeholder="Enter your email address"
-                  value={emailInput}
-                  onChange={(e) => setEmailInput(e.target.value)}
-                  onFocus={() => setIsFocused(true)}
-                  onBlur={() => setIsFocused(false)}
-                />
-                <SendButton type="submit" disabled={emailing}>
-                  {emailing ? 'Sending...' : 'Send Report'}
-                  {!emailing && <Send size={16} strokeWidth={2.5} />}
-                </SendButton>
-              </EmailInputWrapper>
-            </form>
+            {sessionEmail && !emailMsg ? (
+              <SendButton onClick={() => handleSendEmail(sessionEmail)} disabled={emailing} style={{ width: '100%' }}>
+                <Mail size={16} strokeWidth={2.5} />
+                {emailing ? 'Sending...' : `Send Report to ${sessionEmail}`}
+              </SendButton>
+            ) : (
+              <form onSubmit={handleSubmit}>
+                <EmailInputWrapper focused={isFocused}>
+                  <input 
+                    ref={emailInputRef}
+                    type="email"
+                    placeholder="Enter your email address"
+                    value={emailInput}
+                    onChange={(e) => setEmailInput(e.target.value)}
+                    onFocus={() => setIsFocused(true)}
+                    onBlur={() => setIsFocused(false)}
+                  />
+                  <SendButton type="submit" disabled={emailing}>
+                    {emailing ? 'Sending...' : 'Send Report'}
+                    {!emailing && <Send size={16} strokeWidth={2.5} />}
+                  </SendButton>
+                </EmailInputWrapper>
+              </form>
+            )}
 
             {emailMsg && (
               <StatusMsg isError={emailMsg.isError}>
@@ -258,23 +319,22 @@ export default function KioskReportStage({
           {/* ── Replicated Dashboard UI ── */}
           <div style={{ 
             background: '#fff', 
-            borderRadius: 24, 
-            padding: '32px',
+            borderRadius: 20, 
+            padding: isMobile ? '20px' : '32px',
             boxShadow: '0 4px 20px rgba(0,0,0,0.04)',
-            marginBottom: 32
+            marginBottom: isMobile ? 20 : 32
           }}>
-            <h2 style={{ fontSize: 20, fontWeight: 800, color: COLORS.SLATE900, margin: '0 0 24px' }}>
+            <h2 style={{ fontSize: isMobile ? 18 : 20, fontWeight: 800, color: COLORS.SLATE900, margin: '0 0 20px' }}>
               Health Overview
             </h2>
             
             <LatestScanSummary
               scan={scanResult as ScanResult}
-              isMobile={false}
+              isMobile={isMobile}
               allowExpand={true}
-              // Hide internal buttons since we have the primary action at the top
-              onEmailLatest={() => {}} 
-              emailingLatest={false}
-              emailMsg={null}
+              onEmailLatest={handleEmailLatest}
+              emailingLatest={emailing}
+              emailMsg={emailMsg?.text ?? null}
             />
           </div>
 
@@ -282,17 +342,18 @@ export default function KioskReportStage({
             <button
               onClick={onDone}
               style={{
-                display: 'inline-flex', alignItems: 'center', gap: 12,
-                padding: '18px 48px', borderRadius: 18, border: 'none',
+                display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 12,
+                padding: '18px 32px', borderRadius: 18, border: 'none',
                 background: COLORS.SLATE900, color: '#fff',
-                fontSize: 18, fontWeight: 700, cursor: 'pointer',
-                transition: 'all 0.2s', boxShadow: '0 10px 25px rgba(15,23,42,0.2)'
+                fontSize: isMobile ? 16 : 18, fontWeight: 700, cursor: 'pointer',
+                transition: 'all 0.2s', boxShadow: '0 10px 25px rgba(15,23,42,0.2)',
+                width: isMobile ? '100%' : 'auto',
               }}
             >
               <RefreshCw size={20} />
               Clear & Start Over
             </button>
-            <p style={{ marginTop: 20, fontSize: 14, color: COLORS.SLATE500 }}>
+            <p style={{ marginTop: 16, fontSize: isMobile ? 13 : 14, color: COLORS.SLATE500 }}>
               The screen will automatically reset for the next user in 10 seconds.
             </p>
           </div>

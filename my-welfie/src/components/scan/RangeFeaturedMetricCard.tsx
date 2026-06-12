@@ -184,6 +184,20 @@ const RangeFeaturedMetricCard: React.FC<RangeFeaturedMetricCardProps> = ({
 
         {view && (
           <div style={{ marginBottom: 14 }}>
+            {/* <MetricRangeBar
+              value={view.value}
+              scaleMin={view.scaleMin}
+              scaleMax={view.scaleMax}
+              optimalMin={view.optimalMin}
+              optimalMax={view.optimalMax}
+              accentColor={accentColor}
+              statusColor={status.color}
+              variant="featured"
+              targetDisplay={view.targetDisplay ?? undefined}
+              scaleLeftLabel={view.scaleLeftLabel}
+              scaleRightLabel={view.scaleRightLabel}
+            /> */}
+
             <MetricRangeBar
               value={view.value}
               scaleMin={view.scaleMin}
@@ -196,6 +210,8 @@ const RangeFeaturedMetricCard: React.FC<RangeFeaturedMetricCardProps> = ({
               targetDisplay={view.targetDisplay ?? undefined}
               scaleLeftLabel={view.scaleLeftLabel}
               scaleRightLabel={view.scaleRightLabel}
+              metricId={indicator.id}
+              enumValue={null}
             />
           </div>
         )}
