@@ -182,22 +182,8 @@ const RangeFeaturedMetricCard: React.FC<RangeFeaturedMetricCardProps> = ({
           </p>
         )}
 
-        {view && (
+        {/* {view && (
           <div style={{ marginBottom: 14 }}>
-            {/* <MetricRangeBar
-              value={view.value}
-              scaleMin={view.scaleMin}
-              scaleMax={view.scaleMax}
-              optimalMin={view.optimalMin}
-              optimalMax={view.optimalMax}
-              accentColor={accentColor}
-              statusColor={status.color}
-              variant="featured"
-              targetDisplay={view.targetDisplay ?? undefined}
-              scaleLeftLabel={view.scaleLeftLabel}
-              scaleRightLabel={view.scaleRightLabel}
-            /> */}
-
             <MetricRangeBar
               value={view.value}
               scaleMin={view.scaleMin}
@@ -213,6 +199,76 @@ const RangeFeaturedMetricCard: React.FC<RangeFeaturedMetricCardProps> = ({
               metricId={indicator.id}
               enumValue={null}
             />
+          </div>
+        )} */}
+
+        {view && (
+          <div style={{ marginBottom: 14 }}>
+            <MetricRangeBar
+              value={view.value}
+              scaleMin={view.scaleMin}
+              scaleMax={view.scaleMax}
+              optimalMin={view.optimalMin}
+              optimalMax={view.optimalMax}
+              accentColor={accentColor}
+              statusColor={status.color}
+              variant="featured"
+              targetDisplay={
+                view.targetDisplay === 'NO_PROFILE' ? undefined : (view.targetDisplay ?? undefined)
+              }
+              scaleLeftLabel={view.scaleLeftLabel}
+              scaleRightLabel={view.scaleRightLabel}
+              metricId={indicator.id}
+              enumValue={null}
+            />
+
+            {/* Heart Age — no profile: nudge to add DOB */}
+            {indicator.id === 'heart_age' && view.targetDisplay === 'NO_PROFILE' && (
+              <div style={{
+                marginTop: 10,
+                display: 'flex',
+                alignItems: 'center',
+                gap: 8,
+                padding: '8px 12px',
+                background: '#f8fafc',
+                borderRadius: 10,
+                border: '1.5px dashed #cbd5e1',
+              }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                  stroke="#94a3b8" strokeWidth="2" strokeLinecap="round">
+                  <circle cx="12" cy="12" r="10"/>
+                  <path d="M12 8v4M12 16h.01"/>
+                </svg>
+                <span style={{ fontSize: 12, color: '#64748b', fontWeight: 500, flex: 1 }}>
+                  Add your date of birth in your{' '}
+                  <a href="/profile" style={{ color: '#0f766e', fontWeight: 700, textDecoration: 'none' }}>
+                    health profile
+                  </a>
+                  {' '}to see your target heart age.
+                </span>
+              </div>
+            )}
+
+            {/* Heart Age — profile set: show target clearly */}
+            {indicator.id === 'heart_age' && view.targetDisplay && view.targetDisplay !== 'NO_PROFILE' && (
+              <div style={{
+                marginTop: 8,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 6,
+              }}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+                  stroke="#0f766e" strokeWidth="2.5" strokeLinecap="round">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                  <polyline points="22 4 12 14.01 9 11.01"/>
+                </svg>
+                <span style={{ fontSize: 11, fontWeight: 800, color: '#0f766e',
+                  letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+                  TARGET: {view.targetDisplay}
+                </span>
+              </div>
+            )}
           </div>
         )}
 

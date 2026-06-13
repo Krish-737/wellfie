@@ -178,28 +178,53 @@ export function buildCardioFeaturedView(
     }
   }
 
+  // if (indicatorId === 'heart_age') {
+  //   if (userAge != null && value != null) {
+  //     scaleMin = Math.max(18, userAge - 15);
+  //     scaleMax = userAge + 20;
+  //     optimalMin = userAge - 2;
+  //     optimalMax = userAge + 2;
+  //     targetDisplay = 'MATCH AGE';
+  //     const diff = Math.round(value - userAge);
+  //     if (diff === 0) {
+  //       compactExtraText = 'Matches your age';
+  //       extraImproved = true;
+  //     } else if (diff > 0) {
+  //       compactExtraText = `${diff} yrs above age ${userAge}`;
+  //       extraImproved = false;
+  //     } else {
+  //       compactExtraText = `${Math.abs(diff)} yrs below age ${userAge}`;
+  //       extraImproved = true;
+  //     }
+  //   } else {
+  //     optimalMin = undefined;
+  //     optimalMax = undefined;
+  //     targetDisplay = null;
+  //   }
+  // }
   if (indicatorId === 'heart_age') {
     if (userAge != null && value != null) {
       scaleMin = Math.max(18, userAge - 15);
       scaleMax = userAge + 20;
       optimalMin = userAge - 2;
       optimalMax = userAge + 2;
-      targetDisplay = 'MATCH AGE';
+      targetDisplay = `MATCH AGE ${userAge}`;
       const diff = Math.round(value - userAge);
       if (diff === 0) {
-        compactExtraText = 'Matches your age';
+        compactExtraText = `Heart age matches your age of ${userAge}`;
         extraImproved = true;
       } else if (diff > 0) {
-        compactExtraText = `${diff} yrs above age ${userAge}`;
+        compactExtraText = `${diff} yrs older than your age (${userAge})`;
         extraImproved = false;
       } else {
-        compactExtraText = `${Math.abs(diff)} yrs below age ${userAge}`;
+        compactExtraText = `${Math.abs(diff)} yrs younger than your age (${userAge})`;
         extraImproved = true;
       }
     } else {
+      // No profile age — show the bar without a target band, prompt user to add profile
       optimalMin = undefined;
       optimalMax = undefined;
-      targetDisplay = null;
+      targetDisplay = 'NO_PROFILE';   // sentinel — card renders a nudge instead
     }
   }
 
