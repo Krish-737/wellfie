@@ -6,7 +6,7 @@
 
 import React, { useMemo, useState } from 'react';
 import styled from 'styled-components';
-import { ArrowRight, Calendar, ShieldPlus, User } from 'lucide-react';
+import { ArrowRight, ShieldPlus, User } from 'lucide-react';
 import logoSrc from '../../assets/mywellfie-logo.png';
 import media from '../../style/media';
 
@@ -265,9 +265,10 @@ interface Props {
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 function parseDob(raw: string): Date | null {
-  const m = raw.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+  let m = raw.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+  if (!m) m = raw.match(/^(\d{4})-(\d{2})-(\d{2})$/);
   if (!m) return null;
-  const d = new Date(`${m[3]}-${m[2]}-${m[1]}`);
+  const d = new Date(`${m[1]}-${m[2]}-${m[3]}`);
   return isNaN(d.getTime()) ? null : d;
 }
 
@@ -279,13 +280,6 @@ function ageFrom(dob: Date): number {
     (today.getMonth() === dob.getMonth() && today.getDate() < dob.getDate())
   ) age--;
   return age;
-}
-
-function formatDobInput(raw: string): string {
-  const digits = raw.replace(/\D/g, '').slice(0, 8);
-  if (digits.length <= 2) return digits;
-  if (digits.length <= 4) return `${digits.slice(0, 2)}/${digits.slice(2)}`;
-  return `${digits.slice(0, 2)}/${digits.slice(2, 4)}/${digits.slice(4)}`;
 }
 
 const lbsToKg = (lbs: number) => lbs * 0.453592;
@@ -476,7 +470,6 @@ export default function KioskProfileStage({ sessionEmail, onContinue, onSkip, sa
   const [email,         setEmail]         = useState(sessionEmail || '');
   const [sex,           setSex]           = useState<KioskSex | null>(null);
   const [dob,           setDob]           = useState('');
-  const [dobFocused,    setDobFocused]    = useState(false);
   const [unitSystem,    setUnitSystem]    = useState<UnitSystem>('metric');
   
   const [heightCm,      setHeightCm]      = useState('');
@@ -492,7 +485,7 @@ export default function KioskProfileStage({ sessionEmail, onContinue, onSkip, sa
   const dobAge     = useMemo(() => dobParsed ? ageFrom(dobParsed) : null, [dobParsed]);
   const dobError   = useMemo(() => {
     if (!dob.trim()) return null;
-    if (!dobParsed) return 'Enter a valid date as DD/MM/YYYY';
+    if (!dobParsed) return 'Enter a valid date of birth';
     if (dobAge !== null && (dobAge < 18 || dobAge > 110)) return 'Age must be between 18 and 110 years';
     return null;
   }, [dob, dobParsed, dobAge]);
@@ -537,8 +530,8 @@ export default function KioskProfileStage({ sessionEmail, onContinue, onSkip, sa
     if (guestName.trim())  data.guest_name    = guestName.trim();
     if (email.trim())      data.email         = email.trim();
     if (sex)               data.sex           = sex;
-    if (dobParsed && !dobError) {
-      data.date_of_birth = `${dobParsed.getFullYear()}-${String(dobParsed.getMonth() + 1).padStart(2, '0')}-${String(dobParsed.getDate()).padStart(2, '0')}`;
+    if (dob.trim() && !dobError) {
+      data.date_of_birth = dob.trim();
     }
 
     if (unitSystem === 'metric') {
@@ -618,27 +611,18 @@ export default function KioskProfileStage({ sessionEmail, onContinue, onSkip, sa
             {/* ── DOB ── */}
             <div style={{ marginBottom: 32 }}>
               <SectionLabel>Date of birth</SectionLabel>
-              <div style={{ position: 'relative' }}>
-                <Input
-                  type="text" inputMode="numeric" value={dob}
-                  onChange={e => setDob(formatDobInput(e.target.value))}
-                  onFocus={() => setDobFocused(true)}
-                  onBlur={() => setDobFocused(false)}
-                  placeholder="DD/MM/YYYY" maxLength={10}
-                  hasError={!!(submitted && dobError)}
-                  style={{ paddingRight: 50 }}
-                />
-                <Calendar 
-                  size={22} 
-                  color={COLORS.SLATE400} 
-                  style={{ position: 'absolute', right: 18, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} 
-                />
-              </div>
+              <Input
+                type="date" value={dob}
+                onChange={e => setDob(e.target.value)}
+                hasError={!!(submitted && dobError)}
+                min={new Date(new Date().setFullYear(new Date().getFullYear() - 110)).toISOString().slice(0, 10)}
+                max={new Date(new Date().setFullYear(new Date().getFullYear() - 18)).toISOString().slice(0, 10)}
+              />
               {submitted && dobError ? (
                 <ErrorText>{dobError}</ErrorText>
               ) : (
                 <HintText style={{ textTransform: 'none' }}>
-                  {dobAge !== null && !dobError ? `Age detected: ${dobAge} years` : 'Format: DD/MM/YYYY'}
+                  {dobAge !== null && !dobError ? `Age detected: ${dobAge} years` : `Age 18–110 years`}
                 </HintText>
               )}
             </div>

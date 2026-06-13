@@ -11,11 +11,30 @@ export function formatDobInput(raw: string): string {
   return `${digits.slice(0, 2)}/${digits.slice(2, 4)}/${digits.slice(4)}`;
 }
 
-/** Parse DD/MM/YYYY; returns null if incomplete or invalid. */
+/** Parse DD/MM/YYYY or YYYY-MM-DD; returns null if incomplete or invalid. */
 export function parseDobDdMmYyyy(value: string): Date | null {
   const trimmed = value.trim();
-  const match = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(trimmed);
-  if (!match) return null;
+
+  // Try DD/MM/YYYY first
+  let match = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(trimmed);
+  if (!match) {
+    // Fallback to YYYY-MM-DD
+    match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(trimmed);
+    if (!match) return null;
+    const year = parseInt(match[1], 10);
+    const month = parseInt(match[2], 10);
+    const day = parseInt(match[3], 10);
+    if (month < 1 || month > 12 || day < 1 || day > 31) return null;
+    const d = new Date(year, month - 1, day);
+    if (
+      d.getFullYear() !== year ||
+      d.getMonth() !== month - 1 ||
+      d.getDate() !== day
+    ) {
+      return null;
+    }
+    return d;
+  }
 
   const day = parseInt(match[1], 10);
   const month = parseInt(match[2], 10);

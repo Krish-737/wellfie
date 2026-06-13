@@ -48,13 +48,25 @@ const PageWrapper = styled.div`
 
 const BackgroundBlob = styled.div`
   position: absolute;
-  width: 400px;
-  height: 400px;
+  width: 250px;
+  height: 250px;
   border-radius: 50%;
-  filter: blur(80px);
+  filter: blur(60px);
   opacity: 0.6;
   pointer-events: none;
   z-index: 0;
+
+  ${media.tablet`
+    width: 320px;
+    height: 320px;
+    filter: blur(70px);
+  `}
+
+  ${media.wide`
+    width: 400px;
+    height: 400px;
+    filter: blur(80px);
+  `}
 `;
 
 const BlobTopRight = styled(BackgroundBlob)`
@@ -74,21 +86,33 @@ const BlobBottomLeft = styled(BackgroundBlob)`
 const InnerContainer = styled.div`
   max-width: 1280px;
   margin: 0 auto;
-  padding: 80px 32px 128px;
+  padding: 40px 20px 64px;
   position: relative;
   z-index: 10;
+
+  ${media.tablet`
+    padding: 60px 32px 96px;
+  `}
+
+  ${media.wide`
+    padding: 80px 32px 128px;
+  `}
 `;
 
 const MainContent = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 60px;
+  gap: 40px;
 
   ${media.tablet`
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    gap: 60px;
+  `}
+
+  ${media.wide`
     gap: 80px;
   `}
 `;
@@ -104,15 +128,24 @@ const LeftSide = styled.div`
 `;
 
 const Logo = styled.img`
-  height: 56px;
-  margin-bottom: 24px;
+  height: 40px;
+  margin-bottom: 20px;
+
+  ${media.tablet`
+    height: 48px;
+    margin-bottom: 24px;
+  `}
+
+  ${media.wide`
+    height: 56px;
+  `}
 `;
 
 const Headline = styled.h1`
-  font-size: 42px;
+  font-size: 32px;
   font-weight: 800;
-  margin: 0 0 24px;
-  line-height: 1.1;
+  margin: 0 0 16px;
+  line-height: 1.15;
   letter-spacing: -0.02em;
   color: #0f172a;
   
@@ -123,75 +156,138 @@ const Headline = styled.h1`
   }
 
   ${media.tablet`
+    font-size: 42px;
+    margin: 0 0 24px;
+  `}
+
+  ${media.wide`
     font-size: 56px;
   `}
 `;
 
 const SubHeadline = styled.p`
-  font-size: 18px;
+  font-size: 15px;
   color: #64748b;
-  margin: 0 0 40px;
+  margin: 0 0 24px;
   line-height: 1.6;
   font-weight: 500;
+
+  ${media.tablet`
+    font-size: 16px;
+    margin: 0 0 32px;
+  `}
+
+  ${media.wide`
+    font-size: 18px;
+    margin: 0 0 40px;
+  `}
 `;
 
 const QRCard = styled.div`
   background: #ffffff;
-  border-radius: 24px;
-  padding: 40px;
+  border-radius: 20px;
+  padding: 28px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 24px;
+  gap: 20px;
   border: 1px solid #e2e8f0;
   position: relative;
   animation: float 4s ease-in-out infinite;
   width: 100%;
-  max-width: 360px;
+  max-width: 320px;
 
   ${media.tablet`
+    border-radius: 24px;
+    padding: 36px;
+    gap: 24px;
+    max-width: 380px;
+  `}
+
+  ${media.wide`
     padding: 48px;
     max-width: 420px;
   `}
 `;
 
 const QRFrame = styled.div`
-  padding: 16px;
+  padding: 12px;
   background: #f8fafc;
-  border-radius: 16px;
+  border-radius: 12px;
   border: 1px solid #e2e8f0;
+
+  ${media.tablet`
+    padding: 14px;
+    border-radius: 14px;
+  `}
+
+  ${media.wide`
+    padding: 16px;
+    border-radius: 16px;
+  `}
 `;
 
 const QRImage = styled.img`
-  width: 240px;
-  height: 240px;
+  width: 180px;
+  height: 180px;
   display: block;
-  border-radius: 12px;
+  border-radius: 8px;
+
+  ${media.tablet`
+    width: 220px;
+    height: 220px;
+    border-radius: 10px;
+  `}
 
   ${media.wide`
     width: 280px;
     height: 280px;
+    border-radius: 12px;
   `}
 `;
 
 const QRLoader = styled.div`
-  width: 240px;
-  height: 240px;
+  width: 180px;
+  height: 180px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: #f1f5f9;
-  border-radius: 16px;
+  border-radius: 12px;
 
   .spinner {
-    width: 48px;
-    height: 48px;
-    border: 4px solid #e2e8f0;
+    width: 36px;
+    height: 36px;
+    border: 3px solid #e2e8f0;
     border-top-color: #14b8a6;
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
+
+  ${media.tablet`
+    width: 220px;
+    height: 220px;
+    border-radius: 14px;
+
+    .spinner {
+      width: 42px;
+      height: 42px;
+    }
+  `}
+
+  ${media.wide`
+    width: 280px;
+    height: 280px;
+    border-radius: 16px;
+
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border-width: 4px;
+    }
+  `}
+
   @keyframes spin { to { transform: rotate(360deg); } }
   @keyframes float {
     0%, 100% { transform: translateY(0); }
@@ -202,14 +298,20 @@ const QRLoader = styled.div`
 const StepsRow = styled.div`
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 12px;
   justify-content: center;
-  margin: 32px 0;
+  margin: 24px 0;
   width: 100%;
 
   ${media.tablet`
+    gap: 20px;
     justify-content: flex-start;
+    margin: 28px 0;
+  `}
+
+  ${media.wide`
     gap: 32px;
+    margin: 32px 0;
   `}
 `;
 
@@ -217,13 +319,13 @@ const StepItem = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   flex: 1;
   
   .icon-box {
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
     background: #f0fdfa;
     border: 1px solid #99f6e4;
     display: flex;
@@ -234,19 +336,42 @@ const StepItem = styled.div`
 
   span {
     color: #64748b;
-    font-size: 13px;
+    font-size: 11px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
+
+  ${media.tablet`
+    .icon-box {
+      width: 44px;
+      height: 44px;
+      border-radius: 11px;
+    }
+    span { font-size: 12px; }
+  `}
+
+  ${media.wide`
+    gap: 12px;
+    .icon-box {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+    }
+    span { font-size: 13px; }
+  `}
 `;
 
 const StepDivider = styled.div`
-  width: 40px;
+  width: 24px;
   height: 2px;
   background: linear-gradient(to right, #e2e8f0, transparent);
 
   ${media.tablet`
+    width: 32px;
+  `}
+
+  ${media.wide`
     width: 48px;
   `}
 `;
@@ -254,27 +379,36 @@ const StepDivider = styled.div`
 const StatusPill = styled.div`
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 24px;
+  gap: 10px;
+  padding: 10px 18px;
   background: #f0fdfa;
   border: 1px solid #99f6e4;
   border-radius: 100px;
   backdrop-filter: blur(8px);
-  margin-top: 24px;
+  margin-top: 20px;
 
   .dot {
-    width: 10px;
-    height: 10px;
+    width: 8px;
+    height: 8px;
     background: #14b8a6;
     border-radius: 50%;
     animation: pulse 2s infinite;
+    flex-shrink: 0;
   }
   
   span {
     color: #0d9488;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
   }
+
+  ${media.tablet`
+    gap: 12px;
+    padding: 12px 24px;
+    margin-top: 24px;
+    .dot { width: 10px; height: 10px; }
+    span { font-size: 14px; }
+  `}
   
   @keyframes pulse {
     0%, 100% { opacity: 1; }
@@ -345,10 +479,10 @@ const KioskPayStage: React.FC<KioskPayStageProps> = ({ qrDataUrl, stage }) => {
               )}
             </QRFrame>
             <div style={{ textAlign: 'center' }}>
-              <p style={{ margin: 0, fontSize: 16, color: '#0f172a', fontWeight: 700 }}>
+              <p style={{ margin: 0, fontSize: 15, color: '#0f172a', fontWeight: 700 }}>
                 Scan to Get Started
               </p>
-              <p style={{ margin: '8px 0 0', fontSize: 14, color: '#64748b', fontWeight: 500 }}>
+              <p style={{ margin: '6px 0 0', fontSize: 13, color: '#64748b', fontWeight: 500 }}>
                 Secure scan via your smartphone
               </p>
             </div>
@@ -364,21 +498,21 @@ const KioskPayStage: React.FC<KioskPayStageProps> = ({ qrDataUrl, stage }) => {
 
         {/* Features Section - similar to footer on LandingPage */}
         <div style={{
-          marginTop: 64,
+          marginTop: 40,
           display: 'flex',
           flexWrap: 'wrap',
           justifyContent: 'center',
-          gap: 16,
+          gap: 10,
         }}>
           {features.map((f, i) => (
             <div key={i} style={{
               display: 'flex',
               alignItems: 'center',
-              gap: 8,
+              gap: 6,
               color: '#64748b',
-              fontSize: 15,
+              fontSize: 13,
               fontWeight: 600,
-              padding: '8px 16px',
+              padding: '6px 12px',
               background: '#f8fafc',
               borderRadius: 8,
               border: '1px solid #e2e8f0',

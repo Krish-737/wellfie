@@ -1,10 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { ArrowRight, Calendar, ShieldPlus, User } from 'lucide-react';
+import { ArrowRight, ShieldPlus, User } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useIsMobileLayout } from '../../hooks/useLayoutBreakpoint';
 import PageContainer from '../../layout/PageContainer';
 import { colors, typography } from '../../style/tokens';
+
 import {
   getSdkProfileGateMessage,
   isProfileComplete,
@@ -32,9 +33,10 @@ import {
   AGE_MIN,
   AGE_MAX,
   ageFromDob,
-  formatDobInput,
   isDobInValidAgeRange,
   parseDobDdMmYyyy,
+  minDobDate,
+  maxDobDate,
 } from '../../utils/dob';
 
 const TEAL_DARK = colors.tealDark;
@@ -449,7 +451,7 @@ const HealthProfilePage: React.FC = () => {
     const trimmed = dob.trim();
     if (!trimmed) return 'Enter your date of birth.';
     const parsed = parseDobDdMmYyyy(dob);
-    if (!parsed) return 'Enter a valid date as DD/MM/YYYY (e.g. 20/05/1991).';
+    if (!parsed) return 'Enter a valid date of birth.';
     if (!isDobInValidAgeRange(parsed)) {
       return `Age must be between ${AGE_MIN} and ${AGE_MAX} years.`;
     }
@@ -584,441 +586,387 @@ const HealthProfilePage: React.FC = () => {
           background: '#ffffff',
           boxSizing: 'border-box',
           overflowX: 'hidden',
-          padding: isMobile ? '20px 16px 28px' : '28px 32px 36px',
+          padding: isMobile ? '20px 16px 28px' : '0',
           fontFamily: typography.fontFamily,
+          display: isMobile ? 'block' : 'flex',
+          justifyContent: 'center',
         }}
       >
+        {/* Desktop: centered column with max width */}
         <div
           style={{
-            width: 72,
-            height: 72,
-            borderRadius: '50%',
-            background: '#f1f5f9',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginBottom: 20,
+            width: '100%',
+            maxWidth: isMobile ? '100%' : 680,
+            padding: isMobile ? '0' : '36px 0 48px',
+            boxSizing: 'border-box',
           }}
         >
-          <ShieldPlus size={32} color={TEAL_DARK} strokeWidth={2} />
-        </div>
-
-        <h1
-          style={{
-            fontSize: isMobile ? 28 : 32,
-            fontWeight: 800,
-            color: colors.slate900,
-            margin: '0 0 10px',
-            letterSpacing: '-0.02em',
-            lineHeight: 1.15,
-          }}
-        >
-          Health profile
-        </h1>
-
-        <p
-          style={{
-            fontSize: 15,
-            color: colors.slate500,
-            lineHeight: 1.55,
-            margin: '0 0 12px',
-            maxWidth: 480,
-          }}
-        >
-          A few details help us calculate Heart Age and cardiovascular risk more accurately during your scan.
-        </p>
-
-        <ul
-          style={{
-            margin: '0 0 28px',
-            padding: 0,
-            listStyle: 'none',
-            fontSize: 13,
-            color: '#94a3b8',
-            lineHeight: 1.7,
-          }}
-        >
-          <li style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <span style={{ color: TEAL_DARK, fontSize: 8 }}>●</span>
-            Used for scan accuracy
-          </li>
-          <li style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <span style={{ color: TEAL_DARK, fontSize: 8 }}>●</span>
-            Stored securely
-          </li>
-        </ul>
-
-        {showScanBanner && scanGateMessage && (
           <div
             style={{
-              background: '#ecfeff',
-              border: '1px solid #99f6e4',
-              borderRadius: 12,
-              padding: '14px 16px',
-              marginBottom: 20,
-              fontSize: 14,
-              lineHeight: 1.5,
-              color: TEAL_DARK,
-              fontWeight: 500,
-            }}
-          >
-            {scanGateMessage}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} noValidate style={{ maxWidth: isMobile ? '100%' : 640, width: '100%', minWidth: 0 }}>
-          <section style={{ marginBottom: 24 }}>
-            <p style={sectionLabelStyle}>Sex at birth</p>
-            <SexCards value={sex} onChange={setSex} />
-          </section>
-
-          <section style={{ marginBottom: 24 }}>
-            <p style={sectionLabelStyle}>Date of birth</p>
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                background: dobError ? '#fffafa' : '#f1f5f9',
-                borderRadius: 12,
-                border: dobError
-                  ? '1.5px solid #fca5a5'
-                  : dobFocused
-                    ? `1.5px solid ${TEAL_DARK}`
-                    : '1.5px solid transparent',
-                boxShadow: dobFocused && !dobError ? `0 0 0 3px ${TEAL_FOCUS}` : 'none',
-                transition: 'border-color 0.15s, box-shadow 0.15s',
-              }}
-            >
-              <input
-                id="dob"
-                type="text"
-                inputMode="numeric"
-                autoComplete="bday"
-                value={dob}
-                onChange={(e) => setDob(formatDobInput(e.target.value))}
-                onFocus={() => setDobFocused(true)}
-                onBlur={() => {
-                  setDobFocused(false);
-                  markTouched('dob');
-                }}
-                placeholder="DD/MM/YYYY"
-                maxLength={10}
-                aria-invalid={!!dobError}
-                style={{
-                  flex: 1,
-                  minWidth: 0,
-                  padding: '14px 12px',
-                  fontSize: 16,
-                  fontWeight: 600,
-                  border: 'none',
-                  outline: 'none',
-                  background: 'transparent',
-                  color: colors.slate900,
-                  fontFamily: typography.fontFamily,
-                }}
-              />
-              <Calendar
-                size={20}
-                color="#94a3b8"
-                strokeWidth={2}
-                style={{ marginRight: 14, flexShrink: 0 }}
-                aria-hidden
-              />
-            </div>
-            {dobError ? (
-              <p style={fieldNoticeStyle} role="alert">{dobError}</p>
-            ) : (
-              <p
-                style={{
-                  fontSize: 13,
-                  color: '#94a3b8',
-                  marginTop: 8,
-                  fontStyle: dobPreview != null ? 'italic' : 'normal',
-                }}
-              >
-                {dobPreview != null
-                  ? `Age: ${dobPreview} years (saved when you continue)`
-                  : `Format: DD/MM/YYYY · Age ${AGE_MIN}–${AGE_MAX} years`}
-              </p>
-            )}
-          </section>
-
-          <section style={{ marginBottom: 24 }}>
-            <p style={sectionLabelStyle}>Body measurements</p>
-            <div style={{ marginBottom: 16 }}>
-              <UnitToggle value={unitSystem} onChange={handleUnitChange} isMobile={isMobile} />
-            </div>
-
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',
-                gap: 12,
-                width: '100%',
-                minWidth: 0,
-              }}
-            >
-              {unitSystem === 'metric' ? (
-                <>
-                  <div style={{ minWidth: 0 }}>
-                    <SuffixInput
-                      id="height-cm"
-                      type="number"
-                      step={0.1}
-                      value={heightCm}
-                      onChange={setHeightCm}
-                      onBlur={() => markTouched('height')}
-                      suffix="CM"
-                      placeholder="172.7"
-                      hasError={!!heightError}
-                      aria-invalid={!!heightError}
-                    />
-                    {heightError ? (
-                      <p style={fieldNoticeStyle} role="alert">{heightError}</p>
-                    ) : (
-                      <p style={rangeHintStyle}>
-                        Range: {HEIGHT_CM_MIN}–{HEIGHT_CM_MAX} CM
-                      </p>
-                    )}
-                  </div>
-                  <div style={{ minWidth: 0 }}>
-                    <SuffixInput
-                      id="weight-kg"
-                      type="number"
-                      step={0.1}
-                      value={weightKg}
-                      onChange={setWeightKg}
-                      onBlur={() => markTouched('weight')}
-                      suffix="KG"
-                      placeholder="85"
-                      hasError={!!weightError}
-                      aria-invalid={!!weightError}
-                    />
-                    {weightError ? (
-                      <p style={fieldNoticeStyle} role="alert">{weightError}</p>
-                    ) : (
-                      <p style={rangeHintStyle}>
-                        Range: {WEIGHT_KG_MIN}–{WEIGHT_KG_MAX} KG
-                      </p>
-                    )}
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div style={{ minWidth: 0 }}>
-                    <div style={{ display: 'flex', gap: 8, minWidth: 0 }}>
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <SuffixInput
-                          id="height-ft"
-                          type="number"
-                          value={heightFt}
-                          onChange={setHeightFt}
-                          onBlur={() => markTouched('height')}
-                          suffix="FT"
-                          placeholder="5"
-                          hasError={!!heightError}
-                          aria-invalid={!!heightError}
-                        />
-                      </div>
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <SuffixInput
-                          id="height-in"
-                          type="number"
-                          step={0.5}
-                          value={heightIn}
-                          onChange={setHeightIn}
-                          onBlur={() => markTouched('height')}
-                          suffix="IN"
-                          placeholder="8"
-                          hasError={!!heightError}
-                          aria-invalid={!!heightError}
-                        />
-                      </div>
-                    </div>
-                    {heightError ? (
-                      <p style={fieldNoticeStyle} role="alert">{heightError}</p>
-                    ) : imperialHeightHint ? (
-                      <p style={{ ...rangeHintStyle, color: TEAL_DARK }}>{imperialHeightHint}</p>
-                    ) : (
-                      <p style={rangeHintStyle}>
-                        Range: {HEIGHT_CM_MIN}–{HEIGHT_CM_MAX} CM
-                      </p>
-                    )}
-                  </div>
-                  <div style={{ minWidth: 0 }}>
-                    <SuffixInput
-                      id="weight-lb"
-                      type="number"
-                      step={0.1}
-                      value={weightLb}
-                      onChange={setWeightLb}
-                      onBlur={() => markTouched('weight')}
-                      suffix="LB"
-                      placeholder="187"
-                      hasError={!!weightError}
-                      aria-invalid={!!weightError}
-                    />
-                    {weightError ? (
-                      <p style={fieldNoticeStyle} role="alert">{weightError}</p>
-                    ) : (
-                      <p style={rangeHintStyle}>
-                        {imperialWeightHint ||
-                          `Range: ${WEIGHT_LB_MIN}–${WEIGHT_LB_MAX} LB`}
-                      </p>
-                    )}
-                  </div>
-                </>
-              )}
-            </div>
-          </section>
-
-          <section style={{ marginBottom: 24 }}>
-            <p style={sectionLabelStyle}>Smoking status</p>
-            <select
-              id="smoking"
-              style={selectStyle}
-              value={smoking}
-              onChange={(e) => setSmoking(e.target.value as ProfileSmoking)}
-              {...bindInputFocus}
-            >
-              <option value="unspecified">Prefer not to say</option>
-              <option value="non_smoker">Never / non-smoker</option>
-              <option value="smoker">Current smoker</option>
-            </select>
-          </section>
-
-          {error && (
-            <div
-              style={{
-                background: '#fef2f2',
-                border: '1px solid #fecaca',
-                borderRadius: 10,
-                padding: '10px 14px',
-                fontSize: 13,
-                color: '#dc2626',
-                marginBottom: 16,
-              }}
-            >
-              {error}
-            </div>
-          )}
-
-          {/* Show Health Indicators toggle — hidden; all domains shown on dashboard by default
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              padding: '16px 18px',
-              background: '#f8fafc',
-              borderRadius: 14,
-              border: '1px solid #e2e8f0',
-              marginBottom: 24,
-            }}
-          >
-            <div>
-              <div style={{ fontSize: 15, fontWeight: 700, color: colors.slate900 }}>
-                Show Health Indicators
-              </div>
-              <div style={{ fontSize: 13, color: '#94a3b8', marginTop: 4, lineHeight: 1.4 }}>
-                Display diagnostic health cards on your dashboard
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={() => {
-                const nextVal = !showHealthIndicators;
-                setShowHealthIndicators(nextVal);
-                localStorage.setItem('showHealthIndicators', String(nextVal));
-              }}
-              style={{
-                width: 52,
-                height: 30,
-                borderRadius: 999,
-                border: 'none',
-                cursor: 'pointer',
-                position: 'relative',
-                background: showHealthIndicators ? '#22c55e' : '#d1d5db',
-                transition: 'background 0.2s',
-                flexShrink: 0,
-              }}
-              role="switch"
-              aria-checked={showHealthIndicators}
-              aria-label="Show health indicators on dashboard"
-            >
-              <span
-                style={{
-                  position: 'absolute',
-                  top: 3,
-                  left: showHealthIndicators ? 25 : 3,
-                  width: 24,
-                  height: 24,
-                  borderRadius: '50%',
-                  background: '#ffffff',
-                  boxShadow: '0 1px 4px rgba(0,0,0,0.2)',
-                  transition: 'left 0.2s',
-                }}
-              />
-            </button>
-          </div>
-          */}
-
-          <button
-            type="submit"
-            disabled={loading}
-            style={{
-              width: '100%',
+              width: 72,
+              height: 72,
+              borderRadius: '50%',
+              background: '#f1f5f9',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: 8,
-              padding: '16px 0',
-              fontSize: 16,
-              fontWeight: 700,
-              color: '#ffffff',
-              background: loading ? '#94a3b8' : TEAL_DARK,
-              border: 'none',
-              borderRadius: 14,
-              cursor: loading ? 'not-allowed' : 'pointer',
-              transition: 'background 0.2s',
-              fontFamily: typography.fontFamily,
+              marginBottom: 20,
             }}
           >
-            {loading ? 'Saving…' : 'Save and continue'}
-            {!loading && <ArrowRight size={18} strokeWidth={2.5} />}
-          </button>
+            <ShieldPlus size={32} color={TEAL_DARK} strokeWidth={2} />
+          </div>
 
-          <button
-            type="button"
-            onClick={() => navigate('/dashboard')}
+          <h1
             style={{
-              width: '100%',
-              marginTop: 14,
-              padding: '10px',
-              fontSize: 14,
-              fontWeight: 600,
-              color: colors.slate500,
-              background: 'transparent',
-              border: 'none',
-              cursor: 'pointer',
-              fontFamily: typography.fontFamily,
+              fontSize: isMobile ? 28 : 32,
+              fontWeight: 800,
+              color: colors.slate900,
+              margin: '0 0 10px',
+              letterSpacing: '-0.02em',
+              lineHeight: 1.15,
             }}
           >
-            Back to dashboard
-          </button>
-        </form>
+            Health profile
+          </h1>
 
-        <p
-          style={{
-            marginTop: 32,
-            fontSize: 11,
-            color: '#94a3b8',
-            textAlign: 'center',
-            lineHeight: 1.5,
-          }}
-        >
-          © 2024 MyWellfie. All health data is encrypted and HIPAA compliant.
-        </p>
+          <p
+            style={{
+              fontSize: 15,
+              color: colors.slate500,
+              lineHeight: 1.55,
+              margin: '0 0 12px',
+              maxWidth: 480,
+            }}
+          >
+            A few details help us calculate Heart Age and cardiovascular risk more accurately during your scan.
+          </p>
+
+          <ul
+            style={{
+              margin: '0 0 28px',
+              padding: 0,
+              listStyle: 'none',
+              fontSize: 13,
+              color: '#94a3b8',
+              lineHeight: 1.7,
+            }}
+          >
+            <li style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ color: TEAL_DARK, fontSize: 8 }}>●</span>
+              Used for scan accuracy
+            </li>
+            <li style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ color: TEAL_DARK, fontSize: 8 }}>●</span>
+              Stored securely
+            </li>
+          </ul>
+
+          {showScanBanner && scanGateMessage && (
+            <div
+              style={{
+                background: '#ecfeff',
+                border: '1px solid #99f6e4',
+                borderRadius: 12,
+                padding: '14px 16px',
+                marginBottom: 20,
+                fontSize: 14,
+                lineHeight: 1.5,
+                color: TEAL_DARK,
+                fontWeight: 500,
+              }}
+            >
+              {scanGateMessage}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} noValidate style={{ maxWidth: '100%', width: '100%', minWidth: 0 }}>
+            <section style={{ marginBottom: 24 }}>
+              <p style={sectionLabelStyle}>Sex at birth</p>
+              <SexCards value={sex} onChange={setSex} />
+            </section>
+
+            <section style={{ marginBottom: 24 }}>
+              <p style={sectionLabelStyle}>Date of birth</p>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  background: dobError ? '#fffafa' : '#f1f5f9',
+                  borderRadius: 12,
+                  border: dobError
+                    ? '1.5px solid #fca5a5'
+                    : dobFocused
+                      ? `1.5px solid ${TEAL_DARK}`
+                      : '1.5px solid transparent',
+                  boxShadow: dobFocused && !dobError ? `0 0 0 3px ${TEAL_FOCUS}` : 'none',
+                  transition: 'border-color 0.15s, box-shadow 0.15s',
+                }}
+              >
+                <input
+                  id="dob"
+                  type="date"
+                  autoComplete="bday"
+                  value={dob || ''}
+                  onChange={(e) => setDob(e.target.value)}
+                  onFocus={() => setDobFocused(true)}
+                  onBlur={() => {
+                    setDobFocused(false);
+                    markTouched('dob');
+                  }}
+                  min={minDobDate().toISOString().slice(0, 10)}
+                  max={maxDobDate().toISOString().slice(0, 10)}
+                  aria-invalid={!!dobError}
+                  style={{
+                    flex: 1,
+                    minWidth: 0,
+                    padding: '14px 12px',
+                    fontSize: 16,
+                    fontWeight: 600,
+                    border: 'none',
+                    outline: 'none',
+                    background: 'transparent',
+                    color: colors.slate900,
+                    fontFamily: typography.fontFamily,
+                    minHeight: 24,
+                  }}
+                />
+              </div>
+              {dobError ? (
+                <p style={fieldNoticeStyle} role="alert">{dobError}</p>
+              ) : (
+                <p
+                  style={{
+                    fontSize: 13,
+                    color: '#94a3b8',
+                    marginTop: 8,
+                    fontStyle: dobPreview != null ? 'italic' : 'normal',
+                  }}
+                >
+                  {dobPreview != null
+                    ? `Age: ${dobPreview} years (saved when you continue)`
+                    : `Age ${AGE_MIN}–${AGE_MAX} years`}
+                </p>
+              )}
+            </section>
+
+            <section style={{ marginBottom: 24 }}>
+              <p style={sectionLabelStyle}>Body measurements</p>
+              <div style={{ marginBottom: 16 }}>
+                <UnitToggle value={unitSystem} onChange={handleUnitChange} isMobile={isMobile} />
+              </div>
+
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',
+                  gap: 12,
+                  width: '100%',
+                  minWidth: 0,
+                }}
+              >
+                {unitSystem === 'metric' ? (
+                  <>
+                    <div style={{ minWidth: 0 }}>
+                      <SuffixInput
+                        id="height-cm"
+                        type="number"
+                        step={0.1}
+                        value={heightCm}
+                        onChange={setHeightCm}
+                        onBlur={() => markTouched('height')}
+                        suffix="CM"
+                        placeholder="172.7"
+                        hasError={!!heightError}
+                        aria-invalid={!!heightError}
+                      />
+                      {heightError ? (
+                        <p style={fieldNoticeStyle} role="alert">{heightError}</p>
+                      ) : (
+                        <p style={rangeHintStyle}>
+                          Range: {HEIGHT_CM_MIN}–{HEIGHT_CM_MAX} CM
+                        </p>
+                      )}
+                    </div>
+                    <div style={{ minWidth: 0 }}>
+                      <SuffixInput
+                        id="weight-kg"
+                        type="number"
+                        step={0.1}
+                        value={weightKg}
+                        onChange={setWeightKg}
+                        onBlur={() => markTouched('weight')}
+                        suffix="KG"
+                        placeholder="85"
+                        hasError={!!weightError}
+                        aria-invalid={!!weightError}
+                      />
+                      {weightError ? (
+                        <p style={fieldNoticeStyle} role="alert">{weightError}</p>
+                      ) : (
+                        <p style={rangeHintStyle}>
+                          Range: {WEIGHT_KG_MIN}–{WEIGHT_KG_MAX} KG
+                        </p>
+                      )}
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div style={{ minWidth: 0 }}>
+                      <div style={{ display: 'flex', gap: 8, minWidth: 0 }}>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <SuffixInput
+                            id="height-ft"
+                            type="number"
+                            value={heightFt}
+                            onChange={setHeightFt}
+                            onBlur={() => markTouched('height')}
+                            suffix="FT"
+                            placeholder="5"
+                            hasError={!!heightError}
+                            aria-invalid={!!heightError}
+                          />
+                        </div>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <SuffixInput
+                            id="height-in"
+                            type="number"
+                            step={0.5}
+                            value={heightIn}
+                            onChange={setHeightIn}
+                            onBlur={() => markTouched('height')}
+                            suffix="IN"
+                            placeholder="8"
+                            hasError={!!heightError}
+                            aria-invalid={!!heightError}
+                          />
+                        </div>
+                      </div>
+                      {heightError ? (
+                        <p style={fieldNoticeStyle} role="alert">{heightError}</p>
+                      ) : imperialHeightHint ? (
+                        <p style={{ ...rangeHintStyle, color: TEAL_DARK }}>{imperialHeightHint}</p>
+                      ) : (
+                        <p style={rangeHintStyle}>
+                          Range: {HEIGHT_CM_MIN}–{HEIGHT_CM_MAX} CM
+                        </p>
+                      )}
+                    </div>
+                    <div style={{ minWidth: 0 }}>
+                      <SuffixInput
+                        id="weight-lb"
+                        type="number"
+                        step={0.1}
+                        value={weightLb}
+                        onChange={setWeightLb}
+                        onBlur={() => markTouched('weight')}
+                        suffix="LB"
+                        placeholder="187"
+                        hasError={!!weightError}
+                        aria-invalid={!!weightError}
+                      />
+                      {weightError ? (
+                        <p style={fieldNoticeStyle} role="alert">{weightError}</p>
+                      ) : (
+                        <p style={rangeHintStyle}>
+                          {imperialWeightHint ||
+                            `Range: ${WEIGHT_LB_MIN}–${WEIGHT_LB_MAX} LB`}
+                        </p>
+                      )}
+                    </div>
+                  </>
+                )}
+              </div>
+            </section>
+
+            <section style={{ marginBottom: 24 }}>
+              <p style={sectionLabelStyle}>Smoking status</p>
+              <select
+                id="smoking"
+                style={selectStyle}
+                value={smoking}
+                onChange={(e) => setSmoking(e.target.value as ProfileSmoking)}
+                {...bindInputFocus}
+              >
+                <option value="unspecified">Prefer not to say</option>
+                <option value="non_smoker">Never / non-smoker</option>
+                <option value="smoker">Current smoker</option>
+              </select>
+            </section>
+
+            {error && (
+              <div
+                style={{
+                  background: '#fef2f2',
+                  border: '1px solid #fecaca',
+                  borderRadius: 10,
+                  padding: '10px 14px',
+                  fontSize: 13,
+                  color: '#dc2626',
+                  marginBottom: 16,
+                }}
+              >
+                {error}
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={loading}
+              style={{
+                width: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 8,
+                padding: '16px 0',
+                fontSize: 16,
+                fontWeight: 700,
+                color: '#ffffff',
+                background: loading ? '#94a3b8' : TEAL_DARK,
+                border: 'none',
+                borderRadius: 14,
+                cursor: loading ? 'not-allowed' : 'pointer',
+                transition: 'background 0.2s',
+                fontFamily: typography.fontFamily,
+              }}
+            >
+              {loading ? 'Saving…' : 'Save and continue'}
+              {!loading && <ArrowRight size={18} strokeWidth={2.5} />}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => navigate('/dashboard')}
+              style={{
+                width: '100%',
+                marginTop: 14,
+                padding: '10px',
+                fontSize: 14,
+                fontWeight: 600,
+                color: colors.slate500,
+                background: 'transparent',
+                border: 'none',
+                cursor: 'pointer',
+                fontFamily: typography.fontFamily,
+              }}
+            >
+              Back to dashboard
+            </button>
+          </form>
+
+          <p
+            style={{
+              marginTop: 32,
+              fontSize: 11,
+              color: '#94a3b8',
+              textAlign: 'center',
+              lineHeight: 1.5,
+            }}
+          >
+            © 2026 MyWellfie. All health data is encrypted and HIPAA compliant.
+          </p>
+
+        </div> {/* end centered column */}
       </div>
     </PageContainer>
   );
