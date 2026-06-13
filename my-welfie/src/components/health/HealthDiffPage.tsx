@@ -73,7 +73,8 @@ RULES:
 
 Respond ONLY with JSON, no markdown:
 {"overall_assessment":"2-3 warm clinical sentences","risk_level":"low","concern_flags":["metric: reason"],"diet":[{"food":"name","reason":"specific physiological reason tied to their readings","frequency":"how often"}],"exercise":[{"activity":"name","duration":"time","frequency":"how often","reason":"why for their readings"}],"avoid":[{"item":"name","reason":"exact mechanism worsening their readings"}],"lifestyle":[{"habit":"specific action","reason":"biological reason from their data"}],"followup":"specific follow-up plan","positive_note":"genuine encouraging observation"}
-risk_level must be exactly: low moderate high`;
+risk_level must be exactly: low moderate high
+Risk level guidance: use "low" when all values are near-normal, "moderate" when 1-3 metrics are mildly outside range, "high" ONLY when there is a clinically serious finding like very high blood pressure (>160), cardiac anomaly, or ASCVD risk. Do NOT use "high" for elevated stress or mildly low HRV — those are "moderate".`;
 
   const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
     method: 'POST',
@@ -103,8 +104,11 @@ function fallbackAdvice(diff: HealthDiff): any {
   const sdnnLow    = sdnn   !== null && sdnn   < 50;
   const bpHigh     = bp     !== null && bp     > 129;
   const concernCount = diff.metrics.filter(m => m.is_concerning).length;
-  const risk_level = concernCount >= 3 ? 'high' : concernCount >= 1 ? 'moderate' : 'low';
-
+//   const risk_level = concernCount >= 3 ? 'high' : concernCount >= 1 ? 'moderate' : 'low';
+    // Only escalate to high if there are clinically serious readings (BP, cardiac, etc.)
+const seriousMetrics = ['blood_pressure_systolic', 'cardiac_workload', 'heart_age', 'ascvd_risk'];
+const hasSeriousConcern = diff.metrics.some(m => m.is_concerning && seriousMetrics.includes(m.key));
+const risk_level = hasSeriousConcern ? 'high' : concernCount >= 1 ? 'moderate' : 'low';
   return {
     overall_assessment: concernCount === 0
       ? 'Your readings are stable — all values are within normal clinical ranges. The small changes I see are the kind of natural daily variation everyone experiences.'
@@ -398,11 +402,16 @@ const HealthDiffPage: React.FC = () => {
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ccfbf1" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
             <span style={{ color: '#ccfbf1', fontSize: 12, fontWeight: 600, flex: 1, minWidth: 0 }}>MyWellfie · Dr. Welfie MD · AI Health Consultation</span>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
-              {advice && (
+              {/* {advice && (
                 <span style={{ background: riskStyle.bg, border: `1.5px solid ${riskStyle.border}`, borderRadius: 20, padding: '3px 12px', fontSize: 11, fontWeight: 800, color: riskStyle.color, letterSpacing: '0.06em', whiteSpace: 'nowrap' }}>
                   {riskLevel.toUpperCase()} RISK
                 </span>
-              )}
+              )} */}
+              {advice && (
+                <span style={{ background: riskStyle.bg, border: `1.5px solid ${riskStyle.border}`, borderRadius: 20, padding: '3px 12px', fontSize: 11, fontWeight: 800, color: riskStyle.color, letterSpacing: '0.06em', whiteSpace: 'nowrap' }}>
+                    {riskStyle.label}
+                </span>
+                )}
               <svg width="12" height="12" viewBox="0 0 20 20">
                 <circle cx="10" cy="10" r="7" fill="#4ade80"/>
                 <circle className="pulse-ring" cx="10" cy="10" r="7" fill="#4ade80"/>
