@@ -214,10 +214,15 @@ function getTopicMarkdown(adv: any, t: Topic): string {
 
 // ── Styles ────────────────────────────────────────────────────────────────────
 
-const RISK_STYLE: Record<string, { color: string; bg: string; border: string }> = {
-  low:      { color: '#166534', bg: '#f0fdf4', border: '#bbf7d0' },
-  moderate: { color: '#92400e', bg: '#fffbeb', border: '#fcd34d' },
-  high:     { color: '#991b1b', bg: '#fef2f2', border: '#fca5a5' },
+// const RISK_STYLE: Record<string, { color: string; bg: string; border: string }> = {
+//   low:      { color: '#166534', bg: '#f0fdf4', border: '#bbf7d0' },
+//   moderate: { color: '#92400e', bg: '#fffbeb', border: '#fcd34d' },
+//   high:     { color: '#991b1b', bg: '#fef2f2', border: '#fca5a5' },
+// };
+const RISK_STYLE: Record<string, { color: string; bg: string; border: string; label: string }> = {
+  low:      { color: '#166534', bg: '#f0fdf4', border: '#bbf7d0', label: 'All Clear'        },
+  moderate: { color: '#92400e', bg: '#fffbeb', border: '#fcd34d', label: 'Needs Attention'  },
+  high:     { color: '#0f5a4e', bg: '#f0fdfa', border: '#99f6e4', label: 'Review Advised'   },
 };
 
 const TOPIC_META: Record<Topic, { label: string; icon: string }> = {
