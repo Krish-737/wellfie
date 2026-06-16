@@ -114,7 +114,20 @@ export default function KioskLandingPage() {
       
       {/* ── Centered Logo ── */}
       <div className="flex-1 flex flex-col items-center justify-center px-6 py-12">
-        <img src={logoSrc} alt="MyWellfie" className="h-12 object-contain mb-8" />
+        <img src={logoSrc} alt="MyWellfie" className="h-12 object-contain mb-6" />
+
+        <div className="inline-flex items-center gap-2 bg-teal-50 border border-teal-100 px-3 py-1.5 rounded-xl mb-4">
+          <span className="relative flex h-1.5 w-1.5">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-teal-500"></span>
+          </span>
+          <span className="text-[10px] font-extrabold uppercase tracking-[0.1em] text-teal-700">Live Kiosk Session</span>
+        </div>
+
+        <h1 className="text-3xl font-extrabold tracking-tight leading-[1.1] mb-8 text-center text-slate-900">
+          Smart Health <br />
+          <span className="text-teal-600">Starts Here.</span>
+        </h1>
 
         <div className="w-full max-w-md mx-auto space-y-5 text-center">
           
