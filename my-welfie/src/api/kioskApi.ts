@@ -89,6 +89,9 @@ export const createKioskCheckout = (
 ): Promise<{ checkout_url: string }> =>
   req(`/kiosk/session/${id}/checkout`, { method: "POST" });
 
+export const simulateKioskPayment = (id: string): Promise<KioskSession> =>
+  req(`/kiosk/session/${id}/simulate-payment`, { method: "POST" });
+
 // ── Scan ──────────────────────────────────────────────────────────────────────
 
 export const saveKioskScan = (
