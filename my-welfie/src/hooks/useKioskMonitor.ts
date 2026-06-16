@@ -92,6 +92,7 @@ const useKioskMonitor = ({
   const [warning, setWarning] = useState<AlertData>({ code: -1 });
   const [info, setInfo] = useState<InfoData>({ type: InfoType.NONE });
   
+  const [scanInterrupted, setScanInterrupted] = useState(false);
   const [sessionKey, setSessionKey] = useState(0);
   const autoRetriedRef = useRef(false);
   const isDismissing = useRef<boolean>(false);
