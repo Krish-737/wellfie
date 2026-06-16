@@ -15,7 +15,9 @@ import React, {
 } from 'react';
 import QRCode from 'qrcode';
 import styled from 'styled-components';
-import { isMobile, isTablet, SessionState } from '@biosensesignal/web-sdk';
+import {
+  isMobile, isTablet, SessionState, Sex, SmokingStatus, UserInformation,
+} from '@biosensesignal/web-sdk';
 import {
   useCameras,
   useDisableZoom,
@@ -69,6 +71,37 @@ export default function KioskDisplayPage() {
   // ── Profile Logic ──────────────────────────────────────────────────────────
   const [guestName, setGuestName] = useState('');
   const [profileSaving, setProfileSaving] = useState(false);
+  const [profileData, setProfileData] = useState<KioskProfileData | null>(null);
+
+  const sdkUserInformation = useMemo<UserInformation | undefined>(() => {
+    if (!profileData) return undefined;
+    const { sex, date_of_birth, height_cm, weight_kg, smoking_status } = profileData;
+    if (!sex || !height_cm || !weight_kg) return undefined;
+    let age: number | undefined;
+    if (date_of_birth) {
+      let m = date_of_birth.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+      if (!m) m = date_of_birth.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if (m) {
+        const parsed = new Date(+m[3], +m[2] - 1, +m[1]);
+        if (!isNaN(parsed.getTime())) {
+          age = Math.floor((Date.now() - parsed.getTime()) / (365.25 * 86400000));
+        }
+      }
+    }
+    if (!age || age < 18 || age > 110) return undefined;
+    if (height_cm < 130 || height_cm > 230) return undefined;
+    if (weight_kg < 40 || weight_kg > 200) return undefined;
+    return {
+      sex: sex === 'male' ? Sex.MALE : sex === 'female' ? Sex.FEMALE : Sex.UNSPECIFIED,
+      age,
+      height: height_cm,
+      weight: weight_kg,
+      smokingStatus:
+        smoking_status === 'smoker' ? SmokingStatus.SMOKER
+        : smoking_status === 'non_smoker' ? SmokingStatus.NON_SMOKER
+        : SmokingStatus.UNSPECIFIED,
+    };
+  }, [profileData]);
 
   // ── Scan Logic ─────────────────────────────────────────────────────────────
   const { cameras, ready: camerasReady, refresh: refreshCameras } = useCameras();
@@ -97,7 +130,7 @@ export default function KioskDisplayPage() {
     if (resetTimerRef.current) clearTimeout(resetTimerRef.current);
     setSessionId(null); setQrDataUrl(null);
     setSessionEmail(null); setScanResult(null);
-    setGuestName('');
+    setGuestName(''); setProfileData(null);
     setSaving(false); savedRef.current = false;
     setStartMeasuring(false); setIsLoading(false); setVideoReady(false);
     isStartingRef.current = false;
@@ -162,6 +195,7 @@ export default function KioskDisplayPage() {
         });
         if (data.email) setSessionEmail(data.email);
         if (data.guest_name) setGuestName(data.guest_name);
+        setProfileData(data);
       }
       setStage('scanning');
     } catch (e) {
@@ -207,6 +241,7 @@ export default function KioskDisplayPage() {
     startMeasuring,
     shouldInitCamera: stage === 'scanning',
     onScanComplete: handleScanComplete,
+    userInformation: sdkUserInformation,
   });
 
   const prevSessionState = usePrevious(sessionState);
