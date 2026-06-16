@@ -444,7 +444,7 @@ const KioskPayStage: React.FC<KioskPayStageProps> = ({ qrDataUrl, stage, session
             <Logo src={logoSrc} alt="MyWellfie" />
             <Headline>
               Clinical Vitals.<br />
-              <span>In 90 Seconds.</span>
+              <span>In 50 Seconds.</span>
             </Headline>
             <SubHeadline>
               Experience the future of health screening. Access 34+ biometric 
