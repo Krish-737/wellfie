@@ -201,7 +201,7 @@ export default function KioskDisplayPage() {
 
   const {
     sessionState, vitalSigns, finalReport,
-    error, warning, info, clearScanAlert, retrySession,
+    error, warning, info, scanInterrupted, clearScanAlert, retrySession,
   } = useKioskMonitor({
     video, cameraId, processingTime, licenseKey,
     startMeasuring,
@@ -260,6 +260,15 @@ export default function KioskDisplayPage() {
     }
   }, [clearScanAlert, clearScanWarning, refreshCameras, retrySession]);
 
+  // ── Retry scan after interruption ──────────────────────────────────────────
+  const handleRetryScan = useCallback(() => {
+    setStartMeasuring(false);
+    savedRef.current = false;
+    setScanResult(null);
+    clearScanAlert();
+    retrySession();
+  }, [clearScanAlert, retrySession]);
+
   // ── Simulate Payment (dev/test) ─────────────────────────────────────────────
   const handleSimulatePayment = useCallback(async () => {
     if (!sessionId) return;
@@ -304,7 +313,30 @@ export default function KioskDisplayPage() {
       )}
 
       {/* 3. SCANNING STAGE */}
-      {stage === 'scanning' && (
+      {stage === 'scanning' && scanInterrupted && (
+        <div style={{ position: 'absolute', inset: 0, zIndex: 30, background: '#ffffff', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 40 }}>
+          <div style={{ width: 72, height: 72, borderRadius: 20, background: '#fef2f2', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 24 }}>
+            <span style={{ fontSize: 32 }}>⚠️</span>
+          </div>
+          <h2 style={{ margin: '0 0 8px', fontSize: 22, fontWeight: 800, color: '#0f172a' }}>Scan Interrupted</h2>
+          <p style={{ margin: '0 0 32px', fontSize: 14, color: '#64748b', textAlign: 'center', maxWidth: 320, lineHeight: 1.5 }}>
+            Please ensure your face is centered and well-lit, then try again.
+          </p>
+          <button
+            onClick={handleRetryScan}
+            style={{
+              background: '#14b8a6', color: '#ffffff', border: 'none', borderRadius: 16,
+              padding: '16px 48px', fontSize: 15, fontWeight: 800, textTransform: 'uppercase',
+              letterSpacing: '0.05em', cursor: 'pointer', fontFamily: 'inherit',
+              boxShadow: '0 4px 16px rgba(20,184,166,0.35)',
+            }}
+          >
+            Try Again
+          </button>
+        </div>
+      )}
+
+      {stage === 'scanning' && !scanInterrupted && (
         <>
           {saving ? (
             <div style={{ minHeight: '100dvh', background: '#f8fafc', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>

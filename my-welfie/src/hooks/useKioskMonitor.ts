@@ -93,6 +93,7 @@ const useKioskMonitor = ({
   const [info, setInfo] = useState<InfoData>({ type: InfoType.NONE });
   
   const [scanInterrupted, setScanInterrupted] = useState(false);
+  const misdetectedRef = useRef(false);
   const [sessionKey, setSessionKey] = useState(0);
   const autoRetriedRef = useRef(false);
   const isDismissing = useRef<boolean>(false);
@@ -121,6 +122,13 @@ const useKioskMonitor = ({
 
   const onFinalResults = useCallback((vitalSignsResults: VitalSignsResults) => {
     console.log('[KioskMonitor] onFinalResults:', JSON.stringify(vitalSignsResults, null, 2));
+
+    if (misdetectedRef.current) {
+      console.log('[KioskMonitor] Scan interrupted by misdetection — blocking report');
+      setScanInterrupted(true);
+      return;
+    }
+
     const vitals: VitalSigns = (vitalSignsResults as any)?.results ?? vitalSignsResults as any;
 
     setRawResults(vitals);
@@ -140,6 +148,7 @@ const useKioskMonitor = ({
   const onWarning = (warningData: AlertData) => {
     if (warningData.code === HealthMonitorCodes.MEASUREMENT_CODE_MISDETECTION_DURATION_EXCEEDS_LIMIT_WARNING) {
       setVitalSigns(null);
+      misdetectedRef.current = true;
     }
     setWarning(warningData);
   };
@@ -150,6 +159,8 @@ const useKioskMonitor = ({
     if (state === SessionState.MEASURING) {
       setVitalSigns(null);
       setRawResults(undefined);
+      misdetectedRef.current = false;
+      setScanInterrupted(false);
     }
   }, []);
 
@@ -280,6 +291,8 @@ useEffect(() => {
     if (startMeasuring) {
       if (sessionState === SessionState.ACTIVE) {
         console.log('[KioskMonitor] Starting measurement');
+        misdetectedRef.current = false;
+        setScanInterrupted(false);
         setFinalReport(undefined);
         setReportGeneratedAt(undefined);
         session?.start();
@@ -317,6 +330,7 @@ useEffect(() => {
     error,
     warning,
     info,
+    scanInterrupted,
     clearScanAlert,
     retrySession,
   };
