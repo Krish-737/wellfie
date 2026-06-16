@@ -34,6 +34,7 @@ import {
   updateKioskProfile,
   saveKioskScan,
   sendKioskReport,
+  simulateKioskPayment,
 } from '../../api/kioskApi';
 import { apiFetch } from '../../api/apiFetch';
 import useKioskMonitor from '../../hooks/useKioskMonitor';
@@ -259,6 +260,16 @@ export default function KioskDisplayPage() {
     }
   }, [clearScanAlert, clearScanWarning, refreshCameras, retrySession]);
 
+  // ── Simulate Payment (dev/test) ─────────────────────────────────────────────
+  const handleSimulatePayment = useCallback(async () => {
+    if (!sessionId) return;
+    try {
+      await simulateKioskPayment(sessionId);
+    } catch (e) {
+      console.error('[KioskDisplay] simulate payment failed', e);
+    }
+  }, [sessionId]);
+
   // ── Step 4: Report / Done Flow ─────────────────────────────────────────────
   const handleDone = useCallback(() => {
     setStage('done');
@@ -272,7 +283,12 @@ export default function KioskDisplayPage() {
 
       {/* 1. PAY STAGE */}
       {(stage === 'idle' || stage === 'waiting_pay') && (
-        <KioskPayStage qrDataUrl={qrDataUrl} stage={stage} />
+        <KioskPayStage
+          qrDataUrl={qrDataUrl}
+          stage={stage}
+          sessionId={sessionId}
+          onSimulatePayment={handleSimulatePayment}
+        />
       )}
 
       {/* 2. PROFILE STAGE */}

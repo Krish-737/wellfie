@@ -11,7 +11,6 @@ import {
   createKioskCheckout,
   getKioskSession,
   createKioskSession,
-  simulateKioskPayment,
   KioskSession,
 } from "../../api/kioskApi";
 import logoSrc from "../../assets/mywellfie-logo.png";
@@ -70,20 +69,6 @@ export default function KioskLandingPage() {
       window.location.href = checkout_url;
     } catch (e: any) {
       setError(e?.detail ?? "Something went wrong. Please try again.");
-      setSubmitting(false);
-    }
-  }
-
-  async function handleSimulatePay() {
-    if (!sessionId) return;
-    setSubmitting(true);
-    setError(null);
-
-    try {
-      await simulateKioskPayment(sessionId);
-      window.location.href = `/kiosk/payment-done`;
-    } catch (e: any) {
-      setError(e?.detail ?? "Simulation failed. Please try again.");
       setSubmitting(false);
     }
   }
@@ -226,14 +211,6 @@ export default function KioskLandingPage() {
                 </svg>
               )}
             </div>
-          </button>
-
-          <button
-            onClick={handleSimulatePay}
-            disabled={submitting}
-            className="w-full rounded-[22px] border-2 border-dashed border-amber-300 bg-amber-50 py-4 text-amber-700 font-bold text-sm uppercase tracking-wider transition-all active:scale-[0.98] disabled:opacity-50"
-          >
-            {submitting ? "Simulating..." : "Simulate Payment (Dev Only)"}
           </button>
 
           <div className="flex flex-col items-center gap-3">

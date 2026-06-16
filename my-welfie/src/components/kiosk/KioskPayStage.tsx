@@ -421,9 +421,11 @@ const StatusPill = styled.div`
 interface KioskPayStageProps {
   qrDataUrl: string | null;
   stage: 'idle' | 'waiting_pay';
+  sessionId: string | null;
+  onSimulatePayment?: () => void;
 }
 
-const KioskPayStage: React.FC<KioskPayStageProps> = ({ qrDataUrl, stage }) => {
+const KioskPayStage: React.FC<KioskPayStageProps> = ({ qrDataUrl, stage, sessionId, onSimulatePayment }) => {
   const features = [
     { icon: '✓', text: 'No App Required' },
     { icon: '✓', text: 'HIPAA Compliant' },
@@ -492,6 +494,28 @@ const KioskPayStage: React.FC<KioskPayStageProps> = ({ qrDataUrl, stage }) => {
                 <div className="dot" />
                 <span>Awaiting payment confirmation...</span>
               </StatusPill>
+            )}
+
+            {sessionId && onSimulatePayment && (
+              <button
+                onClick={onSimulatePayment}
+                style={{
+                  marginTop: 16,
+                  width: '100%',
+                  padding: '10px 20px',
+                  borderRadius: 12,
+                  border: '2px dashed #fbbf24',
+                  background: '#fffbeb',
+                  color: '#b45309',
+                  fontSize: 12,
+                  fontWeight: 700,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.05em',
+                  cursor: 'pointer',
+                }}
+              >
+                Simulate Payment (Dev Only)
+              </button>
             )}
           </QRCard>
         </MainContent>
