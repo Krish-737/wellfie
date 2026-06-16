@@ -268,7 +268,24 @@ def create_checkout(session_id: str, db: Session = Depends(get_db)):
 
     return KioskCheckoutOut(checkout_url=checkout.url)
 
-# ── 5. Stripe Webhook ─────────────────────────────────────────────────────────
+# ── 5. Simulate Payment (dev/test only) ────────────────────────────────────────
+
+@router.post("/session/{session_id}/simulate-payment", response_model=KioskSessionOut)
+def simulate_payment(session_id: str, db: Session = Depends(get_db)):
+    ks = _get_session_or_404(session_id, db)
+
+    if datetime.utcnow() > ks.expires_at:
+        raise HTTPException(status_code=410, detail="Session has expired")
+    if ks.status != "pending_payment":
+        raise HTTPException(status_code=409, detail="Session is not pending payment")
+
+    ks.status = "paid"
+    db.commit()
+    db.refresh(ks)
+    return _session_out(ks)
+
+
+# ── 6. Stripe Webhook ─────────────────────────────────────────────────────────
 
 @router.post("/webhook")
 async def kiosk_webhook(request: Request, db: Session = Depends(get_db)):
