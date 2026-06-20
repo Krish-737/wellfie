@@ -140,6 +140,49 @@ def create_session(body: KioskSessionCreate, db: Session = Depends(get_db)):
     return _session_out(ks)
 
 
+# ── 1b. Direct Checkout (creates session + Stripe checkout in one call) ──────
+
+@router.post("/direct-checkout")
+def direct_checkout(body: KioskSessionCreate, db: Session = Depends(get_db)):
+    """Creates a kiosk session and Stripe checkout for the $1 direct flow."""
+    ks = KioskSession(kiosk_id=body.kiosk_id)
+    db.add(ks)
+    db.commit()
+    db.refresh(ks)
+
+    FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
+
+    if not stripe.api_key or stripe.api_key.startswith("sk_test_your"):
+        raise HTTPException(status_code=500, detail="Stripe is not configured")
+
+    checkout = stripe.checkout.Session.create(
+        payment_method_types=["card"],
+        line_items=[{
+            "price_data": {
+                "currency": "sgd",
+                "unit_amount": 100,   # $1.00 SGD
+                "product_data": {
+                    "name": "MyWellfie Health Scan",
+                    "description": "One comprehensive facial health scan — 34 vital metrics",
+                },
+            },
+            "quantity": 1,
+        }],
+        mode="payment",
+        metadata={
+            "source": "kiosk",
+            "kiosk_session_id": ks.id,
+        },
+        success_url=f"{FRONTEND_URL}/kiosk/flow?session_id={ks.id}",
+        cancel_url=f"{FRONTEND_URL}/kiosk/flow?session_id={ks.id}&cancelled=true",
+    )
+
+    ks.stripe_session_id = checkout.id
+    db.commit()
+
+    return {"session_id": ks.id, "checkout_url": checkout.url}
+
+
 # ── 2. Get session state ──────────────────────────────────────────────────────
 
 @router.get("/session/{session_id}", response_model=KioskSessionOut)

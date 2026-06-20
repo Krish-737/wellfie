@@ -20,9 +20,8 @@ import { AuthProvider, useAuth } from '../context/AuthContext';
 import AppShell from '../layout/AppShell';
 import { isSdkProfileReady } from '../utils/userProfile';
 import { fonts } from '../style/tokens';
-import KioskDisplayPage from './kiosk/KioskDisplayPage';
-import KioskLandingPage from "./kiosk/KioskLandingPage";  
-import KioskPaymentStatusPage from "./kiosk/KioskPaymentStatusPage";
+import KioskFlowLanding from "./kiosk/KioskFlowLanding";
+import KioskNewFlowPage from "./kiosk/KioskNewFlowPage";
 import HealthDiffPage from './health/HealthDiffPage';
 
 // ── Styles ────────────────────────────────────────────────────────────────────
@@ -309,20 +308,13 @@ const AppRoutes = () => (
     />
     <Route path="/payment-success" element={<PaymentSuccess />} />
     <Route path="/payment-cancelled" element={<PaymentCancelled />} />
-    
-     {/* Kiosk routes */}
-    <Route path="/kiosk/display"            element={<KioskDisplayPage />} />
-    <Route path="/kiosk/start"              element={<KioskLandingPage />} />
-    <Route path="/kiosk/payment-done"       element={<KioskPaymentStatusPage status="done" />} />
-    <Route path="/kiosk/payment-cancelled"  element={<KioskPaymentStatusPage status="cancelled" />} />
-    <Route path="/kiosk/:sessionId"         element={<KioskLandingPage />} />
+    {/* Kiosk routes */}
+    <Route path="/kiosk/flow"  element={<KioskNewFlowPage />} />
+    <Route path="/kiosk"       element={<KioskFlowLanding />} />
 
     {/* Catch-all → landing page */}
-
-
     <Route path="*" element={<Navigate to="/" replace />} />
-
-     
+  
   </Routes>
 );
 

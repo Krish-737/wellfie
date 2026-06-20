@@ -68,6 +68,14 @@ export const createKioskSession = (kiosk_id: string): Promise<KioskSession> =>
     body: JSON.stringify({ kiosk_id }),
   });
 
+// ── Direct Checkout (combined session + Stripe for $1 flow) ─────────────────
+
+export const createDirectCheckout = (): Promise<{ session_id: string; checkout_url: string }> =>
+  req("/kiosk/direct-checkout", {
+    method: "POST",
+    body: JSON.stringify({ kiosk_id: "direct" }),
+  });
+
 export const getKioskSession = (id: string): Promise<KioskSession> =>
   req(`/kiosk/session/${id}`);
 
