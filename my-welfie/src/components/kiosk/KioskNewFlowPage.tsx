@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 import {
-  isMobile, SessionState, UserInformation,
+  isMobile, SessionState, SmokingStatus, UserInformation,
 } from '@biosensesignal/web-sdk';
 import {
   useCameras,
@@ -27,7 +27,7 @@ import { ArrowRight, Mail, CheckCircle, RefreshCw, AlertTriangle, Camera, Activi
 
 type FlowStage = 'init' | 'creating_checkout' | 'checking_payment' | 'payment_failed' | 'profile' | 'profile_saving' | 'scanning' | 'saving' | 'sending' | 'success';
 
-const SPIN_STYLE = `@keyframes spin{to{transform:rotate(360deg)}}`;
+const SPIN_STYLE = `@keyframes spin{to{transform:rotate(360deg)}}@keyframes stepPulse{0%,100%{opacity:1}50%{opacity:0.5}}@keyframes stepSlide{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}`;
 
 // ── Responsive styled components ──────────────────────────────────────────────
 
@@ -419,6 +419,7 @@ const ScanStepRow = styled.div<{ done?: boolean; current?: boolean }>`
   font-weight: ${p => p.current ? 700 : 500};
   color: ${p => p.done ? '#16a34a' : p.current ? '#0f172a' : '#94a3b8'};
   opacity: ${p => p.done || p.current ? 1 : 0.5};
+  animation: ${p => p.done ? 'stepSlide 0.4s ease-out' : p.current ? 'stepPulse 1.5s ease-in-out infinite' : 'none'};
   transition: all 0.3s;
 `;
 
@@ -448,6 +449,7 @@ export default function KioskNewFlowPage() {
   const [dob, setDob] = useState('');
   const [heightCm, setHeightCm] = useState('');
   const [weightKg, setWeightKg] = useState('');
+  const [smoking, setSmoking] = useState('unspecified');
 
   // ── Scan state ─────────────────────────────────────────────────────────
   const { cameras, ready: camerasReady, refresh: refreshCameras } = useCameras();
@@ -461,6 +463,7 @@ export default function KioskNewFlowPage() {
   const video = useRef<HTMLVideoElement>(null);
   const [loadingTimeout, setLoadingTimeout] = useState<number>();
 
+  const scanErrorRef = useRef<boolean>(false);
   const [processingTime] = useMeasurementDuration();
   const [licenseKey] = useLicenseKey();
   const isPageVisible = usePageVisibility();
@@ -481,17 +484,34 @@ export default function KioskNewFlowPage() {
     }
     if (pd.height_cm && pd.height_cm >= 130 && pd.height_cm <= 230) info.height = pd.height_cm;
     if (pd.weight_kg && pd.weight_kg >= 40 && pd.weight_kg <= 200) info.weight = pd.weight_kg;
+    if (pd.smoking_status) {
+      if (pd.smoking_status === 'smoker') info.smoking = SmokingStatus.SMOKER;
+      else if (pd.smoking_status === 'non_smoker') info.smoking = SmokingStatus.NON_SMOKER;
+      else info.smoking = SmokingStatus.UNSPECIFIED;
+    }
     return Object.keys(info).length ? info as UserInformation : undefined;
   }, []);
 
   // ── Scan completion handler (must be defined BEFORE useKioskMonitor) ─────
   const handleScanComplete = useCallback((vitalSignsResults: any) => {
     if (savedRef.current || !sessionId) return;
+
+    // Don't save if there's an active camera/scan error
+    if (scanErrorRef.current) {
+      console.log('[KioskFlow] Blocking save due to active scan error');
+      return;
+    }
+
+    const vitals = vitalSignsResults?.results ?? vitalSignsResults;
+    // Don't save if no meaningful data was collected
+    if (!vitals || Object.keys(vitals).length === 0) {
+      console.log('[KioskFlow] Blocking save — no vital sign data');
+      return;
+    }
+
     savedRef.current = true;
     setSaving(true);
     setStage('saving');
-
-    const vitals = vitalSignsResults?.results ?? vitalSignsResults;
 
     saveKioskScan(sessionId, vitals, {
       scan_platform: 'kiosk',
@@ -531,6 +551,9 @@ export default function KioskNewFlowPage() {
 
   const prevSessionState = usePrevious(sessionState);
   const { scanError, scanWarning, clearScanWarning } = useResolvedScanAlert(error, warning);
+
+  // Track active errors in a ref so handleScanComplete can check it
+  useEffect(() => { scanErrorRef.current = error?.code != null && error.code !== -1; }, [error]);
 
   // ── Camera selection ──────────────────────────────────────────────────
   useEffect(() => {
@@ -719,6 +742,7 @@ export default function KioskNewFlowPage() {
       if (dob) profileData.date_of_birth = dob;
       if (heightCm) profileData.height_cm = parseFloat(heightCm);
       if (weightKg) profileData.weight_kg = parseFloat(weightKg);
+      if (smoking !== 'unspecified') profileData.smoking_status = smoking;
       profileDataRef.current = profileData;
 
       await updateKioskProfile(sessionId, profileData);
@@ -728,7 +752,7 @@ export default function KioskNewFlowPage() {
       setProfileError(e?.detail || 'Failed to save profile');
       setStage('profile');
     }
-  }, [sessionId, profileEmail, guestName, dob, heightCm, weightKg]);
+  }, [sessionId, profileEmail, guestName, dob, heightCm, weightKg, smoking]);
 
   const handleSkipProfile = useCallback(async () => {
     if (!sessionId) return;
@@ -870,6 +894,15 @@ export default function KioskNewFlowPage() {
                     />
                   </div>
                 </div>
+              </div>
+
+              <div style={{ marginBottom: 24 }}>
+                <SectionLabel>Smoking status (optional)</SectionLabel>
+                <Select value={smoking} onChange={e => setSmoking(e.target.value)}>
+                  <option value="unspecified">Prefer not to say</option>
+                  <option value="non_smoker">Never / non-smoker</option>
+                  <option value="smoker">Current smoker</option>
+                </Select>
               </div>
 
               <PrimaryButton type="submit" disabled={stage === 'profile_saving'}>
