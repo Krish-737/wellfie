@@ -163,6 +163,11 @@ function common() {
             to: path.resolve(paths.build, '_headers'),
             toType: 'file',
           },
+          {
+            from: path.resolve(__dirname, 'public'),
+            to: path.resolve(paths.build),
+            noErrorOnMissing: true,
+          },
         ],
       }),
     ],
