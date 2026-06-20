@@ -5,8 +5,6 @@ import App from './components/App';
 import GlobalStyle from './style/global';
 import './styles/tailwind.compiled.css';
 import styled from 'styled-components';
-import InstallBanner from './components/InstallBanner';
-
 const Wrapper = styled.div`
   width: 100%;
   min-height: 100%;
@@ -28,7 +26,6 @@ ReactDOM.render(
     <Wrapper>
       <GlobalStyle />
       <App />
-      <InstallBanner />
     </Wrapper>
   </BrowserRouter>,
   document.getElementById('root'),
