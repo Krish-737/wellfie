@@ -76,6 +76,7 @@ class KioskSessionOut(BaseModel):
     id:             str
     kiosk_id:       str
     status:         str
+    kiosk_user_id:  Optional[str]
     email:          Optional[str]
     guest_name:     Optional[str]
     sex:            Optional[str]

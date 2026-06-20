@@ -25,6 +25,7 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.models.kiosk_session import KioskSession
+from app.models.kiosk_user import KioskUser
 from app.models.scan_result import ScanResult
 from app.schemas.kiosk import (
     KioskCheckoutOut,
@@ -59,6 +60,7 @@ def _session_out(ks: KioskSession) -> KioskSessionOut:
         id=ks.id,
         kiosk_id=ks.kiosk_id,
         status=ks.status,
+        kiosk_user_id=ks.kiosk_user_id,
         email=ks.email,
         guest_name=ks.guest_name,
         sex=ks.sex,
@@ -218,6 +220,17 @@ def update_profile(
             ks.age = (today - dob).days // 365
         except ValueError:
             pass
+
+    # Create or link KioskUser by email
+    if body.email:
+        user = db.query(KioskUser).filter(KioskUser.email == body.email).first()
+        if not user:
+            user = KioskUser(email=body.email, guest_name=body.guest_name)
+            db.add(user)
+            db.flush()
+        elif body.guest_name and not user.guest_name:
+            user.guest_name = body.guest_name
+        ks.kiosk_user_id = user.id
 
     db.commit()
     db.refresh(ks)

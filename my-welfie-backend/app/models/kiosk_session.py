@@ -2,7 +2,7 @@ import uuid
 from datetime import datetime, timedelta
 from sqlalchemy import Column, String, DateTime, Float, Integer, ForeignKey
 from sqlalchemy.orm import relationship
-from app.database import Base  # reuse existing Base
+from app.database import Base
 
 
 def _new_uuid():
@@ -35,6 +35,9 @@ class KioskSession(Base):
     weight_kg         = Column(Float,   nullable=True)
     smoking_status    = Column(String,  nullable=True)
 
+    # linked kiosk user (created/looked up by email during profile save)
+    kiosk_user_id     = Column(String, ForeignKey("kiosk_users.id"), nullable=True)
+
     # linked scan result (set after face scan)
     scan_result_id    = Column(String, ForeignKey("scan_results.id"), nullable=True)
 
@@ -44,6 +47,7 @@ class KioskSession(Base):
                                onupdate=datetime.utcnow)
 
     scan_result       = relationship("ScanResult", foreign_keys=[scan_result_id])
+    kiosk_user        = relationship("KioskUser", back_populates="sessions")
 
     @property
     def is_expired(self):

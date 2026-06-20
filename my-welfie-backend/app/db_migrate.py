@@ -50,10 +50,16 @@ def _add_columns(table: str, columns: List[Tuple[str, str]]) -> None:
             conn.execute(text(f"ALTER TABLE {table} ADD COLUMN {name} {col_type}"))
 
 
+KIOSK_SESSION_COLUMNS = [
+    ("kiosk_user_id", "VARCHAR"),
+]
+
+
 def migrate_profile_columns() -> None:
     _add_columns("users", USER_PROFILE_COLUMNS)
     _add_columns("users", USER_OAUTH_COLUMNS)
     _add_columns("scan_results", SCAN_RESULT_COLUMNS)
+    _add_columns("kiosk_sessions", KIOSK_SESSION_COLUMNS)
     _backfill_auth_provider()
 
 
