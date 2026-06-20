@@ -4,7 +4,191 @@ import { useNavigate } from 'react-router-dom';
 export default function KioskFlowLanding() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const sectionsRef = useRef<(HTMLElement | null)[]>([]);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const bpmRef = useRef<HTMLSpanElement>(null);
+  const wellRef = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    const W = 280, H = 400;
+    canvas.width = W; canvas.height = H;
+
+    const GREEN = '#3aee6e';
+    const FACE_COLOR = 'rgba(58,238,110,0.22)';
+    const FACE_STROKE = 'rgba(58,238,110,0.45)';
+
+    let t = 0;
+    let ecgPoints: number[] = [];
+    let scanY = 60;
+    let scanDir = 1;
+    const bpmBase = 72, wellBase = 8.4;
+    let bpmVal = bpmBase, wellVal = wellBase;
+    let lastBeat = 0;
+    let animId = 0;
+
+    function ecgWave(x: number) {
+      const cycle = x % 120;
+      if (cycle < 40) return Math.sin(cycle * 0.08) * 2;
+      if (cycle < 50) return Math.sin((cycle-40) * 0.3) * 6;
+      if (cycle < 55) return -Math.sin((cycle-50) * 0.6) * 22;
+      if (cycle < 60) return Math.sin((cycle-55) * 0.6) * 38;
+      if (cycle < 65) return -Math.sin((cycle-60) * 0.6) * 15;
+      if (cycle < 70) return Math.sin((cycle-65) * 0.3) * 8;
+      if (cycle < 80) return Math.sin((cycle-70) * 0.15) * 3;
+      return Math.sin(cycle * 0.05) * 1.5;
+    }
+
+    function drawFace() {
+      const cx = W / 2, headY = 115, headRx = 52, headRy = 62;
+      const shoulderW = 110, shoulderTop = 210, shoulderCurve = 30;
+
+      ctx.save();
+      ctx.strokeStyle = FACE_STROKE;
+      ctx.lineWidth = 1.5;
+      ctx.fillStyle = 'rgba(58,238,110,0.06)';
+
+      ctx.beginPath();
+      ctx.ellipse(cx, headY, headRx, headRy, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(cx - shoulderW, H - 90);
+      ctx.quadraticCurveTo(cx - shoulderW, shoulderTop, cx - shoulderW * 0.35, shoulderTop - shoulderCurve);
+      ctx.lineTo(cx + shoulderW * 0.35, shoulderTop - shoulderCurve);
+      ctx.quadraticCurveTo(cx + shoulderW, shoulderTop, cx + shoulderW, H - 90);
+      ctx.fillStyle = 'rgba(58,238,110,0.06)';
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function drawScanLine() {
+      ctx.save();
+      ctx.strokeStyle = 'rgba(58,238,110,0.5)';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([4, 6]);
+      ctx.beginPath();
+      ctx.moveTo(20, scanY);
+      ctx.lineTo(W - 20, scanY);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      const grad = ctx.createLinearGradient(0, scanY - 18, 0, scanY + 4);
+      grad.addColorStop(0, 'rgba(58,238,110,0)');
+      grad.addColorStop(1, 'rgba(58,238,110,0.08)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(20, scanY - 18, W - 40, 22);
+      ctx.restore();
+    }
+
+    function drawECG() {
+      const ecgY = 230;
+      const totalW = W - 40;
+      const speed = 1.8;
+
+      ecgPoints.push(t * speed % totalW);
+      if (ecgPoints.length > totalW) ecgPoints.shift();
+
+      ctx.save();
+
+      ctx.beginPath();
+      let started = false;
+      for (let i = 0; i < totalW; i++) {
+        const px = 20 + i;
+        const age = (totalW - i) / totalW;
+        const py = ecgY + ecgWave(totalW - i + t * speed);
+        ctx.globalAlpha = age > 0.15 ? 1 : age / 0.15;
+        if (!started) { ctx.moveTo(px, py); started = true; }
+        else ctx.lineTo(px, py);
+      }
+      ctx.globalAlpha = 1;
+      ctx.strokeStyle = GREEN;
+      ctx.lineWidth = 1.8;
+      ctx.shadowColor = GREEN;
+      ctx.shadowBlur = 0;
+      ctx.stroke();
+
+      ctx.strokeStyle = 'rgba(58,238,110,0.12)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(20, ecgY);
+      ctx.lineTo(W - 20, ecgY);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function drawCorners() {
+      const r = 18, len = 18, m = 16;
+      ctx.save();
+      ctx.strokeStyle = GREEN;
+      ctx.lineWidth = 2;
+      const corners = [
+        [m, m, 1, 1],
+        [W - m, m, -1, 1],
+        [m, H - 90 - m, 1, -1],
+        [W - m, H - 90 - m, -1, -1],
+      ];
+      corners.forEach(([x, y, dx, dy]) => {
+        ctx.beginPath();
+        ctx.moveTo(x + dx * len, y);
+        ctx.lineTo(x, y);
+        ctx.lineTo(x, y + dy * len);
+        ctx.stroke();
+      });
+      ctx.restore();
+    }
+
+    function drawDots() {
+      ctx.save();
+      for (let i = 0; i < 5; i++) {
+        const px = 20 + Math.random() * (W - 40);
+        const py = 40 + Math.random() * (H - 130);
+        ctx.fillStyle = `rgba(58,238,110,${0.03 + Math.random() * 0.06})`;
+        ctx.beginPath();
+        ctx.arc(px, py, 1, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+    }
+
+    function updateVitals() {
+      const now = Date.now();
+      const beatInterval = 60000 / bpmBase;
+      if (now - lastBeat > beatInterval) {
+        lastBeat = now;
+        bpmVal = bpmBase + Math.round((Math.random() - 0.5) * 4);
+        wellVal = parseFloat((wellBase + (Math.random() - 0.5) * 0.4).toFixed(1));
+        if (bpmRef.current) bpmRef.current.textContent = String(bpmVal);
+        if (wellRef.current) wellRef.current.textContent = wellVal.toFixed(1);
+      }
+    }
+
+    function loop() {
+      ctx!.clearRect(0, 0, W, H);
+
+      drawDots();
+      drawFace();
+      drawScanLine();
+      drawECG();
+      drawCorners();
+
+      scanY += scanDir * 0.6;
+      if (scanY > 200) scanDir = -1;
+      if (scanY < 60) scanDir = 1;
+
+      t++;
+      updateVitals();
+      animId = requestAnimationFrame(loop);
+    }
+
+    loop();
+
+    return () => cancelAnimationFrame(animId);
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
@@ -86,21 +270,49 @@ export default function KioskFlowLanding() {
             </div>
             <div className="relative">
               <div className="absolute inset-0 bg-secondary-fixed/20 blur-[100px] -z-10 rounded-full scale-125"></div>
-              <div className="rounded-3xl border-8 border-white shadow-2xl overflow-hidden aspect-[4/5] bg-surface-container">
-                <img
-                  alt="Health Scan Demo"
-                  className="w-full h-full object-cover"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuDPeGGc_aY_afmm70a49IGymgI8YCXEISGynA1IwBCpCNzisg09EYd1j120de_98bys89vyIACXv0JuhO_T83QlBT26tkdRcUJfe9ZVuYdq4OKwpbrJ-wxRdwkY9rOKUkbP3U5S9jr5CZ-hA4vVQdAQKyu1u3d-z_6OAXvsjQWS1K6ggSMxOSblc7yQD4TkCbHP19xyb-9mcnxoNONdEdwbqMPTqy6ILNHHNhJ3M9n6JNQvoctpz7gum43uDHhvQuSpofC75A8MbKE"
-                />
-              </div>
-              <div className="absolute -bottom-8 -left-8 md:bottom-12 md:-left-12 bg-white/90 backdrop-blur-md p-6 rounded-2xl shadow-lg border border-outline-variant/30">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container">
-                    <span className="material-symbols-outlined">favorite</span>
+              <div className="flex justify-center items-center" style={{ padding: '24px 0' }}>
+                <div
+                  aria-label="Face scan animation showing pulse 72 BPM and wellness 8.4"
+                  style={{
+                    background: '#0d1117',
+                    borderRadius: 28,
+                    width: 280,
+                    height: 400,
+                    position: 'relative',
+                    overflow: 'hidden',
+                    border: '1px solid #1a2a1a',
+                  }}
+                >
+                  <canvas
+                    ref={canvasRef}
+                    style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
+                  />
+                  <div
+                    style={{
+                      position: 'absolute', top: 14, left: '50%', transform: 'translateX(-50%)',
+                      background: 'rgba(30,188,124,0.12)', border: '0.5px solid rgba(30,188,124,0.35)',
+                      borderRadius: 20, padding: '3px 12px', fontFamily: 'monospace',
+                      fontSize: 10, color: '#1EBC7C', letterSpacing: '0.1em', whiteSpace: 'nowrap',
+                    }}
+                  >
+                    ● SCANNING
                   </div>
-                  <div>
-                    <p className="text-label-sm font-label-sm text-on-surface-variant">Heart Rate</p>
-                    <p className="text-headline-md font-headline-md text-primary">72 <span className="text-sm font-normal">BPM</span></p>
+                  <div
+                    style={{
+                      position: 'absolute', bottom: 0, left: 0, right: 0,
+                      padding: '16px 20px 18px', background: '#0d1117',
+                      borderTop: '1px solid #1a2a1a', display: 'flex',
+                      justifyContent: 'space-between', alignItems: 'flex-end',
+                    }}
+                  >
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                      <span ref={bpmRef} style={{ fontFamily: 'monospace', fontSize: 26, fontWeight: 700, color: '#fff', lineHeight: 1 }}>72</span>
+                      <span style={{ fontFamily: 'monospace', fontSize: 11, color: '#4a6a4a', letterSpacing: '0.06em' }}>pulse · bpm</span>
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 3, alignItems: 'flex-end' }}>
+                      <span ref={wellRef} style={{ fontFamily: 'monospace', fontSize: 26, fontWeight: 700, color: '#fff', lineHeight: 1 }}>8.4</span>
+                      <span style={{ fontFamily: 'monospace', fontSize: 11, color: '#4a6a4a', letterSpacing: '0.06em' }}>wellness</span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -276,57 +488,6 @@ export default function KioskFlowLanding() {
           </div>
         </section>
       </main>
-
-      {/* Footer */}
-      <footer className="bg-primary text-on-primary">
-        <div className="max-w-container-max mx-auto px-gutter py-section-padding grid grid-cols-1 md:grid-cols-4 gap-stack-lg">
-          <div className="space-y-stack-md">
-            <div className="font-headline-sm text-headline-sm font-bold text-secondary-fixed">MyWellfie</div>
-            <p className="text-outline-variant font-label-sm text-label-sm max-w-xs">
-              Empowering the world with medical-grade health insights, delivered directly through the convenience of a smartphone.
-            </p>
-            <div className="flex gap-4">
-              <a className="w-8 h-8 rounded-full bg-surface-container-highest/10 flex items-center justify-center hover:bg-secondary-fixed hover:text-primary transition-colors" href="#">
-                <span className="material-symbols-outlined text-[18px]">share</span>
-              </a>
-              <a className="w-8 h-8 rounded-full bg-surface-container-highest/10 flex items-center justify-center hover:bg-secondary-fixed hover:text-primary transition-colors" href="#">
-                <span className="material-symbols-outlined text-[18px]">public</span>
-              </a>
-            </div>
-          </div>
-          <div className="space-y-stack-md">
-            <h4 className="font-label-lg text-label-lg text-secondary-fixed uppercase tracking-wider">Quick Links</h4>
-            <div className="flex flex-col gap-2 font-label-sm text-label-sm">
-              <a className="text-on-primary-container hover:text-secondary-fixed transition-colors" href="#home">Home</a>
-              <a className="text-on-primary-container hover:text-secondary-fixed transition-colors" href="#wellness">Health & Wellness</a>
-              <a className="text-on-primary-container hover:text-secondary-fixed transition-colors" href="#resources">Resources</a>
-            </div>
-          </div>
-          <div className="space-y-stack-md">
-            <h4 className="font-label-lg text-label-lg text-secondary-fixed uppercase tracking-wider">Legal & Privacy</h4>
-            <div className="flex flex-col gap-2 font-label-sm text-label-sm">
-              <a className="text-on-primary-container hover:text-secondary-fixed transition-colors" href="#">Contact Us</a>
-              <a className="text-on-primary-container hover:text-secondary-fixed transition-colors" href="#">Privacy Policy</a>
-              <a className="text-on-primary-container hover:text-secondary-fixed transition-colors" href="#">Terms of Service</a>
-            </div>
-          </div>
-          <div className="space-y-stack-md">
-            <h4 className="font-label-lg text-label-lg text-secondary-fixed uppercase tracking-wider">Newsletter</h4>
-            <p className="text-on-primary-container font-label-sm text-label-sm">Get wellness tips and health insights weekly.</p>
-            <form className="flex flex-col gap-stack-sm" onSubmit={e => e.preventDefault()}>
-              <input className="bg-primary-container border-none rounded-lg text-on-primary focus:ring-secondary-fixed placeholder:text-outline-variant" placeholder="email@example.com" type="email" />
-              <button className="bg-secondary-fixed text-on-secondary-fixed py-2 rounded-lg font-bold hover:opacity-90 transition-opacity" type="submit">Subscribe</button>
-            </form>
-          </div>
-        </div>
-        <div className="max-w-container-max mx-auto px-gutter py-8 border-t border-surface-container-highest/10 flex flex-col md:flex-row justify-between items-center gap-4 text-outline-variant font-label-sm text-label-sm">
-          <p>© 2024 MyWellfie. All rights reserved.</p>
-          <div className="flex gap-6">
-            <a className="hover:text-secondary-fixed" href="#">HIPAA Compliant</a>
-            <a className="hover:text-secondary-fixed" href="#">ISO 27001 Certified</a>
-          </div>
-        </div>
-      </footer>
 
       <style>{`
         .hero-gradient {
