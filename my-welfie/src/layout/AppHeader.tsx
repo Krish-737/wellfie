@@ -1,12 +1,13 @@
 import React, { useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { LayoutDashboard, BookOpen, User } from 'lucide-react';
+import { LayoutDashboard, BookOpen, User, Download } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useIsMobileLayout } from '../hooks/useLayoutBreakpoint';
 import { colors, layout } from '../style/tokens';
 import media from '../style/media';
 import logoSrc from '../assets/mywellfie-logo.png';
+import InstallBanner from '../components/InstallBanner';
 
 const Header = styled.header`
   position: sticky;
@@ -163,6 +164,7 @@ const AppHeader: React.FC = () => {
   const { user, scansRemaining, logout } = useAuth();
   const isMobile = useIsMobileLayout();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [installVisible, setInstallVisible] = useState(false);
 
   const firstName = useMemo(() => {
     const name = user?.full_name || user?.email || 'there';
@@ -262,6 +264,17 @@ const AppHeader: React.FC = () => {
                   </MenuItem>
                   <MenuItem
                     type="button"
+                    onClick={() => {
+                      setMenuOpen(false);
+                      setInstallVisible(true);
+                    }}
+                  >
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <Download size={16} /> Install App
+                    </span>
+                  </MenuItem>
+                  <MenuItem
+                    type="button"
                     $danger
                     onClick={() => {
                       setMenuOpen(false);
@@ -277,6 +290,7 @@ const AppHeader: React.FC = () => {
           </div>
         </RightActions>
       </Inner>
+      <InstallBanner visible={installVisible} onClose={() => setInstallVisible(false)} />
     </Header>
   );
 };

@@ -10,7 +10,6 @@ import NewUserHealthOverview from './dashboard/NewUserHealthOverview';
 import HealthOverviewLoading from './dashboard/HealthOverviewLoading';
 import RecentScansPanel from './dashboard/RecentScansPanel';
 import MetricTrendsPanel from './dashboard/MetricTrendsPanel';
-import InstallBanner from './InstallBanner';
 import type { ScanResult } from '../content/scanIndicators';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -47,7 +46,6 @@ const DashboardPage: React.FC = () => {
   const [emailMsg, setEmailMsg] = useState<string | null>(null);
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
   const [showAllRecentScans, setShowAllRecentScans] = useState(false);
-  const [installVisible, setInstallVisible] = useState(false);
 
   const RECENT_SCANS_LIMIT = 4;
 
@@ -297,12 +295,6 @@ const DashboardPage: React.FC = () => {
                   {link}
                 </button>
               ))}
-              <button
-                onClick={() => setInstallVisible(true)}
-                style={{ background: 'none', border: 'none', color: '#0f766e', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', padding: 0 }}
-              >
-                + Install App
-              </button>
             </div>
           </div>
           <div style={{ borderTop: '1px solid #f1f5f9', paddingTop: 14, display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>
@@ -311,7 +303,6 @@ const DashboardPage: React.FC = () => {
           </div>
         </div>
       </footer>
-      <InstallBanner visible={installVisible} onClose={() => setInstallVisible(false)} />
     </>
   );
 };

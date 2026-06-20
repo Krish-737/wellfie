@@ -1,5 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
+import {
+  getDeferredPrompt,
+  clearDeferredPrompt,
+  isIOSDevice,
+  isStandalone,
+} from '../utils/installPrompt';
 
 const Overlay = styled.div`
   position: fixed;
@@ -159,49 +165,18 @@ interface InstallBannerProps {
 }
 
 export default function InstallBanner({ visible, onClose }: InstallBannerProps) {
-  const deferredPrompt = useRef<any>(null);
-  const [mode, setMode] = useState<'ios' | 'chrome' | null>(null);
-
-  useEffect(() => {
-    if (!visible) { setMode(null); return; }
-
-    const handler = (e: Event) => {
-      e.preventDefault();
-      deferredPrompt.current = e;
-      if (mode === null) setMode('chrome');
-    };
-    window.addEventListener('beforeinstallprompt', handler);
-
-    const ua = navigator.userAgent;
-    const isIOS = /iPhone|iPad|iPod/.test(ua) && /Safari/.test(ua) && !/CriOS/.test(ua) && !/FxiOS/.test(ua);
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches
-      || (window.navigator as any).standalone === true;
-
-    if (isIOS && !isStandalone) {
-      setMode('ios');
-    } else if (deferredPrompt.current) {
-      setMode('chrome');
-    } else if (!('serviceWorker' in navigator)) {
-      setMode(null);
-    } else {
-      setMode(null);
-    }
-
-    return () => window.removeEventListener('beforeinstallprompt', handler);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [visible]);
+  if (!visible) return null;
 
   const handleChromeInstall = async () => {
-    if (!deferredPrompt.current) return;
-    deferredPrompt.current.prompt();
-    const result = await deferredPrompt.current.userChoice;
-    deferredPrompt.current = null;
+    const prompt = getDeferredPrompt();
+    if (!prompt) return;
+    prompt.prompt();
+    const result = await prompt.userChoice;
+    clearDeferredPrompt();
     if (result.outcome === 'accepted') onClose();
   };
 
-  if (!visible || !mode) return null;
-
-  if (mode === 'chrome') {
+  if (getDeferredPrompt()) {
     return (
       <Overlay onClick={onClose}>
         <Sheet onClick={(e) => e.stopPropagation()}>
@@ -224,6 +199,35 @@ export default function InstallBanner({ visible, onClose }: InstallBannerProps) 
     );
   }
 
+  if (isIOSDevice() && !isStandalone()) {
+    return (
+      <Overlay onClick={onClose}>
+        <Sheet onClick={(e) => e.stopPropagation()}>
+          <AppRow>
+            <AppIcon>W</AppIcon>
+            <AppInfo>
+              <AppName>Welfie</AppName>
+              <AppDesc>AI-powered health scanning</AppDesc>
+            </AppInfo>
+          </AppRow>
+          <Description>
+            Tap the <ShareIcon>⎋</ShareIcon> Share button below, then scroll down and tap{' '}
+            <strong>Add to Home Screen</strong>.
+          </Description>
+          <Steps>
+            <Step>Tap Share <ShareIcon>⎋</ShareIcon></Step>
+            <Step>Scroll down and tap <strong>Add to Home Screen</strong></Step>
+            <Step>Tap <strong>Add</strong> in the top-right corner</Step>
+          </Steps>
+          <Actions>
+            <DismissBtn onClick={onClose}>Got it</DismissBtn>
+          </Actions>
+        </Sheet>
+      </Overlay>
+    );
+  }
+
+  // Fallback for desktops or unsupported browsers
   return (
     <Overlay onClick={onClose}>
       <Sheet onClick={(e) => e.stopPropagation()}>
@@ -235,14 +239,8 @@ export default function InstallBanner({ visible, onClose }: InstallBannerProps) 
           </AppInfo>
         </AppRow>
         <Description>
-          Tap the <ShareIcon>⎋</ShareIcon> Share button below, then scroll down and tap{' '}
-          <strong>Add to Home Screen</strong>.
+          Open this site in Chrome or Safari on your mobile device and look for the option to add it to your home screen.
         </Description>
-        <Steps>
-          <Step>Tap Share <ShareIcon>⎋</ShareIcon></Step>
-          <Step>Scroll down and tap <strong>Add to Home Screen</strong></Step>
-          <Step>Tap <strong>Add</strong> in the top-right corner</Step>
-        </Steps>
         <Actions>
           <DismissBtn onClick={onClose}>Got it</DismissBtn>
         </Actions>
