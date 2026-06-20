@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 import {
-  isMobile, SessionState, SmokingStatus, UserInformation,
+  isMobile, isTablet, SessionState, SmokingStatus, UserInformation,
 } from '@biosensesignal/web-sdk';
 import {
   useCameras,
@@ -23,11 +23,18 @@ import {
 } from '../../api/kioskApi';
 import useKioskMonitor from '../../hooks/useKioskMonitor';
 import Mask from '../../assets/mask.svg';
-import { ArrowRight, Mail, CheckCircle, RefreshCw, AlertTriangle, Camera, Activity } from 'lucide-react';
+import { mirror } from '../../style/mirror';
+import Timer from '../../components/Timer';
+import Stats from '../../components/Stats';
+import StartButton from '../../components/StartButton';
+import { InfoAlert } from '../../components/alert';
+import ScanWarningToast from '../../components/scan-alerts/ScanWarningToast';
+import ScanErrorPanel from '../../components/scan-alerts/ScanErrorPanel';
+import { ArrowRight, Mail, CheckCircle, RefreshCw, AlertTriangle, Activity } from 'lucide-react';
 
 type FlowStage = 'init' | 'creating_checkout' | 'checking_payment' | 'payment_failed' | 'profile' | 'profile_saving' | 'scanning' | 'saving' | 'sending' | 'success';
 
-const SPIN_STYLE = `@keyframes spin{to{transform:rotate(360deg)}}@keyframes stepPulse{0%,100%{opacity:1}50%{opacity:0.5}}@keyframes stepSlide{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}`;
+const SPIN_STYLE = `@keyframes spin{to{transform:rotate(360deg)}}`;
 
 // ── Responsive styled components ──────────────────────────────────────────────
 
@@ -217,64 +224,94 @@ const CountdownText = styled.p`
   font-weight: 500;
 `;
 
-// ── Full-Screen Scan Layout ──────────────────────────────────────────────────
+// ── Scan layout (matching BiosenseSignalMonitor) ──────────────────────────────
 
-const FullScreenContainer = styled.div`
-  width: 100%;
-  min-height: 100dvh;
+const MonitorWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  background: #000;
-  font-family: 'Hanken Grotesk', 'Segoe UI', sans-serif;
+  width: 100%;
+  justify-content: start;
+  align-items: center;
+  flex: 1;
 `;
 
-const ScanContentArea = styled.div`
-  flex: 1;
+const MeasurementContentWrapper = styled.div`
+  width: auto;
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
   align-items: center;
-  width: 100%;
-  position: relative;
-  overflow: hidden;
-`;
 
-const VideoWrapper = styled.div`
-  flex: 1;
-  width: 100%;
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  @media (min-width: 1024px) {
-    max-width: 640px;
-    border-radius: 12px;
-    margin: 16px auto 0;
+  @media (min-width: 640px) {
+    margin: 20px 0 40px;
   }
 `;
 
-const BlurOverlay = styled.div<{ maskUrl: string }>`
+const ProgressBarWrap = styled.div`
+  width: 100%;
+  padding-bottom: 12px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  @media (min-width: 768px) {
+    width: 640px;
+  }
+  @media (min-width: 1280px) {
+    width: 800px;
+  }
+`;
+
+const VideoAndStatsWrap = styled.div`
+  position: relative;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+
+  @media (min-width: 768px) {
+    width: 640px;
+    height: 480px;
+  }
+  @media (min-width: 1280px) {
+    width: 800px;
+    height: 600px;
+  }
+`;
+
+const VideoWrap = styled.div`
+  position: relative;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #000;
+`;
+
+const BlurOverlay = styled.div<{ $desktop: boolean }>`
   position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;
   backdrop-filter: blur(10px) brightness(0.55);
   -webkit-backdrop-filter: blur(10px) brightness(0.55);
   background-color: rgba(24,25,30,0.2);
-  mask-image: url(${p => p.maskUrl});
-  mask-size: cover; mask-position: center; mask-repeat: no-repeat;
-  -webkit-mask-image: url(${p => p.maskUrl});
-  -webkit-mask-size: cover;
+  mask-image: url(${Mask});
+  mask-size: ${p => p.$desktop ? 'contain' : 'cover'};
+  mask-position: center; mask-repeat: no-repeat;
+  -webkit-mask-image: url(${Mask});
+  -webkit-mask-size: ${p => p.$desktop ? 'contain' : 'cover'};
   -webkit-mask-position: center; -webkit-mask-repeat: no-repeat;
   mask-composite: exclude; -webkit-mask-composite: xor; pointer-events: none;
 `;
 
-const StyledVideo = styled.video`
+const ScanVideo = styled.video`
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transform: scaleX(-1);
+  ${mirror};
 `;
 
-const CameraHint = styled.p`
+const ScanCameraHint = styled.p`
   position: absolute; top: 12px; left: 16px; right: 16px; z-index: 15;
   margin: 0; padding: 8px 12px; border-radius: 8px;
   background: rgba(255,255,255,0.88); font-size: 12px; color: #64748b;
@@ -286,7 +323,6 @@ const CameraLoadingOverlay = styled.div`
   display: flex; flex-direction: column; align-items: center;
   justify-content: center; gap: 16px;
   background: #f1f5f9; border-radius: 12px;
-  padding: 20px; text-align: center;
 
   .cs {
     width: 40px; height: 40px;
@@ -295,132 +331,32 @@ const CameraLoadingOverlay = styled.div`
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
-
-  @media (min-width: 768px) {
-    .cs { width: 48px; height: 48px; border-width: 4px; }
-  }
 `;
 
-const MeasureButton = styled.button<{ measuring?: boolean }>`
-  width: 100%;
-  max-width: 320px;
-  padding: 18px 0;
-  border-radius: 100px;
-  border: none;
-  font-size: 17px;
-  font-weight: 800;
-  font-family: inherit;
-  cursor: pointer;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-
-  ${p => p.measuring ? `
-    background: #fef2f2;
-    color: #dc2626;
-    &:hover { background: #fee2e2; }
-  ` : `
-    background: #0f766e;
-    color: #fff;
-    box-shadow: 0 4px 16px rgba(15,118,110,0.3);
-    &:hover:not(:disabled) {
-      background: #14b8a6;
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(15,118,110,0.4);
-    }
-  `}
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none;
-  }
-
-  &:active:not(:disabled) {
-    transform: translateY(0);
-  }
-`;
-
-const StatsRow = styled.div`
-  display: flex;
-  gap: 12px;
-  width: 100%;
-  overflow-x: auto;
-  padding: 8px 0;
-
-  @media (min-width: 768px) {
-    justify-content: center;
-  }
-`;
-
-const StatPill = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
-  background: #f1f5f9;
-  border-radius: 20px;
-  white-space: nowrap;
-  font-size: 12px;
+const CameraLoadingMessage = styled.p`
+  margin: 0;
+  font-size: 14px;
   font-weight: 600;
-  color: #475569;
-  flex-shrink: 0;
-
-  .value {
-    color: #0f172a;
-    font-weight: 800;
-  }
+  color: #64748b;
+  font-family: inherit;
 `;
 
-const ErrorCard = styled.div`
-  background: #fef2f2;
-  border: 1px solid #fecaca;
-  border-radius: 16px;
-  padding: 20px;
-  text-align: center;
-  max-width: 400px;
+const ControlPanel = styled.div`
   width: 100%;
-`;
-
-const BottomPanel = styled.div`
-  width: 100%;
-  background: #fff;
-  border-radius: 20px 20px 0 0;
-  padding: 24px 20px 32px;
+  background: #ffffff;
+  padding: 16px 20px;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 14px;
-  z-index: 5;
+  gap: 12px;
 
-  @media (min-width: 1024px) {
-    max-width: 640px;
-    margin: 0 auto;
-    padding: 28px 32px 40px;
+  @media (min-width: 768px) {
+    width: 640px;
   }
-`;
-
-const ScanStepList = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  width: 100%;
-  max-width: 360px;
-`;
-
-const ScanStepRow = styled.div<{ done?: boolean; current?: boolean }>`
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 4px 0;
-  font-size: 13px;
-  font-weight: ${p => p.current ? 700 : 500};
-  color: ${p => p.done ? '#16a34a' : p.current ? '#0f172a' : '#94a3b8'};
-  opacity: ${p => p.done || p.current ? 1 : 0.5};
-  animation: ${p => p.done ? 'stepSlide 0.4s ease-out' : p.current ? 'stepPulse 1.5s ease-in-out infinite' : 'none'};
-  transition: all 0.3s;
+  @media (min-width: 1280px) {
+    width: 800px;
+  }
 `;
 
 // ── Main Component ───────────────────────────────────────────────────────────
@@ -468,6 +404,7 @@ export default function KioskNewFlowPage() {
   const [licenseKey] = useLicenseKey();
   const isPageVisible = usePageVisibility();
   const mobileView = useMemo(() => isMobile(), []);
+  const isDesktop = useMemo(() => !isTablet() && !isMobile(), []);
   useDisableZoom();
 
   // ── SDK UserInformation from optional profile data ──────────────────────
@@ -947,104 +884,27 @@ export default function KioskNewFlowPage() {
 
   // Scanning
   if (stage === 'scanning') {
-    // ── Scan step messages ──────────────────────────────────────────────
-    const scanSteps = [
-      { key: 'pulseRate', icon: '❤️', label: 'Measuring Heart Rate' },
-      { key: 'hrvSdnn', icon: '📊', label: 'Analyzing Heart Rate Variability' },
-      { key: 'bloodPressure', icon: '🩸', label: 'Measuring Blood Pressure' },
-      { key: 'spo2', icon: '🫁', label: 'Measuring Blood Oxygen' },
-      { key: 'stress', icon: '🧠', label: 'Analyzing Stress Levels' },
-      { key: 'respirationRate', icon: '🌬️', label: 'Measuring Respiration' },
-      { key: 'hemoglobin', icon: '🔬', label: 'Analyzing Hemoglobin' },
-      { key: 'wellnessIndex', icon: '⭐', label: 'Calculating Wellness Score' },
-    ];
-
-    const completedStepCount = scanSteps.filter(s => (vitalSigns as any)?.[s.key]?.value != null).length;
-
-    const renderScanSteps = () => (
-      <ScanStepList>
-        {scanSteps.map((step, idx) => {
-          const done = (vitalSigns as any)?.[step.key]?.value != null;
-          const current = idx === completedStepCount && !done && completedStepCount < scanSteps.length;
-          if (idx > completedStepCount && !current) return null;
-          return (
-            <ScanStepRow key={step.key} done={done} current={current}>
-              {done ? '✅' : current ? '⏳' : '○'}
-              <span>{step.label}</span>
-            </ScanStepRow>
-          );
-        })}
-      </ScanStepList>
-    );
+    const measuring = sessionState === SessionState.MEASURING;
+    const showCameraLoading = isPreparingScanner || isInitialisingCamera;
+    const showTopHint = !measuring && !finalReport && !scanError && !showCameraLoading;
+    const cameraLoadingMsg = isPreparingScanner
+      ? 'Preparing scanner…'
+      : 'Initialising camera…';
 
     return (
-      <FullScreenContainer>
+      <PageContainer style={{ background: '#000' }}>
         <style>{SPIN_STYLE}</style>
-
-        {scanInterrupted ? (
-          <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
-            <ErrorCard>
-              <div style={{ fontSize: 32, marginBottom: 12 }}>⚠️</div>
-              <h3 style={{ margin: '0 0 8px', fontSize: 18, fontWeight: 800, color: '#0f172a' }}>Scan Interrupted</h3>
-              <p style={{ margin: '0 0 20px', fontSize: 14, color: '#64748b', lineHeight: 1.5 }}>
-                Please ensure your face is centered and well-lit, then try again.
-              </p>
-              <PrimaryButton onClick={handleRetryScan}>
-                <RefreshCw size={18} />
-                Try Again
-              </PrimaryButton>
-            </ErrorCard>
-          </div>
-        ) : saving ? (
-          <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <div style={{ textAlign: 'center' }}>
-              <div className="cs" style={{
-                width: 44, height: 44,
-                border: '4px solid #e2e8f0',
-                borderTopColor: '#14b8a6',
-                borderRadius: '50%',
-                animation: 'spin 0.8s linear infinite',
-                margin: '0 auto 16px',
-              }} />
-              <p style={{ color: '#94a3b8', fontSize: 16, fontWeight: 600 }}>Sending your report…</p>
-            </div>
-          </div>
-        ) : (
-          <>
-            <ScanContentArea>
-              {info?.message && (
-                <div style={{
-                  position: 'absolute', top: 16, left: 16, right: 16, zIndex: 10,
-                  display: 'flex', alignItems: 'center', gap: 8, padding: '8px 14px',
-                  background: 'rgba(220,38,38,0.85)', backdropFilter: 'blur(6px)',
-                  borderRadius: 10,
-                }}>
-                  <span style={{ fontSize: 13, fontWeight: 700, color: '#fff' }}>
-                    {info.message}
-                  </span>
-                </div>
-              )}
-              {!scanError && sessionState === SessionState.MEASURING && !info?.message && (
-                <div style={{
-                  position: 'absolute', top: 16, left: 16, right: 16, zIndex: 10,
-                  display: 'flex', alignItems: 'center', gap: 8, padding: '8px 14px',
-                  background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(6px)',
-                  borderRadius: 10,
-                }}>
-                  <span className="cs" style={{
-                    width: 16, height: 16, flexShrink: 0,
-                    border: '2px solid rgba(255,255,255,0.2)',
-                    borderTopColor: '#3aee6e',
-                    borderRadius: '50%',
-                    animation: 'spin 0.8s linear infinite',
-                  }} />
-                  <span style={{ fontSize: 13, fontWeight: 600, color: '#fff' }}>
-                    Scan in progress — hold still
-                  </span>
-                </div>
-              )}
-              <VideoWrapper>
-                <StyledVideo
+        <MonitorWrapper>
+          <MeasurementContentWrapper>
+            {measuring && (
+              <ProgressBarWrap>
+                <Timer started durationSeconds={processingTime} />
+              </ProgressBarWrap>
+            )}
+            <VideoAndStatsWrap>
+              <VideoWrap>
+                <BlurOverlay $desktop={isDesktop} />
+                <ScanVideo
                   ref={video}
                   id="video"
                   muted
@@ -1052,93 +912,72 @@ export default function KioskNewFlowPage() {
                   onCanPlay={() => setVideoReady(true)}
                   onPlaying={() => setVideoReady(true)}
                 />
-                {!scanError && <BlurOverlay maskUrl={Mask} />}
-                {cameraLoading && (
+                {showCameraLoading && (
                   <CameraLoadingOverlay>
                     <div className="cs" />
-                    <p style={{ margin: 0, fontSize: 15, fontWeight: 700, color: '#475569' }}>
-                      {isPreparingScanner ? 'Preparing scanner...' : 'Initialising camera...'}
-                    </p>
-                    <p style={{ margin: 0, fontSize: 13, fontWeight: 500, color: '#94a3b8' }}>
-                      Please stay still and ensure good lighting
-                    </p>
+                    <CameraLoadingMessage>{cameraLoadingMsg}</CameraLoadingMessage>
                   </CameraLoadingOverlay>
                 )}
-                {!scanError && !cameraLoading && sessionState === SessionState.ACTIVE && (
-                  <CameraHint>
-                    Stay still and ensure your face is within the guide for the most accurate results.
-                  </CameraHint>
-                )}
-              </VideoWrapper>
-            </ScanContentArea>
-
-            <BottomPanel>
-              {scanError ? (
-                <ErrorCard>
-                  <p style={{ fontWeight: 700, color: '#dc2626', margin: '0 0 8px' }}>Camera Error</p>
-                  <p style={{ fontSize: 13, color: '#64748b', margin: '0 0 16px' }}>Please ensure camera access is allowed.</p>
-                  <PrimaryButton onClick={() => handleAlertAction('retry')}>
-                    <RefreshCw size={18} />
-                    Retry
-                  </PrimaryButton>
-                </ErrorCard>
-              ) : (
-                <>
-                  {sessionState === SessionState.MEASURING && (
-                    <>
-                      {renderScanSteps()}
-                      <StatsRow>
-                        {vitalSigns?.pulseRate?.value && (
-                          <StatPill>
-                            <span>Heart</span>
-                            <span className="value">{vitalSigns.pulseRate.value} <span style={{ fontWeight: 400, color: '#94a3b8' }}>BPM</span></span>
-                          </StatPill>
-                        )}
-                        {vitalSigns?.stress?.value && (
-                          <StatPill>
-                            <span>Stress</span>
-                            <span className="value">{vitalSigns.stress.value}</span>
-                          </StatPill>
-                        )}
-                        {vitalSigns?.hrvSdnn?.value && (
-                          <StatPill>
-                            <span>HRV</span>
-                            <span className="value">{vitalSigns.hrvSdnn.value} <span style={{ fontWeight: 400, color: '#94a3b8' }}>ms</span></span>
-                          </StatPill>
-                        )}
-                        {vitalSigns?.spo2?.value && (
-                          <StatPill>
-                            <span>SpO2</span>
-                            <span className="value">{vitalSigns.spo2.value}%</span>
-                          </StatPill>
-                        )}
-                      </StatsRow>
-                    </>
-                  )}
-                  <MeasureButton
-                    measuring={sessionState === SessionState.MEASURING}
-                    disabled={(!canMeasure && sessionState !== SessionState.MEASURING) || isLoading}
-                    onClick={handleButtonClick}
-                  >
-                    {sessionState === SessionState.MEASURING ? (
-                      <>Stop</>
-                    ) : isLoading ? (
-                      <>Preparing...</>
-                    ) : (
-                      <><Camera size={20} /> Measure Now</>
-                    )}
-                  </MeasureButton>
-                  {scanWarning && (
-                    <p style={{ fontSize: 12, color: '#d97706', textAlign: 'center', margin: 0 }}>
-                      {scanWarning.message || 'Face detection unstable — please stay still'}
-                    </p>
-                  )}
-                </>
+              </VideoWrap>
+              {showTopHint && (
+                <ScanCameraHint>
+                  Stay still and ensure your face is within the guide for clinical precision.
+                </ScanCameraHint>
               )}
-            </BottomPanel>
-          </>
-        )}
-      </FullScreenContainer>
+              {!scanError && isMeasurementEnabled && <Stats vitalSigns={vitalSigns} />}
+              {measuring && scanWarning && (
+                <ScanWarningToast
+                  alert={scanWarning}
+                  onAction={(type) => handleAlertAction(type)}
+                />
+              )}
+              {measuring && <InfoAlert message={info?.message} />}
+            </VideoAndStatsWrap>
+
+            <ControlPanel>
+              {scanInterrupted ? (
+                <div style={{ width: '100%', maxWidth: 440, textAlign: 'center', padding: '10px 0' }}>
+                  <div style={{ fontSize: 32, marginBottom: 12 }}>⚠️</div>
+                  <h3 style={{ margin: '0 0 8px', fontSize: 18, fontWeight: 800, color: '#0f172a' }}>Scan Interrupted</h3>
+                  <p style={{ margin: '0 0 20px', fontSize: 14, color: '#64748b', lineHeight: 1.5 }}>
+                    Please ensure your face is centered and well-lit, then try again.
+                  </p>
+                  <PrimaryButton onClick={handleRetryScan}>
+                    <RefreshCw size={18} />
+                    Try Again
+                  </PrimaryButton>
+                </div>
+              ) : saving ? (
+                <div style={{ textAlign: 'center', padding: '20px 0' }}>
+                  <div className="cs" style={{
+                    width: 44, height: 44,
+                    border: '4px solid #e2e8f0',
+                    borderTopColor: '#14b8a6',
+                    borderRadius: '50%',
+                    animation: 'spin 0.8s linear infinite',
+                    margin: '0 auto 16px',
+                  }} />
+                  <p style={{ color: '#94a3b8', fontSize: 16, fontWeight: 600 }}>Sending your report…</p>
+                </div>
+              ) : scanError ? (
+                <ScanErrorPanel
+                  alert={scanError}
+                  onAction={(type) => handleAlertAction(type)}
+                />
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14, width: '100%' }}>
+                  <StartButton
+                    isLoading={isLoading}
+                    isMeasuring={measuring}
+                    disabled={!canMeasure}
+                    onClick={handleButtonClick}
+                  />
+                </div>
+              )}
+            </ControlPanel>
+          </MeasurementContentWrapper>
+        </MonitorWrapper>
+      </PageContainer>
     );
   }
 
