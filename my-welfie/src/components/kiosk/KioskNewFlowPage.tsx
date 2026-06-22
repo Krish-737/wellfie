@@ -384,8 +384,6 @@ export default function KioskNewFlowPage() {
   const [saving, setSaving] = useState(false);
   const savedRef = useRef(false);
   const video = useRef<HTMLVideoElement>(null);
-  const [loadingTimeout, setLoadingTimeout] = useState<number>();
-
   const scanErrorRef = useRef<boolean>(false);
   const [processingTime] = useMeasurementDuration();
   const [licenseKey] = useLicenseKey();
@@ -513,18 +511,10 @@ export default function KioskNewFlowPage() {
     && Boolean(cameraId) && !scanError;
 
   const handleButtonClick = useCallback(() => {
-    if (sessionState === SessionState.MEASURING) {
-      clearTimeout(loadingTimeout);
-      setStartMeasuring(false);
-      setIsLoading(false);
-      return;
-    }
     if (!canMeasure) return;
     setIsLoading(true);
     setStartMeasuring(true);
-    const timer = window.setTimeout(() => setIsLoading(true), processingTime * 1000);
-    setLoadingTimeout(timer);
-  }, [canMeasure, processingTime, sessionState, loadingTimeout]);
+  }, [canMeasure]);
 
   const handleAlertAction = useCallback((type: AlertActionType) => {
     if (type === 'retry') {
@@ -951,11 +941,11 @@ export default function KioskNewFlowPage() {
                   alert={scanError}
                   onAction={(type) => handleAlertAction(type)}
                 />
-              ) : (
+              ) : measuring ? null : (
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14, width: '100%' }}>
                   <StartButton
                     isLoading={isLoading}
-                    isMeasuring={measuring}
+                    isMeasuring={false}
                     disabled={!canMeasure}
                     onClick={handleButtonClick}
                   />
