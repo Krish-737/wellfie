@@ -39,36 +39,52 @@ import ScanWarningToast from './scan-alerts/ScanWarningToast';
 import ScanQualityBanner from './dashboard/ScanQualityBanner';
 import { scanResultFromLiveVitals } from '../utils/metricAvailability';
 import Mask from '../assets/mask.svg';
+const FullPageWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  overflow: hidden;
+`;
+
 const MonitorWrapper = styled(Flex)<{ isSettingsOpen: boolean }>`
   flex-direction: column;
   width: 100%;
   justify-content: start;
   align-items: center;
   flex: 1;
+  overflow: hidden;
   z-index: ${({ isSettingsOpen }) => isSettingsOpen && '-1'};
-  ${media.tablet`
-    width: fit-content;
-    justify-content: center;
-  `}
 `;
 
-const MeasurementContentWrapper = styled(Flex)<{ isMobile: boolean }>`
-  width: auto;
+const MeasurementContentWrapper = styled(Flex)`
+  width: 100%;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  ${media.mobile`
-    margin: 20px 0 40px 0;
-  `}
+  flex: 1;
+  overflow: hidden;
 `;
 
 const ProgressBarWrapper = styled.div`
-  width: 100%;
   padding-bottom: 12px;
   box-sizing: border-box;
   display: flex;
   align-items: center;
   gap: 10px;
+`;
+
+const ProgressBarInner = styled.div`
+  flex: 1;
+  min-width: 0;
+`;
+
+const ScanMainContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  flex: 1;
+  overflow: hidden;
+
   ${media.tablet`
     width: 640px;
   `}
@@ -77,33 +93,18 @@ const ProgressBarWrapper = styled.div`
   `}
 `;
 
-const ProgressBarInner = styled.div`
+const VideoAndStatsWrapper = styled(Flex)`
   flex: 1;
-  min-width: 0;
-`;
-
-const VideoAndStatsWrapper = styled(Flex)<{ isMobile: boolean }>`
   position: relative;
   justify-content: center;
-  width: 100%;
-  aspect-ratio: 4 / 3; /* Maintain camera aspect ratio on mobile */
-  
-  ${media.tablet`
-    width: 640px;
-    height: 480px;
-  `} ${media.wide`
-    width: 800px;
-    height: 600px;
-  `};
+  overflow: hidden;
 `;
 
 const VideoWrapper = styled.div`
-  position: relative;
-  width: 100%;
-  height: 100%;
+  position: absolute;
+  inset: 0;
   z-index: 0;
   overflow: hidden;
-  border-radius: 12px;
   background: #000;
 `;
 
@@ -191,12 +192,6 @@ const ControlPanel = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 12px;
-  ${media.tablet`
-    width: 640px;
-  `}
-  ${media.wide`
-    width: 800px;
-  `}
 `;
 
 const CameraHint = styled.p`
@@ -410,153 +405,155 @@ const BiosenseSignalMonitor = ({
   }
 
   return (
-    <>
+    <FullPageWrapper>
       <TopBar onSettingsClick={onSettingsClick} isMeasuring={isMeasuring()} />
       <MonitorWrapper isSettingsOpen={isSettingsOpen}>
-        <MeasurementContentWrapper isMobile={mobile}>
-          {measuring && (
-            <ProgressBarWrapper>
-              <ProgressBarInner>
-                <Timer started={true} durationSeconds={processingTime} />
-              </ProgressBarInner>
-            </ProgressBarWrapper>
-          )}
-          <VideoAndStatsWrapper isMobile={mobile}>
-            <VideoWrapper>
-              <BlurOverlay maskUrl={Mask} isDesktop={desktop} />
-              <Video
-                ref={video}
-                id="video"
-                muted={true}
-                playsInline={true}
-                onCanPlay={() => setVideoReady(true)}
-                onPlaying={() => setVideoReady(true)}
-              />
-              {showCameraLoading && (
-                <CameraLoadingOverlay>
-                  <div className="camera-spinner" aria-hidden="true" />
-                  <CameraLoadingMessage>{cameraLoadingMessage}</CameraLoadingMessage>
-                </CameraLoadingOverlay>
+        <MeasurementContentWrapper>
+          <ScanMainContent>
+            {measuring && (
+              <ProgressBarWrapper>
+                <ProgressBarInner>
+                  <Timer started={true} durationSeconds={processingTime} />
+                </ProgressBarInner>
+              </ProgressBarWrapper>
+            )}
+            <VideoAndStatsWrapper>
+              <VideoWrapper>
+                <BlurOverlay maskUrl={Mask} isDesktop={desktop} />
+                <Video
+                  ref={video}
+                  id="video"
+                  muted={true}
+                  playsInline={true}
+                  onCanPlay={() => setVideoReady(true)}
+                  onPlaying={() => setVideoReady(true)}
+                />
+                {showCameraLoading && (
+                  <CameraLoadingOverlay>
+                    <div className="camera-spinner" aria-hidden="true" />
+                    <CameraLoadingMessage>{cameraLoadingMessage}</CameraLoadingMessage>
+                  </CameraLoadingOverlay>
+                )}
+              </VideoWrapper>
+              {showTopHint && (
+                <CameraHint>
+                  Stay still and ensure your face is within the guide for clinical precision.
+                </CameraHint>
               )}
-            </VideoWrapper>
-            {showTopHint && (
-              <CameraHint>
-                Stay still and ensure your face is within the guide for clinical precision.
-              </CameraHint>
-            )}
-            {!scanError && isMeasurementEnabled && <Stats vitalSigns={vitalSigns} />}
-            {isMeasuring() && scanWarning && (
-              <ScanWarningToast
-                alert={scanWarning}
-                onAction={(type) => handleAlertAction(type, scanWarning.code)}
-              />
-            )}
-            {isMeasuring() && <InfoAlert message={info.message} />}
-          </VideoAndStatsWrapper>
+              {!scanError && isMeasurementEnabled && <Stats vitalSigns={vitalSigns} />}
+              {isMeasuring() && scanWarning && (
+                <ScanWarningToast
+                  alert={scanWarning}
+                  onAction={(type) => handleAlertAction(type, scanWarning.code)}
+                />
+              )}
+              {isMeasuring() && <InfoAlert message={info.message} />}
+            </VideoAndStatsWrapper>
 
-          {/* ── Control panel below video ── */}
-          <ControlPanel>
-            {/* After scan completes show Back to Dashboard, otherwise show Measure Now */}
-            {finalReport ? (
-              <>
-                {saveError && (
-                  <div style={{
-                    width: '100%', maxWidth: 420, padding: '14px 16px', borderRadius: 12,
-                    background: '#fef2f2', border: '1px solid #fecaca', color: '#991b1b',
-                    fontSize: 14, lineHeight: 1.5, textAlign: 'center',
-                  }}>
-                    {saveError}
-                  </div>
-                )}
-                {liveScanQuality && !saveError && (
-                  <div style={{ width: '100%', maxWidth: 480 }}>
-                    <ScanQualityBanner scan={liveScanQuality} isMobile={mobile} compact />
-                  </div>
-                )}
-                <button
-                  onClick={() => {
-                    if (saveError) window.location.href = '/pricing#pricing';
-                    else navigate('/dashboard');
-                  }}
-                  style={{
-                    background: saveError ? '#14b8a6' : 'rgb(15, 23, 42)',
-                    color: '#ffffff',
-                    border: 'none',
-                    borderRadius: 14,
-                    padding: '14px 36px',
-                    fontSize: 15,
-                    fontWeight: 800,
-                    letterSpacing: '0.08em',
-                    textTransform: 'uppercase' as const,
-                    cursor: 'pointer',
-                    boxShadow: '0 4px 18px rgba(15, 23, 42, 0.35)',
-                    fontFamily: 'inherit',
-                    transition: 'background 0.15s',
-                  }}
-                >
-                  {saveError ? 'Buy Scan Pack' : 'Back to Dashboard'}
-                </button>
-                {saveError && (
+            {/* ── Control panel below video ── */}
+            <ControlPanel>
+              {/* After scan completes show Back to Dashboard, otherwise show Measure Now */}
+              {finalReport ? (
+                <>
+                  {saveError && (
+                    <div style={{
+                      width: '100%', maxWidth: 420, padding: '14px 16px', borderRadius: 12,
+                      background: '#fef2f2', border: '1px solid #fecaca', color: '#991b1b',
+                      fontSize: 14, lineHeight: 1.5, textAlign: 'center',
+                    }}>
+                      {saveError}
+                    </div>
+                  )}
+                  {liveScanQuality && !saveError && (
+                    <div style={{ width: '100%', maxWidth: 480 }}>
+                      <ScanQualityBanner scan={liveScanQuality} isMobile={mobile} compact />
+                    </div>
+                  )}
+                  <button
+                    onClick={() => {
+                      if (saveError) window.location.href = '/pricing#pricing';
+                      else navigate('/dashboard');
+                    }}
+                    style={{
+                      background: saveError ? '#14b8a6' : 'rgb(15, 23, 42)',
+                      color: '#ffffff',
+                      border: 'none',
+                      borderRadius: 14,
+                      padding: '14px 36px',
+                      fontSize: 15,
+                      fontWeight: 800,
+                      letterSpacing: '0.08em',
+                      textTransform: 'uppercase' as const,
+                      cursor: 'pointer',
+                      boxShadow: '0 4px 18px rgba(15, 23, 42, 0.35)',
+                      fontFamily: 'inherit',
+                      transition: 'background 0.15s',
+                    }}
+                  >
+                    {saveError ? 'Buy Scan Pack' : 'Back to Dashboard'}
+                  </button>
+                  {saveError && (
+                    <button
+                      type="button"
+                      onClick={() => navigate('/dashboard')}
+                      style={{
+                        background: 'none', border: 'none', color: '#64748b',
+                        fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
+                      }}
+                    >
+                      Back to Dashboard
+                    </button>
+                  )}
+                </>
+              ) : scanError ? (
+                <ScanErrorPanel
+                  alert={scanError}
+                  onAction={(type) => handleAlertAction(type, scanError.code)}
+                />
+              ) : scansRemaining === 0 ? (
+                <div style={{ textAlign: 'center', width: '100%' }}>
+                  <p style={{ fontSize: 15, color: '#64748b', margin: '0 0 16px' }}>
+                    You have no scans remaining.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => { window.location.href = '/pricing#pricing'; }}
+                    style={{
+                      background: '#14b8a6', color: '#fff', border: 'none', borderRadius: 14,
+                      padding: '14px 36px', fontSize: 15, fontWeight: 800, cursor: 'pointer',
+                      fontFamily: 'inherit', marginRight: 12,
+                    }}
+                  >
+                    Buy Scan Pack
+                  </button>
                   <button
                     type="button"
                     onClick={() => navigate('/dashboard')}
                     style={{
-                      background: 'none', border: 'none', color: '#64748b',
-                      fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
+                      background: '#fff', color: '#0f172a', border: '1.5px solid #e2e8f0',
+                      borderRadius: 14, padding: '14px 24px', fontSize: 15, fontWeight: 600,
+                      cursor: 'pointer', fontFamily: 'inherit',
                     }}
                   >
-                    Back to Dashboard
+                    Dashboard
                   </button>
-                )}
-              </>
-            ) : scanError ? (
-              <ScanErrorPanel
-                alert={scanError}
-                onAction={(type) => handleAlertAction(type, scanError.code)}
-              />
-            ) : scansRemaining === 0 ? (
-              <div style={{ textAlign: 'center', width: '100%' }}>
-                <p style={{ fontSize: 15, color: '#64748b', margin: '0 0 16px' }}>
-                  You have no scans remaining.
-                </p>
-                <button
-                  type="button"
-                  onClick={() => { window.location.href = '/pricing#pricing'; }}
-                  style={{
-                    background: '#14b8a6', color: '#fff', border: 'none', borderRadius: 14,
-                    padding: '14px 36px', fontSize: 15, fontWeight: 800, cursor: 'pointer',
-                    fontFamily: 'inherit', marginRight: 12,
-                  }}
-                >
-                  Buy Scan Pack
-                </button>
-                <button
-                  type="button"
-                  onClick={() => navigate('/dashboard')}
-                  style={{
-                    background: '#fff', color: '#0f172a', border: '1.5px solid #e2e8f0',
-                    borderRadius: 14, padding: '14px 24px', fontSize: 15, fontWeight: 600,
-                    cursor: 'pointer', fontFamily: 'inherit',
-                  }}
-                >
-                  Dashboard
-                </button>
-              </div>
-            ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14, width: '100%' }}>
-                <StartButton
-                  isLoading={isLoading}
-                  isMeasuring={measuring}
-                  disabled={!canStartMeasure}
-                  onClick={handleButtonClick}
-                />
-              </div>
-            )}
+                </div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14, width: '100%' }}>
+                  <StartButton
+                    isLoading={isLoading}
+                    isMeasuring={measuring}
+                    disabled={!canStartMeasure}
+                    onClick={handleButtonClick}
+                  />
+                </div>
+              )}
 
-          </ControlPanel>
+            </ControlPanel>
+          </ScanMainContent>
         </MeasurementContentWrapper>
       </MonitorWrapper>
-    </>
+    </FullPageWrapper>
   );
 };
 

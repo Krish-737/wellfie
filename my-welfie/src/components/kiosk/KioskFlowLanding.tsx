@@ -229,9 +229,7 @@ export default function KioskFlowLanding() {
             <a className="text-on-surface-variant hover:text-secondary transition-colors" href="#wellness">Health & Wellness</a>
             <a className="text-on-surface-variant hover:text-secondary transition-colors" href="#resources">Resources</a>
           </div>
-          <div className="flex items-center gap-stack-md">
-            <button className="hidden md:block px-6 py-2 rounded-full text-on-surface-variant hover:bg-surface-container transition-all scale-95 active:scale-90">Login</button>
-          </div>
+
         </nav>
       </header>
 
@@ -489,6 +487,46 @@ export default function KioskFlowLanding() {
         </section>
       </main>
 
+      <footer style={{ background: '#000b20', color: '#fff', padding: '64px 32px 32px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1.5fr', gap: 40, maxWidth: 1100, margin: '0 auto 40px' }}>
+          <div>
+            <div style={{ fontSize: 18, fontWeight: 700, color: '#50df9b', marginBottom: 12 }}>MyWellfie</div>
+            <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', lineHeight: 1.65, maxWidth: 220, marginBottom: 16 }}>
+              Empowering the world with medical-grade health insights, delivered directly through the convenience of a smartphone.
+            </p>
+            <div style={{ display: 'flex', gap: 10 }}>
+              <div className="social-btn">S</div>
+              <div className="social-btn">W</div>
+            </div>
+          </div>
+          <div>
+            <h4 style={{ fontSize: 12, fontWeight: 600, color: '#50df9b', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 16 }}>Quick links</h4>
+            <a href="#" style={{ display: 'block', fontSize: 13, color: 'rgba(255,255,255,0.55)', marginBottom: 10 }}>Home</a>
+            <a href="#" style={{ display: 'block', fontSize: 13, color: 'rgba(255,255,255,0.55)', marginBottom: 10 }}>Health &amp; Wellness</a>
+            <a href="#" style={{ display: 'block', fontSize: 13, color: 'rgba(255,255,255,0.55)', marginBottom: 10 }}>Resources</a>
+          </div>
+          <div>
+            <h4 style={{ fontSize: 12, fontWeight: 600, color: '#50df9b', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 16 }}>Legal &amp; privacy</h4>
+            <a href="#" style={{ display: 'block', fontSize: 13, color: 'rgba(255,255,255,0.55)', marginBottom: 10 }}>Contact us</a>
+            <a href="#" style={{ display: 'block', fontSize: 13, color: 'rgba(255,255,255,0.55)', marginBottom: 10 }}>Privacy policy</a>
+            <a href="#" style={{ display: 'block', fontSize: 13, color: 'rgba(255,255,255,0.55)', marginBottom: 10 }}>Terms of service</a>
+          </div>
+          <div>
+            <h4 style={{ fontSize: 12, fontWeight: 600, color: '#50df9b', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 16 }}>Newsletter</h4>
+            <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', marginBottom: 12 }}>Get wellness tips and health insights weekly.</p>
+            <input placeholder="email@example.com" type="email" style={{ width: '100%', background: 'rgba(255,255,255,0.08)', border: '0.5px solid rgba(255,255,255,0.15)', borderRadius: 8, padding: '9px 12px', color: '#fff', fontSize: 13, marginBottom: 8, boxSizing: 'border-box' }} />
+            <button style={{ width: '100%', background: '#50df9b', color: '#002112', fontSize: 13, fontWeight: 700, padding: 9, borderRadius: 8, border: 'none', cursor: 'pointer' }}>Subscribe</button>
+          </div>
+        </div>
+        <div style={{ maxWidth: 1100, margin: '0 auto', paddingTop: 24, borderTop: '0.5px solid rgba(255,255,255,0.08)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 12, color: 'rgba(255,255,255,0.35)' }}>
+          <p>&copy; 2026 MyWellfie. All rights reserved.</p>
+          <div style={{ display: 'flex', gap: 20 }}>
+            <a href="#" style={{ color: 'rgba(255,255,255,0.35)' }}>HIPAA compliant</a>
+            <a href="#" style={{ color: 'rgba(255,255,255,0.35)' }}>ISO 27001 certified</a>
+          </div>
+        </div>
+      </footer>
+
       <style>{`
         .hero-gradient {
           background: radial-gradient(circle at 80% 20%, rgba(112, 252, 181, 0.15) 0%, transparent 40%),
@@ -499,6 +537,13 @@ export default function KioskFlowLanding() {
           grid-template-columns: repeat(12, 1fr);
           gap: 24px;
         }
+        .social-btn {
+          width: 32px; height: 32px; border-radius: 50%;
+          background: rgba(255,255,255,0.08);
+          display: flex; align-items: center; justify-content: center;
+          font-size: 15px; cursor: pointer; color: #fff;
+        }
+        .social-btn:hover { background: #50df9b; color: #000b20; }
       `}</style>
     </div>
   );
