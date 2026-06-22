@@ -585,6 +585,18 @@ export default function KioskNewFlowPage() {
     setCameraId(prev => prev ?? validCameras[0].deviceId);
   }, [cameras]);
 
+  // Prevent accidental refresh during active scan
+  useEffect(() => {
+    if (stage === 'scanning' && !finalReport) {
+      const handler = (e: BeforeUnloadEvent) => {
+        e.preventDefault();
+        e.returnValue = '';
+      };
+      window.addEventListener('beforeunload', handler);
+      return () => window.removeEventListener('beforeunload', handler);
+    }
+  }, [stage, finalReport]);
+
   // ── Session state effects ──────────────────────────────────────────────
   useEffect(() => {
     if (sessionState === SessionState.MEASURING) {

@@ -378,6 +378,18 @@ const BiosenseSignalMonitor = ({
     setVideoReady(false);
   }, [cameraId]);
 
+  // Prevent accidental refresh during active scan
+  useEffect(() => {
+    if (!finalReport) {
+      const handler = (e: BeforeUnloadEvent) => {
+        e.preventDefault();
+        e.returnValue = '';
+      };
+      window.addEventListener('beforeunload', handler);
+      return () => window.removeEventListener('beforeunload', handler);
+    }
+  }, [finalReport]);
+
   const mobile = useMemo(() => isMobile(), []);
   const desktop = useMemo(() => !isTablet() && !isMobile(), []);
 
