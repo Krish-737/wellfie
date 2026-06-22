@@ -29,7 +29,7 @@ from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-from app.config import EMAIL_FROM, SMTP_HOST, SMTP_PASSWORD, SMTP_PORT, SMTP_USER
+from app.config import EMAIL_FROM, FRONTEND_URL, SMTP_HOST, SMTP_PASSWORD, SMTP_PORT, SMTP_USER
 
 logger = logging.getLogger(__name__)
 
@@ -38,6 +38,7 @@ def _html_body(user_name: str, scanned_at: datetime | None, scan_id: str) -> str
     scanned_str = (
         scanned_at.strftime("%d %b %Y at %H:%M UTC") if scanned_at else "recently"
     )
+    logo_url = f"{FRONTEND_URL.rstrip('/')}/icons/apple-touch-icon.png"
     return f"""
 <!DOCTYPE html>
 <html lang="en">
@@ -45,9 +46,14 @@ def _html_body(user_name: str, scanned_at: datetime | None, scan_id: str) -> str
 <body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f8fafc;margin:0;padding:20px">
   <div style="max-width:560px;margin:0 auto;background:#fff;border-radius:12px;
               box-shadow:0 4px 24px rgba(0,0,0,.08);overflow:hidden">
-    <div style="background:#0f766e;padding:24px 28px">
-      <h1 style="color:#fff;margin:0;font-size:22px">My Wellfie</h1>
-      <p style="color:#ccfbf1;margin:6px 0 0;font-size:13px">Personal Health Report</p>
+    <div style="background:#0f766e;padding:20px 28px;display:flex;align-items:center;gap:14px">
+      <img src="{logo_url}" alt="My Wellfie" width="52" height="52"
+           style="border-radius:10px;display:block;flex-shrink:0"
+           onerror="this.style.display='none'" />
+      <div>
+        <h1 style="color:#fff;margin:0;font-size:22px;line-height:1">My Wellfie</h1>
+        <p style="color:#ccfbf1;margin:4px 0 0;font-size:13px">Personal Health Report</p>
+      </div>
     </div>
     <div style="padding:28px">
       <p style="color:#0f172a;font-size:15px">Hi <strong>{user_name}</strong>,</p>
