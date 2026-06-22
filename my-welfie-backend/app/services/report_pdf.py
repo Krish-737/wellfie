@@ -58,6 +58,10 @@ RED         = colors.HexColor("#dc2626")
 RED_BG      = colors.HexColor("#fee2e2")
 GREY_BG     = colors.HexColor("#f1f5f9")
 
+# Header overrides (matching frontend ReportModal styling)
+HEADER_BG   = colors.HexColor("#000b20")
+HEADER_TEXT = colors.HexColor("#50df9b")
+
 # ── Page geometry ──────────────────────────────────────────────────────────────
 W, H        = A4
 ML          = 18 * mm
@@ -467,7 +471,7 @@ class ReportBuilder:
         c = self.c
         scan = self.scan
 
-        c.setFillColor(TEAL)
+        c.setFillColor(HEADER_BG)
         c.rect(0, H - HEADER_H, W, HEADER_H, fill=1, stroke=0)
 
         if self.logo_path and os.path.exists(self.logo_path):
@@ -479,15 +483,15 @@ class ReportBuilder:
         else:
             self._draw_brand_text()
 
-        c.setFillColor(TEAL_LIGHT)
+        c.setFillColor(HEADER_TEXT)
         c.setFont("Helvetica", 8.5)
         c.drawString(ML, H - 33 * mm, "Digital Health Scan Report")
 
-        c.setFillColor(WHITE)
+        c.setFillColor(HEADER_TEXT)
         c.setFont("Helvetica-Bold", 9)
         c.drawRightString(W - MR, H - 14 * mm, self.user_name)
         c.setFont("Helvetica", 8)
-        c.setFillColor(TEAL_LIGHT)
+        c.setFillColor(HEADER_TEXT)
         c.drawRightString(W - MR, H - 20 * mm, self.user_email)
 
         scanned = (
@@ -505,13 +509,13 @@ class ReportBuilder:
             f"Method: Facial optical scan · Duration: {duration_text}",
         )
 
-        c.setStrokeColor(TEAL_LIGHT)
+        c.setStrokeColor(HEADER_TEXT)
         c.setLineWidth(0.6)
         c.line(0, H - HEADER_H, W, H - HEADER_H)
 
     def _draw_brand_text(self) -> None:
         c = self.c
-        c.setFillColor(WHITE)
+        c.setFillColor(HEADER_TEXT)
         c.setFont("Helvetica-Bold", 18)
         c.drawString(ML, H - 23 * mm, "MyWellfie")
 
