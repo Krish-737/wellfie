@@ -241,10 +241,7 @@ const MeasurementContentWrapper = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-
-  @media (min-width: 640px) {
-    margin: 20px 0 40px;
-  }
+  flex: 1;
 `;
 
 const ProgressBarWrap = styled.div`
@@ -264,29 +261,19 @@ const ProgressBarWrap = styled.div`
 `;
 
 const VideoAndStatsWrap = styled.div`
+  flex: 1;
   position: relative;
   display: flex;
   justify-content: center;
   width: 100%;
-  aspect-ratio: 4 / 3;
-
-  @media (min-width: 768px) {
-    width: 640px;
-    height: 480px;
-  }
-  @media (min-width: 1280px) {
-    width: 800px;
-    height: 600px;
-  }
+  overflow: hidden;
 `;
 
 const VideoWrap = styled.div`
-  position: relative;
-  width: 100%;
-  height: 100%;
+  position: absolute;
+  inset: 0;
   z-index: 0;
   overflow: hidden;
-  border-radius: 12px;
   background: #000;
 `;
 
@@ -892,7 +879,7 @@ export default function KioskNewFlowPage() {
       : 'Initialising camera…';
 
     return (
-      <PageContainer style={{ background: '#000' }}>
+      <PageContainer style={{ background: '#000', height: '100dvh', overflow: 'hidden', minHeight: 0 }}>
         <style>{SPIN_STYLE}</style>
         <MonitorWrapper>
           <MeasurementContentWrapper>
