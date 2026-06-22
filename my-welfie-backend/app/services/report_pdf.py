@@ -208,8 +208,10 @@ def _metrics_for_section(section_key: str) -> List[str]:
 
 def _pdf_display_name(metric_id: str, scan: Any) -> str:
     if metric_id in PDF_LABEL_OVERRIDES:
-        return PDF_LABEL_OVERRIDES[metric_id]
-    return pdf_metric_label(metric_id, scan)
+        lbl = PDF_LABEL_OVERRIDES[metric_id]
+    else:
+        lbl = pdf_metric_label(metric_id, scan)
+    return lbl.replace("₂", "<sub>2</sub>")
 
 
 def _scan_value_status(scan: Any, metric_id: str) -> Tuple[str, str, bool]:
