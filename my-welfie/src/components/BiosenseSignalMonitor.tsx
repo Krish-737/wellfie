@@ -26,7 +26,7 @@ import {
 import { AlertActionType } from '../alerts/alertTypes';
 import { useAuth } from '../context/AuthContext';
 import { toSdkUserInformation } from '../utils/userProfile';
-import Stats from './Stats';
+
 import StartButton from './StartButton';
 import { mirror } from '../style/mirror';
 import { Flex } from './shared/Flex';
@@ -320,12 +320,6 @@ const BiosenseSignalMonitor = ({
     scansRemaining !== 0;
 
   const handleButtonClick = useCallback(() => {
-    if (isMeasuring()) {
-      clearTimeout(loadingTimeoutPromise);
-      setStartMeasuring(false);
-      setIsLoading(false);
-      return;
-    }
     if (!canStartMeasure) return;
     setIsLoading(true);
     setStartMeasuring(true);
@@ -335,8 +329,6 @@ const BiosenseSignalMonitor = ({
   }, [
     canStartMeasure,
     processingTime,
-    isMeasuring,
-    loadingTimeoutPromise,
   ]);
 
   useEffect(() => {
@@ -551,11 +543,11 @@ const BiosenseSignalMonitor = ({
                     Dashboard
                   </button>
                 </div>
-              ) : (
+              ) : measuring ? null : (
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14, width: '100%' }}>
                   <StartButton
                     isLoading={isLoading}
-                    isMeasuring={measuring}
+                    isMeasuring={false}
                     disabled={!canStartMeasure}
                     onClick={handleButtonClick}
                   />

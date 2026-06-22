@@ -26,7 +26,6 @@ import useKioskMonitor from '../../hooks/useKioskMonitor';
 import Mask from '../../assets/mask.svg';
 import { mirror } from '../../style/mirror';
 import Timer from '../../components/Timer';
-import Stats from '../../components/Stats';
 import StartButton from '../../components/StartButton';
 import { InfoAlert } from '../../components/alert';
 import ScanWarningToast from '../../components/scan-alerts/ScanWarningToast';
