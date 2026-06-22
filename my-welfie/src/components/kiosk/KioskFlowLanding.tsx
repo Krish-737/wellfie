@@ -487,8 +487,8 @@ export default function KioskFlowLanding() {
         </section>
       </main>
 
-      <footer style={{ background: '#000b20', color: '#fff', padding: '64px 32px 32px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1.5fr', gap: 40, maxWidth: 1100, margin: '0 auto 40px' }}>
+      <footer style={{ background: '#000b20', color: '#fff', padding: '64px 20px 32px' }}>
+        <div className="footer-grid">
           <div>
             <div style={{ fontSize: 18, fontWeight: 700, color: '#50df9b', marginBottom: 12 }}>MyWellfie</div>
             <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', lineHeight: 1.65, maxWidth: 220, marginBottom: 16 }}>
@@ -518,9 +518,9 @@ export default function KioskFlowLanding() {
             <button style={{ width: '100%', background: '#50df9b', color: '#002112', fontSize: 13, fontWeight: 700, padding: 9, borderRadius: 8, border: 'none', cursor: 'pointer' }}>Subscribe</button>
           </div>
         </div>
-        <div style={{ maxWidth: 1100, margin: '0 auto', paddingTop: 24, borderTop: '0.5px solid rgba(255,255,255,0.08)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 12, color: 'rgba(255,255,255,0.35)' }}>
+        <div className="footer-bottom">
           <p>&copy; 2026 MyWellfie. All rights reserved.</p>
-          <div style={{ display: 'flex', gap: 20 }}>
+          <div className="footer-cert">
             <a href="#" style={{ color: 'rgba(255,255,255,0.35)' }}>HIPAA compliant</a>
             <a href="#" style={{ color: 'rgba(255,255,255,0.35)' }}>ISO 27001 certified</a>
           </div>
@@ -544,6 +544,24 @@ export default function KioskFlowLanding() {
           font-size: 15px; cursor: pointer; color: #fff;
         }
         .social-btn:hover { background: #50df9b; color: #000b20; }
+        .footer-grid {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 32px;
+          max-width: 1100px;
+          margin: 0 auto 40px;
+        }
+        .footer-bottom {
+          max-width: 1100px; margin: 0 auto; padding-top: 24px;
+          border-top: 0.5px solid rgba(255,255,255,0.08);
+          display: flex; flex-direction: column; gap: 12px;
+          font-size: 12px; color: rgba(255,255,255,0.35);
+        }
+        .footer-cert { display: flex; gap: 20px; }
+        @media (min-width: 768px) {
+          .footer-grid { grid-template-columns: 2fr 1fr 1fr 1.5fr; gap: 40px; }
+          .footer-bottom { flex-direction: row; justify-content: space-between; align-items: center; }
+        }
       `}</style>
     </div>
   );
