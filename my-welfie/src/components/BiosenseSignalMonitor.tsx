@@ -454,7 +454,6 @@ const BiosenseSignalMonitor = ({
                   Stay still and ensure your face is within the guide for clinical precision.
                 </CameraHint>
               )}
-              {!scanError && isMeasurementEnabled && <Stats vitalSigns={vitalSigns} />}
               {isMeasuring() && scanWarning && (
                 <ScanWarningToast
                   alert={scanWarning}

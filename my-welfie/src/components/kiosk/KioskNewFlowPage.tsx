@@ -1192,7 +1192,7 @@ export default function KioskNewFlowPage() {
                     Stay still and ensure your face is within the guide for clinical precision.
                   </ScanCameraHint>
                 )}
-                {!scanError && isMeasurementEnabled && <Stats vitalSigns={vitalSigns} />}
+
                 {measuring && scanWarning && (
                   <ScanWarningToast
                     alert={scanWarning}
