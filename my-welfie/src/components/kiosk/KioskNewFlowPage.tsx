@@ -199,6 +199,38 @@ const Select = styled.select`
   }
 `;
 
+const SuffixInputWrap = styled.div<{ $hasError?: boolean; $focused?: boolean }>`
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  background: ${p => p.$hasError ? '#fffafa' : '#f1f5f9'};
+  border-radius: 12px;
+  border: ${p => p.$hasError ? '1.5px solid #fca5a5' : p.$focused ? '1.5px solid #0f766e' : '1.5px solid transparent'};
+  box-shadow: ${p => p.$focused && !p.$hasError ? '0 0 0 3px rgba(15,118,110,0.12)' : 'none'};
+  overflow: hidden;
+  transition: border-color 0.15s, box-shadow 0.15s;
+`;
+
+const SuffixInput = styled.input`
+  flex: 1;
+  min-width: 0;
+  padding: 14px 12px;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #0f172a;
+  font-family: inherit;
+
+  &::placeholder {
+    color: #94a3b8;
+    font-weight: 500;
+  }
+`;
+
 const DropdownSelect = styled.select`
   width: 100%;
   padding: 14px 10px;
@@ -398,6 +430,7 @@ export default function KioskNewFlowPage() {
   const [heightCm, setHeightCm] = useState('');
   const [weightKg, setWeightKg] = useState('');
   const [smoking, setSmoking] = useState('unspecified');
+  const [focusedField, setFocusedField] = useState<string | null>(null);
 
   // ── Scan state ─────────────────────────────────────────────────────────
   const { cameras, ready: camerasReady, refresh: refreshCameras } = useCameras();
@@ -888,20 +921,33 @@ export default function KioskNewFlowPage() {
                 <SectionLabel>Body measurements (optional)</SectionLabel>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                   <div>
-                    <Input
-                      type="number"
-                      value={heightCm}
-                      onChange={e => setHeightCm(e.target.value)}
-                      placeholder="Height (cm)"
-                    />
+                    <SuffixInputWrap $focused={focusedField === 'height'}>
+                      <SuffixInput
+                        type="number"
+                        value={heightCm}
+                        onChange={e => setHeightCm(e.target.value)}
+                        onFocus={() => setFocusedField('height')}
+                        onBlur={() => setFocusedField(null)}
+                        placeholder="172.7"
+                      />
+                      <span style={{ padding: '0 14px 0 4px', fontSize: 12, fontWeight: 700, letterSpacing: '0.06em', color: '#94a3b8', flexShrink: 0 }}>CM</span>
+                    </SuffixInputWrap>
+                    <p style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: '#94a3b8', marginTop: 6 }}>Range: 130–250 CM</p>
                   </div>
                   <div>
-                    <Input
-                      type="number"
-                      value={weightKg}
-                      onChange={e => setWeightKg(e.target.value)}
-                      placeholder="Weight (kg)"
-                    />
+                    <SuffixInputWrap $focused={focusedField === 'weight'}>
+                      <SuffixInput
+                        type="number"
+                        step={0.1}
+                        value={weightKg}
+                        onChange={e => setWeightKg(e.target.value)}
+                        onFocus={() => setFocusedField('weight')}
+                        onBlur={() => setFocusedField(null)}
+                        placeholder="85"
+                      />
+                      <span style={{ padding: '0 14px 0 4px', fontSize: 12, fontWeight: 700, letterSpacing: '0.06em', color: '#94a3b8', flexShrink: 0 }}>KG</span>
+                    </SuffixInputWrap>
+                    <p style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: '#94a3b8', marginTop: 6 }}>Range: 40–300 KG</p>
                   </div>
                 </div>
               </div>
