@@ -27,14 +27,15 @@ import HealthDiffPage from './health/HealthDiffPage';
 // ── Styles ────────────────────────────────────────────────────────────────────
 
 const Container = styled(Flex)<{ isSettingsOpen: boolean }>`
-  height: 100%;
+  height: 100dvh;
   width: 100%;
   position: relative;
   flex-direction: column;
   justify-content: start;
-  align-items: center;
+  align-items: stretch;
   background-color: ${({ isSettingsOpen }) =>
-    isSettingsOpen ? 'rgba(0, 0, 0, 0.5)' : '#ffffff'};
+    isSettingsOpen ? 'rgba(0, 0, 0, 0.5)' : '#000000'};
+  overflow: hidden;
 `;
 
 const LoadingScreen: React.FC = () => (

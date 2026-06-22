@@ -43,6 +43,8 @@ const FullPageWrapper = styled.div`
   display: flex;
   flex-direction: column;
   height: 100dvh;
+  width: 100%;
+  background-color: #000000;
   overflow: hidden;
 `;
 
