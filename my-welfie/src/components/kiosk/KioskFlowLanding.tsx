@@ -377,44 +377,81 @@ export default function KioskFlowLanding() {
 
         {/* How It Works */}
         <section className="py-section-padding bg-background">
-          <div className="max-w-container-max mx-auto px-gutter">
-            <div className="text-center mb-16">
-              <h2 className="font-headline-lg text-headline-lg text-primary mb-4">How It Works</h2>
-              <p className="text-on-surface-variant font-body-lg text-body-lg">Get medical-grade insights in under 60 seconds.</p>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-stack-lg relative">
-              <div className="hidden md:block absolute top-12 left-1/4 right-1/4 h-0.5 bg-outline-variant -z-10"></div>
-              <div className="text-center group">
-                <div className="w-24 h-24 rounded-full bg-white border-2 border-secondary flex items-center justify-center mx-auto mb-6 shadow-md group-hover:scale-110 transition-transform">
-                  <span className="text-headline-md font-bold text-secondary">1</span>
-                </div>
-                <h4 className="font-headline-md text-headline-md text-primary mb-2">Open App</h4>
-                <p className="text-on-surface-variant">Launch the MyWellfie app on your smartphone to start.</p>
-              </div>
-              <div className="text-center group">
-                <div className="w-24 h-24 rounded-full bg-white border-2 border-secondary flex items-center justify-center mx-auto mb-6 shadow-md group-hover:scale-110 transition-transform">
-                  <span className="text-headline-md font-bold text-secondary">2</span>
-                </div>
-                <h4 className="font-headline-md text-headline-md text-primary mb-2">Position Face</h4>
-                <p className="text-on-surface-variant">Hold your phone steady and center your face in the guide.</p>
-              </div>
-              <div className="text-center group">
-                <div className="w-24 h-24 rounded-full bg-white border-2 border-secondary flex items-center justify-center mx-auto mb-6 shadow-md group-hover:scale-110 transition-transform">
-                  <span className="text-headline-md font-bold text-secondary">3</span>
-                </div>
-                <h4 className="font-headline-md text-headline-md text-primary mb-2">AI Analysis</h4>
-                <p className="text-on-surface-variant">Our PPG technology analyzes blood flow in milliseconds.</p>
-              </div>
-              <div className="text-center group">
-                <div className="w-24 h-24 rounded-full bg-white border-2 border-secondary flex items-center justify-center mx-auto mb-6 shadow-md group-hover:scale-110 transition-transform">
-                  <span className="text-headline-md font-bold text-secondary">4</span>
-                </div>
-                <h4 className="font-headline-md text-headline-md text-primary mb-2">Instant Results</h4>
-                <p className="text-on-surface-variant">View your vitals and actionable health recommendations.</p>
-              </div>
-            </div>
+  <div className="max-w-container-max mx-auto px-gutter">
+    <div className="text-center mb-16">
+      <h2 className="font-headline-lg text-headline-lg text-primary mb-4">How It Works</h2>
+      <p className="text-on-surface-variant font-body-lg text-body-lg">Get medical-grade insights in under 60 seconds.</p>
+    </div>
+
+    <div className="max-w-lg mx-auto flex flex-col">
+
+      {/* Step 1 */}
+      <div className="flex gap-5 items-start">
+        <div className="flex flex-col items-center w-14 flex-shrink-0">
+          <div className="w-14 h-14 rounded-xl border border-secondary bg-white flex items-center justify-center shadow-sm">
+            <svg className="w-6 h-6 stroke-secondary fill-none" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+              <rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M7 15h2M12 15h2"/>
+            </svg>
           </div>
-        </section>
+          <div className="w-px flex-1 bg-secondary opacity-25 my-1 min-h-[40px]" />
+        </div>
+        <div className="pt-3 pb-8 flex-1">
+          <h4 className="font-headline-md text-headline-md text-primary mb-2">Tap to Start</h4>
+          <p className="text-on-surface-variant font-body-md text-body-md">Tap the offer on the booth screen to pay securely and begin your scan session.</p>
+        </div>
+      </div>
+
+      {/* Step 2 */}
+      <div className="flex gap-5 items-start">
+        <div className="flex flex-col items-center w-14 flex-shrink-0">
+          <div className="w-14 h-14 rounded-xl border border-secondary bg-white flex items-center justify-center shadow-sm">
+            <svg className="w-6 h-6 stroke-secondary fill-none" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+              <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+            </svg>
+          </div>
+          <div className="w-px flex-1 bg-secondary opacity-25 my-1 min-h-[40px]" />
+        </div>
+        <div className="pt-3 pb-8 flex-1">
+          <h4 className="font-headline-md text-headline-md text-primary mb-2">Quick Profile</h4>
+          <p className="text-on-surface-variant font-body-md text-body-md">Enter your name and email so we can personalize your report and send it to you.</p>
+        </div>
+      </div>
+
+      {/* Step 3 */}
+      <div className="flex gap-5 items-start">
+        <div className="flex flex-col items-center w-14 flex-shrink-0">
+          <div className="w-14 h-14 rounded-xl border border-secondary bg-white flex items-center justify-center shadow-sm">
+            <svg className="w-6 h-6 stroke-secondary fill-none" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+              <path d="M3 7V5a2 2 0 012-2h2M17 3h2a2 2 0 012 2v2M21 17v2a2 2 0 01-2 2h-2M7 21H5a2 2 0 01-2-2v-2"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          </div>
+          <div className="w-px flex-1 bg-secondary opacity-25 my-1 min-h-[40px]" />
+        </div>
+        <div className="pt-3 pb-8 flex-1">
+          <h4 className="font-headline-md text-headline-md text-primary mb-2">Face Scan</h4>
+          <p className="text-on-surface-variant font-body-md text-body-md">Center your face in the guide and hold still while our PPG technology reads blood flow.</p>
+        </div>
+      </div>
+
+      {/* Step 4 — no bottom line */}
+      <div className="flex gap-5 items-start">
+        <div className="flex flex-col items-center w-14 flex-shrink-0">
+          <div className="w-14 h-14 rounded-xl border border-secondary bg-white flex items-center justify-center shadow-sm">
+            <svg className="w-6 h-6 stroke-secondary fill-none" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+              <rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 4v5M15 4v5M7 13h4M7 16h6"/>
+            </svg>
+          </div>
+        </div>
+        <div className="pt-3 flex-1">
+          <h4 className="font-headline-md text-headline-md text-primary mb-2">Instant Results</h4>
+          <p className="text-on-surface-variant font-body-md text-body-md">View your vitals on screen and receive a full health report in your inbox within seconds.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
 
         {/* Science Section */}
         <section className="py-section-padding bg-primary text-on-primary">

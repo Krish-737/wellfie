@@ -466,7 +466,7 @@ export default function KioskNewFlowPage() {
   const [processingTime] = useMeasurementDuration();
   const [licenseKey] = useLicenseKey();
   const isPageVisible = usePageVisibility();
-  const isMobile = useIsMobileLayout();
+  const isMobileLayout = useIsMobileLayout();
 
   const handleUnitChange = useCallback((nextUnit: UnitSystem) => {
     if (nextUnit === unitSystem) return;
@@ -489,8 +489,8 @@ export default function KioskNewFlowPage() {
     setUnitSystem(nextUnit);
     saveUnitPreference(nextUnit);
   }, [unitSystem, heightCm, weightKg, heightFt, heightIn, weightLb]);
-  const mobileView = useMemo(() => isMobile(), []);
-  const isDesktop = useMemo(() => !isTablet() && !isMobile(), []);
+  const mobileView = useMemo(() => isMobile, []);
+  const isDesktop = useMemo(() => !isTablet && !isMobile, []);
   useDisableZoom();
 
   // ── SDK UserInformation from optional profile data ──────────────────────
@@ -985,7 +985,7 @@ export default function KioskNewFlowPage() {
                           onClick={() => handleUnitChange(opt)}
                           style={{
                             flex: 1, padding: '10px 12px',
-                            fontSize: isMobile ? 13 : 14, fontWeight: 600,
+                            fontSize: isMobileLayout ? 13 : 14, fontWeight: 600,
                             border: 'none', borderRadius: 999, cursor: 'pointer',
                             fontFamily: 'inherit',
                             background: active ? '#ffffff' : 'transparent',
@@ -994,13 +994,13 @@ export default function KioskNewFlowPage() {
                             transition: 'background 0.15s, color 0.15s, box-shadow 0.15s',
                           }}
                         >
-                          {opt === 'metric' ? (isMobile ? 'Metric' : 'Metric (cm, kg)') : (isMobile ? 'Imperial' : 'Imperial (ft, lb)')}
+                          {opt === 'metric' ? (isMobileLayout ? 'Metric' : 'Metric (cm, kg)') : (isMobileLayout ? 'Imperial' : 'Imperial (ft, lb)')}
                         </button>
                       );
                     })}
                   </div>
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 12 }}>
+                <div style={{ display: 'grid', gridTemplateColumns: isMobileLayout ? '1fr' : '1fr 1fr', gap: 12 }}>
                   {unitSystem === 'metric' ? (
                     <>
                       <div style={{ minWidth: 0 }}>
