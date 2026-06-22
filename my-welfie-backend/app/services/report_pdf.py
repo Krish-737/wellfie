@@ -578,7 +578,7 @@ class ReportBuilder:
         if value == "—":
             reason = pdf_missing_reason(scan, metric_id, has_value)
             if reason:
-                display_value = f"— ({reason})"
+                display_value = f"—"
 
         ck = spec.get("confidenceKey") if spec else None
         conf = ""
