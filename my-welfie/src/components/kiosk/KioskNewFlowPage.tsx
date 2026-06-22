@@ -245,12 +245,19 @@ const MeasurementContentWrapper = styled.div`
 `;
 
 const ProgressBarWrap = styled.div`
-  width: 100%;
   padding-bottom: 12px;
   box-sizing: border-box;
   display: flex;
   align-items: center;
   gap: 10px;
+`;
+
+const ScanMainContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  flex: 1;
+  overflow: hidden;
 
   @media (min-width: 768px) {
     width: 640px;
@@ -265,7 +272,6 @@ const VideoAndStatsWrap = styled.div`
   position: relative;
   display: flex;
   justify-content: center;
-  width: 100%;
   overflow: hidden;
 `;
 
@@ -337,13 +343,6 @@ const ControlPanel = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 12px;
-
-  @media (min-width: 768px) {
-    width: 640px;
-  }
-  @media (min-width: 1280px) {
-    width: 800px;
-  }
 `;
 
 // ── Main Component ───────────────────────────────────────────────────────────
@@ -873,85 +872,87 @@ export default function KioskNewFlowPage() {
         <style>{SPIN_STYLE}</style>
         <MonitorWrapper>
           <MeasurementContentWrapper>
-            {measuring && (
-              <ProgressBarWrap>
-                <Timer started durationSeconds={processingTime} />
-              </ProgressBarWrap>
-            )}
-            <VideoAndStatsWrap>
-              <VideoWrap>
-                <BlurOverlay $desktop={isDesktop} />
-                <ScanVideo
-                  ref={video}
-                  id="video"
-                  muted
-                  playsInline
-                  onCanPlay={() => setVideoReady(true)}
-                  onPlaying={() => setVideoReady(true)}
-                />
-                {showCameraLoading && (
-                  <CameraLoadingOverlay>
-                    <div className="cs" />
-                    <CameraLoadingMessage>{cameraLoadingMsg}</CameraLoadingMessage>
-                  </CameraLoadingOverlay>
-                )}
-              </VideoWrap>
-              {showTopHint && (
-                <ScanCameraHint>
-                  Stay still and ensure your face is within the guide for clinical precision.
-                </ScanCameraHint>
+            <ScanMainContent>
+              {measuring && (
+                <ProgressBarWrap>
+                  <Timer started durationSeconds={processingTime} />
+                </ProgressBarWrap>
               )}
-              {!scanError && isMeasurementEnabled && <Stats vitalSigns={vitalSigns} />}
-              {measuring && scanWarning && (
-                <ScanWarningToast
-                  alert={scanWarning}
-                  onAction={(type) => handleAlertAction(type)}
-                />
-              )}
-              {measuring && <InfoAlert message={info?.message} />}
-            </VideoAndStatsWrap>
-
-            <ControlPanel>
-              {scanInterrupted ? (
-                <div style={{ width: '100%', maxWidth: 440, textAlign: 'center', padding: '10px 0' }}>
-                  <div style={{ fontSize: 32, marginBottom: 12 }}>⚠️</div>
-                  <h3 style={{ margin: '0 0 8px', fontSize: 18, fontWeight: 800, color: '#0f172a' }}>Scan Interrupted</h3>
-                  <p style={{ margin: '0 0 20px', fontSize: 14, color: '#64748b', lineHeight: 1.5 }}>
-                    Please ensure your face is centered and well-lit, then try again.
-                  </p>
-                  <PrimaryButton onClick={handleRetryScan}>
-                    <RefreshCw size={18} />
-                    Try Again
-                  </PrimaryButton>
-                </div>
-              ) : saving ? (
-                <div style={{ textAlign: 'center', padding: '20px 0' }}>
-                  <div className="cs" style={{
-                    width: 44, height: 44,
-                    border: '4px solid #e2e8f0',
-                    borderTopColor: '#14b8a6',
-                    borderRadius: '50%',
-                    animation: 'spin 0.8s linear infinite',
-                    margin: '0 auto 16px',
-                  }} />
-                  <p style={{ color: '#94a3b8', fontSize: 16, fontWeight: 600 }}>Sending your report…</p>
-                </div>
-              ) : scanError ? (
-                <ScanErrorPanel
-                  alert={scanError}
-                  onAction={(type) => handleAlertAction(type)}
-                />
-              ) : measuring ? null : (
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14, width: '100%' }}>
-                  <StartButton
-                    isLoading={isLoading}
-                    isMeasuring={false}
-                    disabled={!canMeasure}
-                    onClick={handleButtonClick}
+              <VideoAndStatsWrap>
+                <VideoWrap>
+                  <BlurOverlay $desktop={isDesktop} />
+                  <ScanVideo
+                    ref={video}
+                    id="video"
+                    muted
+                    playsInline
+                    onCanPlay={() => setVideoReady(true)}
+                    onPlaying={() => setVideoReady(true)}
                   />
-                </div>
-              )}
-            </ControlPanel>
+                  {showCameraLoading && (
+                    <CameraLoadingOverlay>
+                      <div className="cs" />
+                      <CameraLoadingMessage>{cameraLoadingMsg}</CameraLoadingMessage>
+                    </CameraLoadingOverlay>
+                  )}
+                </VideoWrap>
+                {showTopHint && (
+                  <ScanCameraHint>
+                    Stay still and ensure your face is within the guide for clinical precision.
+                  </ScanCameraHint>
+                )}
+                {!scanError && isMeasurementEnabled && <Stats vitalSigns={vitalSigns} />}
+                {measuring && scanWarning && (
+                  <ScanWarningToast
+                    alert={scanWarning}
+                    onAction={(type) => handleAlertAction(type)}
+                  />
+                )}
+                {measuring && <InfoAlert message={info?.message} />}
+              </VideoAndStatsWrap>
+
+              <ControlPanel>
+                {scanInterrupted ? (
+                  <div style={{ width: '100%', maxWidth: 440, textAlign: 'center', padding: '10px 0' }}>
+                    <div style={{ fontSize: 32, marginBottom: 12 }}>⚠️</div>
+                    <h3 style={{ margin: '0 0 8px', fontSize: 18, fontWeight: 800, color: '#0f172a' }}>Scan Interrupted</h3>
+                    <p style={{ margin: '0 0 20px', fontSize: 14, color: '#64748b', lineHeight: 1.5 }}>
+                      Please ensure your face is centered and well-lit, then try again.
+                    </p>
+                    <PrimaryButton onClick={handleRetryScan}>
+                      <RefreshCw size={18} />
+                      Try Again
+                    </PrimaryButton>
+                  </div>
+                ) : saving ? (
+                  <div style={{ textAlign: 'center', padding: '20px 0' }}>
+                    <div className="cs" style={{
+                      width: 44, height: 44,
+                      border: '4px solid #e2e8f0',
+                      borderTopColor: '#14b8a6',
+                      borderRadius: '50%',
+                      animation: 'spin 0.8s linear infinite',
+                      margin: '0 auto 16px',
+                    }} />
+                    <p style={{ color: '#94a3b8', fontSize: 16, fontWeight: 600 }}>Sending your report…</p>
+                  </div>
+                ) : scanError ? (
+                  <ScanErrorPanel
+                    alert={scanError}
+                    onAction={(type) => handleAlertAction(type)}
+                  />
+                ) : measuring ? null : (
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14, width: '100%' }}>
+                    <StartButton
+                      isLoading={isLoading}
+                      isMeasuring={false}
+                      disabled={!canMeasure}
+                      onClick={handleButtonClick}
+                    />
+                  </div>
+                )}
+              </ControlPanel>
+            </ScanMainContent>
           </MeasurementContentWrapper>
         </MonitorWrapper>
       </PageContainer>
