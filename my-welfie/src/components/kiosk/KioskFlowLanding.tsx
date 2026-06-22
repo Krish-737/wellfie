@@ -221,10 +221,7 @@ export default function KioskFlowLanding() {
     <div className="flow-landing bg-background text-on-surface font-body-md selection:bg-secondary-fixed selection:text-on-secondary-fixed">
       <header className="sticky top-0 z-50 bg-background/90 backdrop-blur-md shadow-sm">
         <nav className="flex justify-between items-center px-gutter py-4 max-w-container-max mx-auto">
-          <div className="font-headline-md text-headline-md font-bold text-secondary" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <img src="/icons/apple-touch-icon.png" alt="" style={{ width: 32, height: 32, borderRadius: 8 }} />
-            MyWellfie
-          </div>
+          <img src="/icons/apple-touch-icon.png" alt="MyWellfie" style={{ width: 40, height: 40, borderRadius: 10 }} />
           <div className="hidden md:flex items-center gap-stack-lg font-body-md text-body-md">
             <a className="text-secondary border-b-2 border-secondary font-bold hover:text-secondary transition-colors" href="#home">Home</a>
             <a className="text-on-surface-variant hover:text-secondary transition-colors" href="#wellness">Health & Wellness</a>
