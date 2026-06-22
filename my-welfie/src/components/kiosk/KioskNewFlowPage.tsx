@@ -30,9 +30,10 @@ import StartButton from '../../components/StartButton';
 import { InfoAlert } from '../../components/alert';
 import ScanWarningToast from '../../components/scan-alerts/ScanWarningToast';
 import ScanErrorPanel from '../../components/scan-alerts/ScanErrorPanel';
-import { ArrowRight, Mail, CheckCircle, RefreshCw, AlertTriangle, Activity } from 'lucide-react';
+import { ArrowRight, Mail, CheckCircle, RefreshCw, AlertTriangle, Activity, User } from 'lucide-react';
 
 type FlowStage = 'init' | 'creating_checkout' | 'checking_payment' | 'payment_failed' | 'profile' | 'profile_saving' | 'scanning' | 'saving' | 'sending' | 'success';
+type ProfileSex = 'male' | 'female' | 'unspecified';
 
 const SPIN_STYLE = `@keyframes spin{to{transform:rotate(360deg)}}`;
 
@@ -191,6 +192,28 @@ const Select = styled.select`
   background: #f1f5f9 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='3'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 14px center;
   cursor: pointer;
   appearance: none;
+
+  &:focus {
+    border-color: #0f766e;
+    background-color: #fff;
+  }
+`;
+
+const DropdownSelect = styled.select`
+  width: 100%;
+  padding: 14px 10px;
+  font-size: 15px;
+  font-weight: 600;
+  border: 1.5px solid transparent;
+  border-radius: 12px;
+  outline: none;
+  box-sizing: border-box;
+  color: #0f172a;
+  font-family: inherit;
+  background: #f1f5f9 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='3'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 10px center;
+  cursor: pointer;
+  appearance: none;
+  text-align: center;
 
   &:focus {
     border-color: #0f766e;
@@ -368,7 +391,10 @@ export default function KioskNewFlowPage() {
   const [guestName, setGuestName] = useState('');
   const [profileEmail, setProfileEmail] = useState('');
   const [profileError, setProfileError] = useState<string | null>(null);
-  const [dob, setDob] = useState('');
+  const [sex, setSex] = useState<ProfileSex | null>(null);
+  const [dobDay, setDobDay] = useState('');
+  const [dobMonth, setDobMonth] = useState('');
+  const [dobYear, setDobYear] = useState('');
   const [heightCm, setHeightCm] = useState('');
   const [weightKg, setWeightKg] = useState('');
   const [smoking, setSmoking] = useState('unspecified');
@@ -652,7 +678,12 @@ export default function KioskNewFlowPage() {
     try {
       const profileData: any = { email: profileEmail.trim() };
       if (guestName.trim()) profileData.guest_name = guestName.trim();
-      if (dob) profileData.date_of_birth = dob;
+      if (sex) profileData.sex = sex;
+      if (dobDay && dobMonth && dobYear) {
+        const paddedMonth = dobMonth.padStart(2, '0');
+        const paddedDay = dobDay.padStart(2, '0');
+        profileData.date_of_birth = `${dobYear}-${paddedMonth}-${paddedDay}`;
+      }
       if (heightCm) profileData.height_cm = parseFloat(heightCm);
       if (weightKg) profileData.weight_kg = parseFloat(weightKg);
       if (smoking !== 'unspecified') profileData.smoking_status = smoking;
@@ -665,7 +696,7 @@ export default function KioskNewFlowPage() {
       setProfileError(e?.detail || 'Failed to save profile');
       setStage('profile');
     }
-  }, [sessionId, profileEmail, guestName, dob, heightCm, weightKg, smoking]);
+  }, [sessionId, profileEmail, guestName, sex, dobDay, dobMonth, dobYear, heightCm, weightKg, smoking]);
 
   const handleSkipProfile = useCallback(async () => {
     if (!sessionId) return;
@@ -777,14 +808,80 @@ export default function KioskNewFlowPage() {
               </div>
 
               <div style={{ marginBottom: 24 }}>
+                <SectionLabel>Sex at birth</SectionLabel>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
+                  {([
+                    { value: 'male' as ProfileSex, label: 'Male', icon: 'male' },
+                    { value: 'female' as ProfileSex, label: 'Female', icon: 'female' },
+                    { value: 'unspecified' as ProfileSex, label: 'Prefer not to say', icon: 'unspecified' },
+                  ]).map(({ value, label, icon }) => {
+                    const active = sex === value;
+                    return (
+                      <button
+                        key={value}
+                        type="button"
+                        onClick={() => setSex(value)}
+                        style={{
+                          display: 'flex', flexDirection: 'column', alignItems: 'center',
+                          justifyContent: 'center', gap: 6, padding: '14px 6px', minHeight: 88,
+                          borderRadius: 14,
+                          border: active ? '2px solid #0f766e' : '1.5px solid #e2e8f0',
+                          background: active ? 'rgba(15, 118, 110, 0.06)' : '#ffffff',
+                          color: active ? '#0f766e' : '#475569',
+                          cursor: 'pointer', fontFamily: 'inherit',
+                          transition: 'border-color 0.15s, background 0.15s',
+                        }}
+                      >
+                        {icon === 'male' ? (
+                          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={active ? '#0f766e' : '#64748b'} strokeWidth="2" strokeLinecap="round">
+                            <circle cx="10" cy="14" r="5" />
+                            <path d="M15 9l5-5M20 4h-5M20 4v5" />
+                          </svg>
+                        ) : icon === 'female' ? (
+                          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={active ? '#0f766e' : '#64748b'} strokeWidth="2" strokeLinecap="round">
+                            <circle cx="12" cy="9" r="5" />
+                            <path d="M12 14v7M9 18h6" />
+                          </svg>
+                        ) : (
+                          <User size={22} color={active ? '#0f766e' : '#64748b'} strokeWidth={2} />
+                        )}
+                        <span style={{ fontSize: 11, fontWeight: 700, lineHeight: 1.2, textAlign: 'center' }}>
+                          {label}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div style={{ marginBottom: 24 }}>
                 <SectionLabel>Date of birth (optional)</SectionLabel>
-                <Input
-                  type="date"
-                  value={dob}
-                  onChange={e => setDob(e.target.value)}
-                  min={new Date(new Date().setFullYear(new Date().getFullYear() - 110)).toISOString().slice(0, 10)}
-                  max={new Date(new Date().setFullYear(new Date().getFullYear() - 18)).toISOString().slice(0, 10)}
-                />
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr 1fr', gap: 8 }}>
+                  <DropdownSelect value={dobDay} onChange={e => setDobDay(e.target.value)}>
+                    <option value="">Day</option>
+                    {Array.from({ length: 31 }, (_, i) => (
+                      <option key={i + 1} value={i + 1}>{i + 1}</option>
+                    ))}
+                  </DropdownSelect>
+                  <DropdownSelect value={dobMonth} onChange={e => setDobMonth(e.target.value)}>
+                    <option value="">Month</option>
+                    {[
+                      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+                    ].map((name, i) => (
+                      <option key={i + 1} value={i + 1}>{name}</option>
+                    ))}
+                  </DropdownSelect>
+                  <DropdownSelect value={dobYear} onChange={e => setDobYear(e.target.value)}>
+                    <option value="">Year</option>
+                    {Array.from({ length: 93 }, (_, i) => {
+                      const year = new Date().getFullYear() - 18 - i;
+                      return (
+                        <option key={year} value={year}>{year}</option>
+                      );
+                    })}
+                  </DropdownSelect>
+                </div>
               </div>
 
               <div style={{ marginBottom: 24 }}>

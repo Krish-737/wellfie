@@ -529,12 +529,11 @@ class ReportBuilder:
         c.setFont("Helvetica", 6.5)
         c.drawCentredString(
             W / 2, FOOTER_H - 4 * mm,
-            "For informational purposes only. AI-assisted physiological signal analysis — "
-            "not a substitute for clinical diagnosis. Consult a qualified healthcare professional.",
+            "This report is for informational reference only—please consult your doctor for a professional medical diagnosis",
         )
         c.drawCentredString(
             W / 2, FOOTER_H - 8 * mm,
-            "Powered by BioSense Core Metrics Framework  ·  Confidential",
+            "Powered by MyWellfie   ·  Confidential",
         )
         c.setFont("Helvetica", 7.5)
         c.setFillColor(SLATE_700)
