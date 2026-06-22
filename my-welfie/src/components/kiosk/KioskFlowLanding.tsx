@@ -419,7 +419,7 @@ export default function KioskFlowLanding() {
         {/* Science Section */}
         <section className="py-section-padding bg-primary text-on-primary">
           <div className="max-w-container-max mx-auto px-gutter grid grid-cols-1 md:grid-cols-2 gap-stack-lg items-center">
-            <div className="relative rounded-3xl overflow-hidden aspect-video shadow-2xl">
+            {/* <div className="relative rounded-3xl overflow-hidden aspect-video shadow-2xl">
               <img
                 alt="PPG Technology Science"
                 className="w-full h-full object-cover"
@@ -430,7 +430,7 @@ export default function KioskFlowLanding() {
                   <span className="material-symbols-outlined text-[40px]" style={{ fontVariationSettings: "'FILL' 1" }}>play_arrow</span>
                 </div>
               </div>
-            </div>
+            </div> */}
             <div className="space-y-stack-md">
               <h2 className="font-display-lg text-display-lg text-secondary-fixed">The Science: PPG Technology</h2>
               <p className="text-outline-variant font-body-lg text-body-lg">

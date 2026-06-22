@@ -13,6 +13,7 @@ import {
   usePrevious,
   useResolvedScanAlert,
 } from '../../hooks';
+import { useIsMobileLayout } from '../../hooks/useLayoutBreakpoint';
 import { AlertActionType } from '../../alerts/alertTypes';
 import {
   createDirectCheckout,
@@ -31,6 +32,21 @@ import { InfoAlert } from '../../components/alert';
 import ScanWarningToast from '../../components/scan-alerts/ScanWarningToast';
 import ScanErrorPanel from '../../components/scan-alerts/ScanErrorPanel';
 import { ArrowRight, Mail, CheckCircle, RefreshCw, AlertTriangle, Activity, User } from 'lucide-react';
+import {
+  cmToFtIn,
+  ftInToCm,
+  HEIGHT_CM_MAX,
+  HEIGHT_CM_MIN,
+  kgToLb,
+  lbToKg,
+  loadUnitPreference,
+  saveUnitPreference,
+  UnitSystem,
+  WEIGHT_KG_MAX,
+  WEIGHT_KG_MIN,
+  WEIGHT_LB_MAX,
+  WEIGHT_LB_MIN,
+} from '../../utils/units';
 
 type FlowStage = 'init' | 'creating_checkout' | 'checking_payment' | 'payment_failed' | 'profile' | 'profile_saving' | 'scanning' | 'saving' | 'sending' | 'success';
 type ProfileSex = 'male' | 'female' | 'unspecified';
@@ -431,6 +447,10 @@ export default function KioskNewFlowPage() {
   const [weightKg, setWeightKg] = useState('');
   const [smoking, setSmoking] = useState('unspecified');
   const [focusedField, setFocusedField] = useState<string | null>(null);
+  const [unitSystem, setUnitSystem] = useState<UnitSystem>(() => loadUnitPreference());
+  const [heightFt, setHeightFt] = useState('');
+  const [heightIn, setHeightIn] = useState('');
+  const [weightLb, setWeightLb] = useState('');
 
   // ── Scan state ─────────────────────────────────────────────────────────
   const { cameras, ready: camerasReady, refresh: refreshCameras } = useCameras();
@@ -446,6 +466,29 @@ export default function KioskNewFlowPage() {
   const [processingTime] = useMeasurementDuration();
   const [licenseKey] = useLicenseKey();
   const isPageVisible = usePageVisibility();
+  const isMobile = useIsMobileLayout();
+
+  const handleUnitChange = useCallback((nextUnit: UnitSystem) => {
+    if (nextUnit === unitSystem) return;
+    if (nextUnit === 'imperial') {
+      const cm = parseFloat(heightCm);
+      const kg = parseFloat(weightKg);
+      if (!Number.isNaN(cm)) {
+        const { feet, inches } = cmToFtIn(cm);
+        setHeightFt(String(feet));
+        setHeightIn(String(inches));
+      }
+      if (!Number.isNaN(kg)) setWeightLb(String(kgToLb(kg)));
+    } else {
+      const ft = parseInt(heightFt, 10);
+      const inch = parseFloat(heightIn);
+      const lb = parseFloat(weightLb);
+      if (!Number.isNaN(ft) && !Number.isNaN(inch)) setHeightCm(String(ftInToCm(ft, inch)));
+      if (!Number.isNaN(lb)) setWeightKg(String(lbToKg(lb)));
+    }
+    setUnitSystem(nextUnit);
+    saveUnitPreference(nextUnit);
+  }, [unitSystem, heightCm, weightKg, heightFt, heightIn, weightLb]);
   const mobileView = useMemo(() => isMobile(), []);
   const isDesktop = useMemo(() => !isTablet() && !isMobile(), []);
   useDisableZoom();
@@ -717,8 +760,20 @@ export default function KioskNewFlowPage() {
         const paddedDay = dobDay.padStart(2, '0');
         profileData.date_of_birth = `${dobYear}-${paddedMonth}-${paddedDay}`;
       }
-      if (heightCm) profileData.height_cm = parseFloat(heightCm);
-      if (weightKg) profileData.weight_kg = parseFloat(weightKg);
+      if (unitSystem === 'metric') {
+        if (heightCm) profileData.height_cm = parseFloat(heightCm);
+        if (weightKg) profileData.weight_kg = parseFloat(weightKg);
+      } else {
+        const ft = parseInt(heightFt, 10);
+        const inch = parseFloat(heightIn);
+        const lb = parseFloat(weightLb);
+        if (!Number.isNaN(ft) && !Number.isNaN(inch)) {
+          profileData.height_cm = ftInToCm(ft, inch);
+        }
+        if (!Number.isNaN(lb)) {
+          profileData.weight_kg = lbToKg(lb);
+        }
+      }
       if (smoking !== 'unspecified') profileData.smoking_status = smoking;
       profileDataRef.current = profileData;
 
@@ -729,7 +784,7 @@ export default function KioskNewFlowPage() {
       setProfileError(e?.detail || 'Failed to save profile');
       setStage('profile');
     }
-  }, [sessionId, profileEmail, guestName, sex, dobDay, dobMonth, dobYear, heightCm, weightKg, smoking]);
+  }, [sessionId, profileEmail, guestName, sex, dobDay, dobMonth, dobYear, unitSystem, heightCm, weightKg, heightFt, heightIn, weightLb, smoking]);
 
   const handleSkipProfile = useCallback(async () => {
     if (!sessionId) return;
@@ -919,36 +974,117 @@ export default function KioskNewFlowPage() {
 
               <div style={{ marginBottom: 24 }}>
                 <SectionLabel>Body measurements (optional)</SectionLabel>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-                  <div>
-                    <SuffixInputWrap $focused={focusedField === 'height'}>
-                      <SuffixInput
-                        type="number"
-                        value={heightCm}
-                        onChange={e => setHeightCm(e.target.value)}
-                        onFocus={() => setFocusedField('height')}
-                        onBlur={() => setFocusedField(null)}
-                        placeholder="172.7"
-                      />
-                      <span style={{ padding: '0 14px 0 4px', fontSize: 12, fontWeight: 700, letterSpacing: '0.06em', color: '#94a3b8', flexShrink: 0 }}>CM</span>
-                    </SuffixInputWrap>
-                    <p style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: '#94a3b8', marginTop: 6 }}>Range: 130–250 CM</p>
+                <div style={{ marginBottom: 16 }}>
+                  <div role="group" aria-label="Unit system" style={{ display: 'flex', padding: 4, background: '#f1f5f9', borderRadius: 999, gap: 4 }}>
+                    {(['metric', 'imperial'] as const).map((opt) => {
+                      const active = unitSystem === opt;
+                      return (
+                        <button
+                          key={opt}
+                          type="button"
+                          onClick={() => handleUnitChange(opt)}
+                          style={{
+                            flex: 1, padding: '10px 12px',
+                            fontSize: isMobile ? 13 : 14, fontWeight: 600,
+                            border: 'none', borderRadius: 999, cursor: 'pointer',
+                            fontFamily: 'inherit',
+                            background: active ? '#ffffff' : 'transparent',
+                            color: active ? '#2563eb' : '#64748b',
+                            boxShadow: active ? '0 1px 4px rgba(15,23,42,0.08)' : 'none',
+                            transition: 'background 0.15s, color 0.15s, box-shadow 0.15s',
+                          }}
+                        >
+                          {opt === 'metric' ? (isMobile ? 'Metric' : 'Metric (cm, kg)') : (isMobile ? 'Imperial' : 'Imperial (ft, lb)')}
+                        </button>
+                      );
+                    })}
                   </div>
-                  <div>
-                    <SuffixInputWrap $focused={focusedField === 'weight'}>
-                      <SuffixInput
-                        type="number"
-                        step={0.1}
-                        value={weightKg}
-                        onChange={e => setWeightKg(e.target.value)}
-                        onFocus={() => setFocusedField('weight')}
-                        onBlur={() => setFocusedField(null)}
-                        placeholder="85"
-                      />
-                      <span style={{ padding: '0 14px 0 4px', fontSize: 12, fontWeight: 700, letterSpacing: '0.06em', color: '#94a3b8', flexShrink: 0 }}>KG</span>
-                    </SuffixInputWrap>
-                    <p style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: '#94a3b8', marginTop: 6 }}>Range: 40–300 KG</p>
-                  </div>
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 12 }}>
+                  {unitSystem === 'metric' ? (
+                    <>
+                      <div style={{ minWidth: 0 }}>
+                        <SuffixInputWrap $focused={focusedField === 'height'}>
+                          <SuffixInput
+                            type="number"
+                            step={0.1}
+                            value={heightCm}
+                            onChange={e => setHeightCm(e.target.value)}
+                            onFocus={() => setFocusedField('height')}
+                            onBlur={() => setFocusedField(null)}
+                            placeholder="172.7"
+                          />
+                          <span style={{ padding: '0 14px 0 4px', fontSize: 12, fontWeight: 700, letterSpacing: '0.06em', color: '#94a3b8', flexShrink: 0 }}>CM</span>
+                        </SuffixInputWrap>
+                        <p style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: '#94a3b8', marginTop: 6 }}>Range: {HEIGHT_CM_MIN}–{HEIGHT_CM_MAX} CM</p>
+                      </div>
+                      <div style={{ minWidth: 0 }}>
+                        <SuffixInputWrap $focused={focusedField === 'weight'}>
+                          <SuffixInput
+                            type="number"
+                            step={0.1}
+                            value={weightKg}
+                            onChange={e => setWeightKg(e.target.value)}
+                            onFocus={() => setFocusedField('weight')}
+                            onBlur={() => setFocusedField(null)}
+                            placeholder="85"
+                          />
+                          <span style={{ padding: '0 14px 0 4px', fontSize: 12, fontWeight: 700, letterSpacing: '0.06em', color: '#94a3b8', flexShrink: 0 }}>KG</span>
+                        </SuffixInputWrap>
+                        <p style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: '#94a3b8', marginTop: 6 }}>Range: {WEIGHT_KG_MIN}–{WEIGHT_KG_MAX} KG</p>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div style={{ minWidth: 0 }}>
+                        <div style={{ display: 'flex', gap: 8, minWidth: 0 }}>
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <SuffixInputWrap $focused={focusedField === 'height'}>
+                              <SuffixInput
+                                type="number"
+                                value={heightFt}
+                                onChange={e => setHeightFt(e.target.value)}
+                                onFocus={() => setFocusedField('height')}
+                                onBlur={() => setFocusedField(null)}
+                                placeholder="5"
+                              />
+                              <span style={{ padding: '0 14px 0 4px', fontSize: 12, fontWeight: 700, letterSpacing: '0.06em', color: '#94a3b8', flexShrink: 0 }}>FT</span>
+                            </SuffixInputWrap>
+                          </div>
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <SuffixInputWrap $focused={focusedField === 'height'}>
+                              <SuffixInput
+                                type="number"
+                                step={0.5}
+                                value={heightIn}
+                                onChange={e => setHeightIn(e.target.value)}
+                                onFocus={() => setFocusedField('height')}
+                                onBlur={() => setFocusedField(null)}
+                                placeholder="8"
+                              />
+                              <span style={{ padding: '0 14px 0 4px', fontSize: 12, fontWeight: 700, letterSpacing: '0.06em', color: '#94a3b8', flexShrink: 0 }}>IN</span>
+                            </SuffixInputWrap>
+                          </div>
+                        </div>
+                        <p style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: '#94a3b8', marginTop: 6 }}>Range: {HEIGHT_CM_MIN}–{HEIGHT_CM_MAX} CM</p>
+                      </div>
+                      <div style={{ minWidth: 0 }}>
+                        <SuffixInputWrap $focused={focusedField === 'weight'}>
+                          <SuffixInput
+                            type="number"
+                            step={0.1}
+                            value={weightLb}
+                            onChange={e => setWeightLb(e.target.value)}
+                            onFocus={() => setFocusedField('weight')}
+                            onBlur={() => setFocusedField(null)}
+                            placeholder="187"
+                          />
+                          <span style={{ padding: '0 14px 0 4px', fontSize: 12, fontWeight: 700, letterSpacing: '0.06em', color: '#94a3b8', flexShrink: 0 }}>LB</span>
+                        </SuffixInputWrap>
+                        <p style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: '#94a3b8', marginTop: 6 }}>Range: {WEIGHT_LB_MIN}–{WEIGHT_LB_MAX} LB</p>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
 
@@ -966,9 +1102,9 @@ export default function KioskNewFlowPage() {
                 {stage !== 'profile_saving' && <ArrowRight size={18} />}
               </PrimaryButton>
 
-              <GhostButton type="button" onClick={handleSkipProfile} disabled={stage === 'profile_saving'}>
+              {/* <GhostButton type="button" onClick={handleSkipProfile} disabled={stage === 'profile_saving'}>
                 Skip — go straight to scan (no email report)
-              </GhostButton>
+              </GhostButton> */}
             </form>
           </Card>
         </ContentCard>
