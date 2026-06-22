@@ -488,49 +488,6 @@ export default function KioskFlowLanding() {
         </section>
       </main>
 
-      <footer style={{ background: '#000b20', color: '#fff', padding: '64px 20px 32px' }}>
-        <div className="footer-grid">
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 18, fontWeight: 700, color: '#50df9b', marginBottom: 12 }}>
-              <img src="/icons/apple-touch-icon.png" alt="" style={{ width: 28, height: 28, borderRadius: 6 }} />
-              MyWellfie
-            </div>
-            <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', lineHeight: 1.65, maxWidth: 220, marginBottom: 16 }}>
-              Empowering the world with medical-grade health insights, delivered directly through the convenience of a smartphone.
-            </p>
-            <div style={{ display: 'flex', gap: 10 }}>
-              <div className="social-btn">S</div>
-              <div className="social-btn">W</div>
-            </div>
-          </div>
-          <div>
-            <h4 style={{ fontSize: 12, fontWeight: 600, color: '#50df9b', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 16 }}>Quick links</h4>
-            <a href="#" style={{ display: 'block', fontSize: 13, color: 'rgba(255,255,255,0.55)', marginBottom: 10 }}>Home</a>
-            <a href="#" style={{ display: 'block', fontSize: 13, color: 'rgba(255,255,255,0.55)', marginBottom: 10 }}>Health &amp; Wellness</a>
-            <a href="#" style={{ display: 'block', fontSize: 13, color: 'rgba(255,255,255,0.55)', marginBottom: 10 }}>Resources</a>
-          </div>
-          <div>
-            <h4 style={{ fontSize: 12, fontWeight: 600, color: '#50df9b', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 16 }}>Legal &amp; privacy</h4>
-            <a href="#" style={{ display: 'block', fontSize: 13, color: 'rgba(255,255,255,0.55)', marginBottom: 10 }}>Contact us</a>
-            <a href="#" style={{ display: 'block', fontSize: 13, color: 'rgba(255,255,255,0.55)', marginBottom: 10 }}>Privacy policy</a>
-            <a href="#" style={{ display: 'block', fontSize: 13, color: 'rgba(255,255,255,0.55)', marginBottom: 10 }}>Terms of service</a>
-          </div>
-          <div>
-            <h4 style={{ fontSize: 12, fontWeight: 600, color: '#50df9b', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 16 }}>Newsletter</h4>
-            <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', marginBottom: 12 }}>Get wellness tips and health insights weekly.</p>
-            <input placeholder="email@example.com" type="email" style={{ width: '100%', background: 'rgba(255,255,255,0.08)', border: '0.5px solid rgba(255,255,255,0.15)', borderRadius: 8, padding: '9px 12px', color: '#fff', fontSize: 13, marginBottom: 8, boxSizing: 'border-box' }} />
-            <button style={{ width: '100%', background: '#50df9b', color: '#002112', fontSize: 13, fontWeight: 700, padding: 9, borderRadius: 8, border: 'none', cursor: 'pointer' }}>Subscribe</button>
-          </div>
-        </div>
-        <div className="footer-bottom">
-          <p>&copy; 2026 MyWellfie. All rights reserved.</p>
-          <div className="footer-cert">
-            <a href="#" style={{ color: 'rgba(255,255,255,0.35)' }}>HIPAA compliant</a>
-            <a href="#" style={{ color: 'rgba(255,255,255,0.35)' }}>ISO 27001 certified</a>
-          </div>
-        </div>
-      </footer>
-
       <style>{`
         .hero-gradient {
           background: radial-gradient(circle at 80% 20%, rgba(112, 252, 181, 0.15) 0%, transparent 40%),
@@ -540,31 +497,6 @@ export default function KioskFlowLanding() {
           display: grid;
           grid-template-columns: repeat(12, 1fr);
           gap: 24px;
-        }
-        .social-btn {
-          width: 32px; height: 32px; border-radius: 50%;
-          background: rgba(255,255,255,0.08);
-          display: flex; align-items: center; justify-content: center;
-          font-size: 15px; cursor: pointer; color: #fff;
-        }
-        .social-btn:hover { background: #50df9b; color: #000b20; }
-        .footer-grid {
-          display: grid;
-          grid-template-columns: 1fr;
-          gap: 32px;
-          max-width: 1100px;
-          margin: 0 auto 40px;
-        }
-        .footer-bottom {
-          max-width: 1100px; margin: 0 auto; padding-top: 24px;
-          border-top: 0.5px solid rgba(255,255,255,0.08);
-          display: flex; flex-direction: column; gap: 12px;
-          font-size: 12px; color: rgba(255,255,255,0.35);
-        }
-        .footer-cert { display: flex; gap: 20px; }
-        @media (min-width: 768px) {
-          .footer-grid { grid-template-columns: 2fr 1fr 1fr 1.5fr; gap: 40px; }
-          .footer-bottom { flex-direction: row; justify-content: space-between; align-items: center; }
         }
       `}</style>
     </div>

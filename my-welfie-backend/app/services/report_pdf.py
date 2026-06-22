@@ -151,7 +151,7 @@ PDF_DESCRIPTIONS: dict[str, str] = {
     "stress_index": "Non-negative mathematical index of sympathetic nervous system dominance.",
     "normalized_stress_index": "Stress Index scaled to 0–100 for cross-session comparison.",
     "wellness_level": "Overall cardiovascular wellness classification derived from combined vital signals.",
-    "wellness": "Numeric wellness score (Binah model) predicting 5–10 year cardiovascular risk. Displayed as returned by the SDK.",
+    "wellness": "Numeric wellness score predicting 5–10 year cardiovascular risk. Displayed as returned by the SDK.",
     "hba1c": "3-month average blood glucose proxy. Pre-diabetes: 5.7–6.4%. Diabetes: ≥6.5%.",
     "hemoglobin": "Blood haemoglobin concentration. Low levels indicate anaemia risk.",
     "bp_risk": "Probability that systolic/diastolic readings exceed clinical hypertension threshold.",
