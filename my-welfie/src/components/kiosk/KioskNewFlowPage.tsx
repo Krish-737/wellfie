@@ -236,7 +236,7 @@ const MonitorWrapper = styled.div`
 `;
 
 const MeasurementContentWrapper = styled.div`
-  width: auto;
+  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -868,7 +868,7 @@ export default function KioskNewFlowPage() {
       : 'Initialising camera…';
 
     return (
-      <PageContainer style={{ background: '#000', height: '100dvh', overflow: 'hidden', minHeight: 0 }}>
+      <PageContainer style={{ background: '#000', height: '100dvh', overflow: 'hidden', minHeight: 0, minWidth: '100vw', alignItems: 'stretch' }}>
         <style>{SPIN_STYLE}</style>
         <MonitorWrapper>
           <MeasurementContentWrapper>
