@@ -575,10 +575,6 @@ class ReportBuilder:
 
         value, status, has_value = _scan_value_status(scan, metric_id)
         display_value = value
-        if value == "—":
-            reason = pdf_missing_reason(scan, metric_id, has_value)
-            if reason:
-                display_value = f"— ({reason})"
 
         ck = spec.get("confidenceKey") if spec else None
         conf = ""
