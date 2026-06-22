@@ -221,7 +221,8 @@ export default function KioskFlowLanding() {
     <div className="flow-landing bg-background text-on-surface font-body-md selection:bg-secondary-fixed selection:text-on-secondary-fixed">
       <header className="sticky top-0 z-50 bg-background/90 backdrop-blur-md shadow-sm">
         <nav className="flex justify-between items-center px-gutter py-4 max-w-container-max mx-auto">
-          <div className="font-headline-md text-headline-md font-bold text-secondary">
+          <div className="font-headline-md text-headline-md font-bold text-secondary" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <img src="/icons/apple-touch-icon.png" alt="" style={{ width: 32, height: 32, borderRadius: 8 }} />
             MyWellfie
           </div>
           <div className="hidden md:flex items-center gap-stack-lg font-body-md text-body-md">
@@ -490,7 +491,10 @@ export default function KioskFlowLanding() {
       <footer style={{ background: '#000b20', color: '#fff', padding: '64px 20px 32px' }}>
         <div className="footer-grid">
           <div>
-            <div style={{ fontSize: 18, fontWeight: 700, color: '#50df9b', marginBottom: 12 }}>MyWellfie</div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 18, fontWeight: 700, color: '#50df9b', marginBottom: 12 }}>
+              <img src="/icons/apple-touch-icon.png" alt="" style={{ width: 28, height: 28, borderRadius: 6 }} />
+              MyWellfie
+            </div>
             <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', lineHeight: 1.65, maxWidth: 220, marginBottom: 16 }}>
               Empowering the world with medical-grade health insights, delivered directly through the convenience of a smartphone.
             </p>
