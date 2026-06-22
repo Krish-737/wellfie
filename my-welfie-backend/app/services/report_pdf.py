@@ -603,6 +603,11 @@ class ReportBuilder:
     ) -> None:
         c = self.c
 
+        # If value and status are identical (e.g., "Low" / "Low"),
+        # clear value to avoid showing duplicate black text above the colored pill.
+        if value.strip().upper() == status.strip().upper():
+            value = ""
+
         name_p = Paragraph(f"<b>{name}</b>", self.st_label)
         _, name_h = name_p.wrap(W_IND - 2 * mm, H)
 
