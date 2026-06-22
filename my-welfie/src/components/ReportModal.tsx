@@ -270,15 +270,17 @@ const ReportModal = ({ open, report, rawResults, generatedAt, onClose }: IReport
     setIsDownloading(true);
     try {
       const doc = new jsPDF({ unit: 'pt', format: 'a4' });
+      doc.setFillColor(0, 11, 32);
+      doc.rect(0, 0, doc.internal.pageSize.getWidth(), 150, 'F');
       const response = await fetch(logo);
       const logoBlob = await response.blob();
       const logoDataUrl = await blobToDataUrl(logoBlob);
       doc.addImage(logoDataUrl, 'PNG', 40, 24, 230, 62);
+      doc.setTextColor(80, 223, 155);
       doc.setFontSize(18);
-      doc.text('Vital Report', 40, 108);
+      doc.text('Vital Report', 40, 112);
       doc.setFontSize(11);
-      doc.setTextColor(90, 95, 120);
-      doc.text(`Generated at: ${toFormattedDate(generatedAt)}`, 40, 128);
+      doc.text(`Generated at: ${toFormattedDate(generatedAt)}`, 40, 132);
 
       let y = 164;
       doc.setTextColor(34, 41, 77);
